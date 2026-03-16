@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tachyon Star | Premium Design Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Sidebar de Navegación -->
+        <aside class="sidebar">
+            <div class="logo">
+                <span class="star-icon">✨</span>
+                <h1>Tachyon<span>Star</span></h1>
+            </div>
+            <nav class="nav-menu">
+                <p class="nav-label">Componentes Premium</p>
+                <ul id="component-list">
+                    <li class="active" data-component="bento">1. Bento Grid</li>
+                    <li data-component="glow-card">2. Glow Cards</li>
+                    <li data-component="gradient-text">3. Animated Text</li>
+                    <li data-component="floating-nav">4. Floating Glass</li>
+                    <li data-component="starfield">5. Magic Starfield</li>
+                    <li data-component="magnetic">6. Magnetic Action</li>
+                    <li data-component="scroll-reveal">7. Scroll Reveal</li>
+                    <li data-component="parallax">8. 3D Parallax</li>
+                    <li data-component="loader">9. Brand Loader</li>
+                    <li data-component="fluid-type">10. Fluid Typography</li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <p>Clase 2: Design Lab v1.0</p>
+            </div>
+        </aside>
+
+        <!-- Escenario Principal -->
+        <main class="main-stage">
+            <header class="stage-header">
+                <div class="header-info">
+                    <h2 id="demo-title">Bento Grid Layout</h2>
+                    <p id="demo-desc">Estructura moderna inspirada en interfaces de alto rendimiento.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-premium">Ver Código</button>
+                </div>
+            </header>
+
+            <section id="demo-area" class="demo-area">
+                <!-- El contenido se cargará dinámicamente aquí -->
+                <div class="bento-grid">
+                    <div class="bento-item tall"><h3>Analytics</h3></div>
+                    <div class="bento-item wide"><h3>Quick Actions</h3></div>
+                    <div class="bento-item"><h3>Status</h3></div>
+                    <div class="bento-item"><h3>Users</h3></div>
+                    <div class="bento-item"><h3>Reports</h3></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Fondo de Partículas (Componente 5) -->
+    <div id="particle-canvas-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
