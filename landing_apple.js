@@ -199,3 +199,36 @@ async function injectTrackingCodes() {
     }
 }
 injectTrackingCodes();
+
+// --- Inyección Dinámica de Metadatos SEO ---
+async function injectSeoMetadata() {
+    if (typeof _supabase === 'undefined') return;
+    try {
+        const { data, error } = await _supabase.from('site_settings').select('key, value').in('key', ['seo_title', 'seo_description']);
+        if (error) throw error;
+        
+        if (data) {
+            data.forEach(setting => {
+                if (!setting.value || setting.value.trim() === '') return;
+
+                if (setting.key === 'seo_title') {
+                    document.title = setting.value;
+                    // También actualizar OG:Title
+                    const ogTitle = document.querySelector('meta[property="og:title"]');
+                    if (ogTitle) ogTitle.setAttribute('content', setting.value);
+                }
+                
+                if (setting.key === 'seo_description') {
+                    const metaDesc = document.querySelector('meta[name="description"]');
+                    if (metaDesc) metaDesc.setAttribute('content', setting.value);
+                    
+                    const ogDesc = document.querySelector('meta[property="og:description"]');
+                    if (ogDesc) ogDesc.setAttribute('content', setting.value);
+                }
+            });
+        }
+    } catch (e) {
+        console.error('Error cargando SEO dinámico:', e);
+    }
+}
+injectSeoMetadata();
