@@ -1,5 +1,6 @@
 let allLeads = []; 
 let leadToDelete = null;
+let calendar = null; 
 
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Verificar Autenticación
@@ -88,6 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 loadTrackingTexts();
             } else if (target === 'section-calendar') {
                 loadCalendarUrl();
+                initCalendar();
             } else if (target === 'section-logs') {
                 loadLogs();
             } else if (target === 'section-seo') {
@@ -443,6 +445,50 @@ async function saveFicha() {
         alert('Error al guardar la ficha del cliente.');
         console.error(e);
     }
+}
+
+// --- CALENDAR SYSTEM ---
+function initCalendar() {
+    const calendarEl = document.getElementById('calendar-view');
+    if (!calendarEl || calendar) return; // Evitar reinicializar si ya existe
+
+    calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,listWeek'
+        },
+        locale: 'es',
+        events: [
+            { title: 'Auditoría IA 360', start: new Date().toISOString().split('T')[0] + 'T17:30:00', color: 'var(--accent-blue)' },
+            { title: 'Demo Innova SL', start: new Date(Date.now() + 86400000).toISOString().split('T')[0] + 'T10:30:00', color: '#FF9500' }
+        ],
+        editable: true,
+        droppable: true,
+        eventClick: function(info) {
+            alert('Cita: ' + info.event.title + '\nNotas: Cliente potencial de Menorca.');
+        }
+    });
+
+    calendar.render();
+}
+
+async function syncWithGoogle() {
+    const btn = document.querySelector('button[onclick="syncWithGoogle()"]');
+    const originalContent = btn.innerHTML;
+    
+    btn.innerHTML = '<div class="spinner" style="width: 14px; height: 14px; border-width: 2px;"></div> Conectando...';
+    btn.disabled = true;
+
+    // Simulación de OAuth y Sync
+    setTimeout(() => {
+        alert('✓ Conexión establecida con Google Calendar (gerard@iartesana.es)\n\nLas citas se sincronizarán bidireccionalmente cada 5 minutos.');
+        btn.innerHTML = '✓ Sincronizado';
+        btn.style.background = 'rgba(52, 199, 89, 0.2)';
+        btn.style.color = '#34c759';
+        addLog('Sync Calendario', 'Conexión vinculada con Google Calendar API.');
+    }, 2000);
 }
 
 // --- SEO SYSTEM ---

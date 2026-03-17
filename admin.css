@@ -353,6 +353,21 @@ body.admin-body {
 .btn-modal-danger:hover, .btn-modal-primary:hover { filter: brightness(1.1); transform: scale(1.02); }
 .btn-modal-secondary:hover { background: rgba(255,255,255,0.1); }
 
+/* --- CALENDAR APPLE STYLE --- */
+.fc { font-family: 'Inter', sans-serif; --fc-border-color: rgba(255,255,255,0.1); --fc-today-bg-color: rgba(0,113,227,0.1); }
+.fc .fc-toolbar-title { font-size: 1.2rem; font-weight: 700; color: white; }
+.fc .fc-button-primary { background: #1d1d1f; border: 1px solid var(--border-color); color: white; border-radius: 8px; font-weight: 500; text-transform: capitalize; padding: 10px 16px; transition: 0.2s; }
+.fc .fc-button-primary:hover { background: #2c2c2e; border-color: rgba(255,255,255,0.3); }
+.fc .fc-button-active { background: var(--accent-blue) !important; border-color: var(--accent-blue) !important; }
+.fc th { padding: 12px 0; font-size: 0.75rem; color: var(--text-grey); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; border: none !important; }
+.fc-theme-standard td, .fc-theme-standard th { border-color: rgba(255,255,255,0.05) !important; }
+.fc-event { border-radius: 6px; padding: 4px 8px; font-size: 0.8rem; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.fc-day-today { background: rgba(0,113,227,0.05) !important; }
+.fc-col-header-cell { background: transparent !important; }
+
+.appointment-item { transition: 0.3s; cursor: pointer; }
+.appointment-item:hover { transform: translateX(5px); background: rgba(255,255,255,0.06); }
+
 @keyframes fadeIn {
     from { opacity: 0; transform: scale(0.95); }
     to { opacity: 1; transform: scale(1); }

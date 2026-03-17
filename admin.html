@@ -254,21 +254,60 @@
 
             <!-- Section: CALENDAR -->
             <section id="section-calendar" class="admin-content-area">
-                <header class="admin-header" style="padding-top: 0;">
-                    <h1>Integración de Calendario</h1>
-                    <p style="color: var(--text-grey);">Conecta tu agenda (Google Calendar, Calendly, etc.) con el botón de reservas.</p>
+                <header class="admin-header" style="padding-top: 0; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h1>Calendario de Citas</h1>
+                        <p style="color: var(--text-grey);">Gestión de agendamientos y videollamadas comerciales.</p>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn-action" onclick="syncWithGoogle()" style="display: flex; align-items: center; gap: 8px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px;"><path d="M4 4v5h5"></path><path d="M16 20v-5h-5"></path><path d="M20 12a8 8 0 1 0-8 8"></path></svg>
+                            Sincronizar Google
+                        </button>
+                    </div>
                 </header>
 
-                <div class="legal-editor-group" style="background: var(--bg-card); padding: 30px; border-radius: 16px; border: 1px solid var(--border-color);">
-                    <h3 style="margin-bottom: 8px;">URL de tu Calendario</h3>
-                    <p style="font-size: 0.85rem; color: var(--text-grey); margin-bottom: 20px;">Pega aquí el enlace directo para agendar videollamadas. Funcionará en el botón de la web.</p>
-                    
-                    <div style="display: flex; gap: 12px; align-items: center;">
-                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-grey);"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                        <input type="url" id="editor-calendar" placeholder="https://calendly.com/tu-usuario/15min" style="flex: 1; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); background: #111; color: white; font-size: 1rem; outline: none;">
+                <div class="calendar-layout" style="display: grid; grid-template-columns: 1fr 320px; gap: 24px; margin-top: 30px;">
+                    <!-- Calendario Principal -->
+                    <div class="stat-card" style="padding: 24px; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-color); height: 650px; display: flex; flex-direction: column;">
+                        <div id="calendar-view" style="flex: 1; min-height: 0;">
+                            <!-- FullCalendar se renderiza aquí -->
+                            <div style="height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-grey); flex-direction: column; gap: 15px;">
+                                <div class="spinner"></div>
+                                <span style="font-size: 0.9rem; letter-spacing: 0.05em;">INICIALIZANDO AGENDA...</span>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <button class="btn-save-legal" style="margin-top: 24px;" onclick="saveLegalText('calendar_url', 'editor-calendar')">Guardar Enlace de Calendario</button>
+
+                    <!-- Sidebar de Citas -->
+                    <div style="display: flex; flex-direction: column; gap: 24px;">
+                        <!-- Configuración Link -->
+                        <div class="legal-editor-group" style="margin: 0; background: rgba(255,255,255,0.03); padding: 24px; border-radius: 20px; border: 1px solid var(--border-color);">
+                            <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Enlace Público</h3>
+                            <p style="font-size: 0.8rem; color: var(--text-grey); margin-bottom: 20px;">URL que verán tus clientes en la web principal.</p>
+                            <input type="url" id="editor-calendar" placeholder="https://calendly.com/..." style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color); background: #000; color: white; font-size: 0.9rem; margin-bottom: 20px; outline: none;">
+                            <button class="btn-modal-primary" style="width: 100%;" onclick="saveLegalText('calendar_url', 'editor-calendar')">Guardar Enlace</button>
+                        </div>
+
+                        <!-- Próximas Citas -->
+                        <div class="stat-card" style="margin: 0; padding: 24px; flex: 1; background: var(--bg-card); border-radius: 20px; border: 1px solid var(--border-color);">
+                            <h3 style="font-size: 1.1rem; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                                Agenda Hoy
+                                <span style="font-size: 0.7rem; background: var(--accent-blue); padding: 4px 8px; border-radius: 10px;">Live</span>
+                            </h3>
+                            <div id="upcoming-list" style="display: flex; flex-direction: column; gap: 16px;">
+                                <!-- Lista de citas dummy para visual -->
+                                <div class="appointment-item" style="padding: 16px; background: rgba(255,255,255,0.03); border-radius: 12px; border-left: 4px solid var(--accent-blue);">
+                                    <div style="font-weight: 600; font-size: 0.9rem;">Lead: Juan Pérez</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-grey); margin-top: 4px;">Auditoría IA 360 - 17:30h</div>
+                                </div>
+                                <div class="appointment-item" style="padding: 16px; background: rgba(255,255,255,0.03); border-radius: 12px; border-left: 4px solid #FF9500;">
+                                    <div style="font-weight: 600; font-size: 0.9rem;">Empresa: Innova SL</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-grey); margin-top: 4px;">Demo Soluciones - 19:00h</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -530,6 +569,7 @@
 
     <!-- SDKs -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
     <script src="supabase-client.js"></script>
     <script src="admin.js"></script>
 </body>
