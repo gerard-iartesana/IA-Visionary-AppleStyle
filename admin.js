@@ -1,6 +1,8 @@
 let allLeads = []; 
 let leadToDelete = null;
 let calendar = null; 
+let googleTokenClient;
+let googleAccessToken = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Verificar Autenticación
@@ -475,20 +477,95 @@ function initCalendar() {
 }
 
 async function syncWithGoogle() {
-    const btn = document.querySelector('button[onclick="syncWithGoogle()"]');
-    const originalContent = btn.innerHTML;
-    
-    btn.innerHTML = '<div class="spinner" style="width: 14px; height: 14px; border-width: 2px;"></div> Conectando...';
-    btn.disabled = true;
+    // 1. Obtener Client ID desde Supabase para mayor seguridad/flexibilidad
+    try {
+        const { data } = await _supabase.from('site_settings').select('value').eq('key', 'google_client_id').single();
+        if (!data || !data.value) {
+            alert('Falta configurar el GOOGLE_CLIENT_ID en la sección de SEO/Ajustes.');
+            return;
+        }
 
-    // Simulación de OAuth y Sync
-    setTimeout(() => {
-        alert('✓ Conexión establecida con Google Calendar (gerard@iartesana.es)\n\nLas citas se sincronizarán bidireccionalmente cada 5 minutos.');
-        btn.innerHTML = '✓ Sincronizado';
-        btn.style.background = 'rgba(52, 199, 89, 0.2)';
-        btn.style.color = '#34c759';
-        addLog('Sync Calendario', 'Conexión vinculada con Google Calendar API.');
-    }, 2000);
+        const CLIENT_ID = data.value;
+        const DISCOVERY_DOC = "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest";
+        const SCOPES = "https://www.googleapis.com/auth/calendar.events";
+
+        const btn = document.querySelector('button[onclick="syncWithGoogle()"]');
+        const originalContent = btn.innerHTML;
+
+        if (!googleTokenClient) {
+            googleTokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                callback: async (resp) => {
+                    if (resp.error) {
+                        alert('Error en autenticación: ' + resp.error);
+                        return;
+                    }
+                    googleAccessToken = resp.access_token;
+                    btn.innerHTML = '✓ Sincronizado';
+                    btn.style.background = 'rgba(52, 199, 89, 0.2)';
+                    btn.style.color = '#34c759';
+                    await addLog('Google Sync', 'Acceso concedido al Calendario.');
+                    loadGoogleEvents();
+                },
+            });
+        }
+
+        if (!googleAccessToken) {
+            googleTokenClient.requestAccessToken({ prompt: 'consent' });
+        } else {
+            loadGoogleEvents();
+        }
+    } catch (e) {
+        console.error('Error en Sync:', e);
+        alert('Error conectando con Google.');
+    }
+}
+
+async function loadGoogleEvents() {
+    if (!googleAccessToken || !calendar) return;
+
+    try {
+        const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${new Date().toISOString()}&maxResults=10`, {
+            headers: { 'Authorization': `Bearer ${googleAccessToken}` }
+        });
+        const data = await response.json();
+        
+        if (data.items) {
+            const googleEvents = data.items.map(item => ({
+                id: item.id,
+                title: item.summary,
+                start: item.start.dateTime || item.start.date,
+                end: item.end.dateTime || item.end.date,
+                color: '#4285F4' // Color oficial Google Blue
+            }));
+
+            // Limpiar eventos locales y poner los de Google
+            calendar.removeAllEvents();
+            calendar.addEventSource(googleEvents);
+            renderUpcomingList(googleEvents);
+        }
+    } catch (e) {
+        console.error('Error cargando eventos:', e);
+    }
+}
+
+function renderUpcomingList(events) {
+    const list = document.getElementById('upcoming-list');
+    list.innerHTML = '';
+    
+    events.slice(0, 3).forEach(event => {
+        const item = document.createElement('div');
+        item.className = 'appointment-item';
+        const eventTime = new Date(event.start).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        
+        item.style = 'padding: 16px; background: rgba(255,255,255,0.03); border-radius: 12px; border-left: 4px solid #4285F4; margin-bottom: 12px;';
+        item.innerHTML = `
+            <div style="font-weight: 600; font-size: 0.9rem;">${event.title}</div>
+            <div style="font-size: 0.75rem; color: var(--text-grey); margin-top: 4px;">Hoy / Mañana - ${eventTime}h</div>
+        `;
+        list.appendChild(item);
+    });
 }
 
 // --- SEO SYSTEM ---
@@ -499,10 +576,31 @@ async function loadSeoData() {
             data.forEach(setting => {
                 if (setting.key === 'seo_title') document.getElementById('seo-title').value = setting.value;
                 if (setting.key === 'seo_description') document.getElementById('seo-desc').value = setting.value;
+                if (setting.key === 'google_client_id') document.getElementById('google-client-id').value = setting.value;
             });
         }
     } catch (e) {
-        console.error('Error cargando SEO:', e);
+        console.error('Error cargando SEO/Google:', e);
+    }
+}
+
+async function saveGoogleConfig() {
+    const clientId = document.getElementById('google-client-id').value;
+    if (!clientId.includes('.apps.googleusercontent.com')) {
+        alert('El Client ID no parece válido. Debe terminar en .apps.googleusercontent.com');
+        return;
+    }
+
+    try {
+        await _supabase.from('site_settings').upsert({
+            key: 'google_client_id',
+            value: clientId,
+            updated_at: new Date().toISOString()
+        });
+        alert('✓ Google Cloud vinculado. Ya puedes ir a la sección Calendario y sincronizar.');
+        addLog('Configuración API', 'Se ha guardado un nuevo Google Client ID.');
+    } catch (e) {
+        alert('Error al guardar configuración de Google');
     }
 }
 

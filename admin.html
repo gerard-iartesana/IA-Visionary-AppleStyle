@@ -388,6 +388,16 @@
                     <button class="btn-modal-primary" onclick="saveSeoData()">Guardar Metadatos</button>
                 </div>
 
+                <div class="legal-editor-group" style="background: var(--bg-card); padding: 30px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 30px;">
+                    <h3 style="margin-bottom: 10px;">Conexión Google Cloud</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-grey); margin-bottom: 20px;">Indispensable para habilitar la sincronización real del calendario.</p>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label style="display: block; font-size: 0.8rem; color: var(--text-grey); margin-bottom: 5px;">Google Client ID (.apps.googleusercontent.com)</label>
+                        <input type="text" id="google-client-id" placeholder="Tira de caracteres de Google Cloud..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: white;">
+                    </div>
+                    <button class="btn-modal-primary" onclick="saveGoogleConfig()">Vincular Proyecto</button>
+                </div>
+
                 <div class="stats-grid">
                     <div class="legal-editor-group" style="background: var(--bg-card); padding: 30px; border-radius: 16px; border: 1px solid var(--border-color);">
                         <h3>Logo e Iconos</h3>
@@ -570,6 +580,8 @@
     <!-- SDKs -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" onload="console.log('Google Identity Services loaded')"></script>
+    <script src="https://apis.google.com/js/api.js" onload="console.log('Google API core loaded')"></script>
     <script src="supabase-client.js"></script>
     <script src="admin.js"></script>
 </body>
