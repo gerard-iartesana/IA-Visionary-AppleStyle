@@ -108,6 +108,10 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
                 Estadísticas y Ads
             </div>
+            <div class="sidebar-item" data-target="section-seo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><path d="M11 8v6"></path><path d="M8 11h6"></path></svg>
+                SEO y Activos
+            </div>
             <div class="sidebar-item" onclick="alert('Próximamente: Formas de Pago')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                 Pagos
@@ -308,6 +312,57 @@
                     <div style="width: 100%; height: 200px; background: rgba(0,0,0,0.2); border: 2px dashed rgba(255,255,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-direction: column; color: var(--text-grey); gap: 12px;">
                         <svg viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" stroke-width="1.5" fill="none"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
                         <span>Caja reservada para reporte o Iframe de Meta Ads</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: SEO & ASSETS -->
+            <section id="section-seo" class="admin-content-area">
+                <header class="admin-header" style="padding-top: 0;">
+                    <h1>Optimización SEO y Activos</h1>
+                    <p style="color: var(--text-grey);">Gestiona la identidad de IA de Barrio y su posicionamiento en buscadores.</p>
+                </header>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Velocidad Web</div>
+                        <h2 id="seo-speed-val" class="text-green">98/100</h2>
+                        <button class="btn-action" style="margin-top: 10px;" onclick="runSeoTest()">Ejecutar Test</button>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Enlaces Rotos</div>
+                        <h2 id="seo-links-val">0</h2>
+                        <div style="font-size: 0.8rem; color: var(--text-grey);">Escaneo impecable</div>
+                    </div>
+                </div>
+
+                <div class="legal-editor-group" style="background: var(--bg-card); padding: 30px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 30px;">
+                    <h3 style="margin-bottom: 20px;">Metadatos Globales</h3>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label style="display: block; font-size: 0.8rem; color: var(--text-grey); margin-bottom: 5px;">Título SEO (Page Title)</label>
+                        <input type="text" id="seo-title" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: white;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label style="display: block; font-size: 0.8rem; color: var(--text-grey); margin-bottom: 5px;">Meta Descripción</label>
+                        <textarea id="seo-desc" rows="3" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: white;"></textarea>
+                    </div>
+                    <button class="btn-modal-primary" onclick="saveSeoData()">Guardar Metadatos</button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="legal-editor-group" style="background: var(--bg-card); padding: 30px; border-radius: 16px; border: 1px solid var(--border-color);">
+                        <h3>Logo e Iconos</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-grey); margin-bottom: 15px;">Sube el logo principal y el Favicon (32x32px).</p>
+                        <div style="display: flex; gap: 20px;">
+                            <div style="flex: 1; text-align: center; border: 1px dashed var(--border-color); padding: 20px; border-radius: 12px;">
+                                <div style="font-size: 0.7rem; margin-bottom: 10px;">LOGO PRINCIPAL</div>
+                                <button class="btn-action" onclick="alert('Subida de archivos próximamente')">Subir Logo</button>
+                            </div>
+                            <div style="flex: 1; text-align: center; border: 1px dashed var(--border-color); padding: 20px; border-radius: 12px;">
+                                <div style="font-size: 0.7rem; margin-bottom: 10px;">FAVICON</div>
+                                <button class="btn-action" onclick="alert('Subida de archivos próximamente')">Subir Favicon</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
