@@ -3,68 +3,341 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tachyon Star | Premium Design Lab</title>
+    <title>IA de Barrio | Inteligencia Artificial para negocios reales</title>
+    <meta name="description" content="Aterrizamos la IA a tu negocio. Consultoría cercana, auditorías prácticas y soluciones que funcionan. Basados en Menorca.">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="landing_apple_unified.css">
+    
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
 </head>
-<body class="dark-theme">
-    <div class="app-container">
-        <!-- Sidebar de Navegación -->
-        <aside class="sidebar">
-            <div class="logo">
-                <span class="star-icon">✨</span>
-                <h1>Tachyon<span>Star</span></h1>
+<body data-theme="light">
+    <!-- Nav Bar -->
+    <nav class="apple-nav">
+        <div class="container nav-content">
+            <div class="logo">IA<span>deBarrio</span></div>
+            <div class="nav-links">
+                <a href="#problemas">Problemas</a>
+                <a href="#solucion">Solución</a>
+                <a href="#precios">Precios</a>
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema">
+                    <!-- El icono se inserta vía JS -->
+                </button>
+                <button class="btn-apple-buy">Contratar</button>
             </div>
-            <nav class="nav-menu">
-                <p class="nav-label">Componentes Premium</p>
-                <ul id="component-list">
-                    <li class="active" data-component="bento">1. Bento Grid</li>
-                    <li data-component="glow-card">2. Glow Cards</li>
-                    <li data-component="gradient-text">3. Animated Text</li>
-                    <li data-component="floating-nav">4. Floating Glass</li>
-                    <li data-component="starfield">5. Magic Starfield</li>
-                    <li data-component="magnetic">6. Magnetic Action</li>
-                    <li data-component="scroll-reveal">7. Scroll Reveal</li>
-                    <li data-component="parallax">8. 3D Parallax</li>
-                    <li data-component="loader">9. Brand Loader</li>
-                    <li data-component="fluid-type">10. Fluid Typography</li>
-                </ul>
-            </nav>
-            <div class="sidebar-footer">
-                <p>Clase 2: Design Lab v1.0</p>
-            </div>
-        </aside>
+        </div>
+    </nav>
 
-        <!-- Escenario Principal -->
-        <main class="main-stage">
-            <header class="stage-header">
-                <div class="header-info">
-                    <h2 id="demo-title">Bento Grid Layout</h2>
-                    <p id="demo-desc">Estructura moderna inspirada en interfaces de alto rendimiento.</p>
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container hero-container">
+            <h1 class="reveal">IA para tu negocio.<br><span>Sin complicaciones.</span></h1>
+            <p class="hero-sub reveal">Aterrizamos la inteligencia artificial a la realidad de tu empresa. Auditoría estratégica y acompañamiento cercano desde Menorca.</p>
+            <div class="hero-actions reveal">
+                <a href="#contacto" class="btn-apple-primary magnetic-target">Agenda tu Auditoría</a>
+                <a href="#solucion" class="link-apple-more magnetic-target">Ver metodología ></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Problems Section -->
+    <section id="problemas" class="section">
+        <div class="container">
+            <header class="section-intro reveal">
+                <h2>La IA, explicada fácil.</h2>
+                <p>¿Te suena a chino? Tranquilo, nosotros te ayudamos a usarla para ganar tiempo y dinero.</p>
+            </header>
+            
+            <div class="apple-grid reveal">
+                <div class="apple-card">
+                    <div class="card-content">
+                        <h3>El Papelero Loco</h3>
+                        <p>Tienes los datos de tu empresa repartidos por mil sitios y carpetas. Así, ni tú ni la IA encontraréis nunca nada útil.</p>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=800&q=80" alt="Caos de post-its y desorden" class="apple-card-image">
                 </div>
-                <div class="header-actions">
-                    <button class="btn-premium">Ver Código</button>
+                <div class="apple-card">
+                    <div class="card-content">
+                        <h3>Nadie nace sabiendo</h3>
+                        <p>La IA mola mucho, pero tu equipo no sabe ni por dónde empezar. Sin alguien que enseñe, es como tener un Ferrari sin carnet.</p>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" alt="Equipo confundido" class="apple-card-image">
                 </div>
+                <div class="apple-card">
+                    <div class="card-content">
+                        <h3>Gastos Hormiga</h3>
+                        <p>Te apuntas a mil herramientas que luego nadie usa. Al final del mes, has tirado el dinero y no has ahorrado ni un minuto.</p>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80" alt="Persona estresada por gastos" class="apple-card-image">
+                </div>
+                <div class="apple-card">
+                    <div class="card-content">
+                        <h3>El miedo a lo nuevo</h3>
+                        <p>A veces da miedo que una máquina nos quite el trabajo. Si el equipo no está convencido, la IA solo traerá problemas.</p>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=800&q=80" alt="Persona a la defensiva y escéptica" class="apple-card-image">
+                </div>
+                <div class="apple-card">
+                    <div class="card-content">
+                        <h3>Programas que no hablan</h3>
+                        <p>Tienes un programa para una cosa y otro para otra, pero no se entienden entre ellos. Al final, trabajas más para la máquina que ella para ti.</p>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&w=800&q=80" alt="Hombre frustrado frente al ordenador" class="apple-card-image">
+                </div>
+                <div class="apple-card">
+                    <div class="card-content">
+                        <h3>Secretos al aire</h3>
+                        <p>Si usas la IA sin cuidado, los secretos de tu negocio acaban en internet. Es como contar tus cuentas en medio de la plaza del pueblo.</p>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80" alt="Privacidad en peligro" class="apple-card-image">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section id="solucion" class="section">
+        <div class="container">
+            <div class="solution-card reveal">
+                <div class="solution-text">
+                    <h2>Auditoría IA 360</h2>
+                    <p>No implementamos por implementar. Analizamos tus procesos y detectamos dónde la IA realmente te hará ahorrar horas de trabajo.</p>
+                    <ul class="apple-list">
+                        <li>Mapeo de procesos ineficientes</li>
+                        <li>Selección de herramientas low-code</li>
+                        <li>Acompañamiento en la puesta en marcha</li>
+                    </ul>
+                </div>
+                <div class="solution-visual">
+                    <div class="css-video-player">
+                        <div class="ia-core"></div>
+                        <div class="ia-ring"></div>
+                        <div class="ia-ring delay-1"></div>
+                        <div class="ia-ring delay-2"></div>
+                        <div class="ia-scanner"></div>
+                        <div class="video-overlay-text phase-1">1. Auditoría de IA 360°</div>
+                        <div class="video-overlay-text phase-2">2. Diseño de Estrategia</div>
+                        <div class="video-overlay-text phase-3">3. Optimización Continua</div>
+                        <div class="play-button-overlay">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            Explicación (30s)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="equipo" class="section equipo-section">
+        <div class="container">
+            <header class="section-intro reveal">
+                <h2>Foco humano en un mundo digital.</h2>
+                <p>Detrás de IA de Barrio estamos Gerard y David, apasionados por transformar negocios reales con tecnología de vanguardia.</p>
             </header>
 
-            <section id="demo-area" class="demo-area">
-                <!-- El contenido se cargará dinámicamente aquí -->
-                <div class="bento-grid">
-                    <div class="bento-item tall"><h3>Analytics</h3></div>
-                    <div class="bento-item wide"><h3>Quick Actions</h3></div>
-                    <div class="bento-item"><h3>Status</h3></div>
-                    <div class="bento-item"><h3>Users</h3></div>
-                    <div class="bento-item"><h3>Reports</h3></div>
+            <div class="team-grid reveal">
+                <!-- Gerard Fanals -->
+                <div class="team-card">
+                    <div class="team-photo-wrapper">
+                        <div class="team-photo photo-gerard">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </div>
+                    </div>
+                    <div class="team-content">
+                        <div class="team-role">CEO & Automation Architect</div>
+                        <h3>Gerard Fanals</h3>
+                        <p class="team-bio">Especialista en modelos masivos de lenguaje (LLMs) y automatización inteligente de procesos. Capaz de transformar flujos de trabajo tradicionales en sistemas dinámicos y eficientes.</p>
+                        <ul class="team-credentials">
+                            <li><span>✓</span> Senior Software Architect</li>
+                            <li><span>✓</span> Automatización de Procesos</li>
+                            <li><span>✓</span> Estratega de IA Generativa</li>
+                        </ul>
+                    </div>
                 </div>
-            </section>
-        </main>
-    </div>
 
-    <!-- Fondo de Partículas (Componente 5) -->
-    <div id="particle-canvas-container"></div>
+                <!-- David Diez -->
+                <div class="team-card">
+                    <div class="team-photo-wrapper">
+                        <div class="team-photo photo-david">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </div>
+                    </div>
+                    <div class="team-content">
+                        <div class="team-role">CTO & Branding AI Expert</div>
+                        <h3>David Diez</h3>
+                        <p class="team-bio">Experto en diseño y creación de identidades corporativas con IA y planes de comunicación. Transforma la visión de cada marca en una narrativa visual coherente y disruptiva.</p>
+                        <ul class="team-credentials">
+                            <li><span>✓</span> Diseño de Identidad con IA</li>
+                            <li><span>✓</span> Planes de Comunicación</li>
+                            <li><span>✓</span> Consultor de IA Creativa</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <script src="script.js"></script>
+    <!-- Benefits Section -->
+    <section id="beneficios" class="section beneficios-section">
+        <div class="container">
+            <header class="section-intro reveal">
+                <h2>El impacto real en tu negocio.</h2>
+                <p>No es magia, es eficiencia. Tres cambios que notarás desde el primer día.</p>
+            </header>
+
+            <div class="beneficios-grid reveal">
+                <div class="beneficio-card">
+                    <div class="beneficio-icon-wrapper icon-time">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                    <h3>Recupera tu tiempo</h3>
+                    <p>Deja de ser un esclavo de las tareas que te quitan energía. Automatizamos lo aburrido para que tú vuelvas a ser el jefe de tu agenda.</p>
+                </div>
+                <div class="beneficio-card">
+                    <div class="beneficio-icon-wrapper icon-money">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <h3>Vende más, gasta menos</h3>
+                    <p>Haz que tu negocio rinda el doble sin multiplicar tus costes. La IA te permite llegar a más clientes con el mismo equipo que tienes hoy.</p>
+                </div>
+                <div class="beneficio-card">
+                    <div class="beneficio-icon-wrapper icon-target">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                    </div>
+                    <h3>Control y Tranquilidad</h3>
+                    <p>Se acabó el ir a ciegas. Tendrás datos claros para decidir y la seguridad de que tu negocio está a la última en tecnología.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="precios" class="section">
+        <div class="container">
+            <header class="section-intro reveal">
+                <h2>Planes a tu medida.</h2>
+                <p>Desde consultoría puntual hasta transformación completa de tu negocio.</p>
+            </header>
+            
+            <div class="pricing-apple-grid reveal">
+                <div class="price-apple-card">
+                    <div>
+                        <div class="p-tag">Sesión puntual</div>
+                        <h3>159€<span>+ IVA</span></h3>
+                        <p><strong>Consulta de 1 hora.</strong> Resolución de dudas específicas y diagnóstico rápido de oportunidades.</p>
+                    </div>
+                    <button class="btn-apple-buy">Reservar sesión</button>
+                </div>
+                <div class="price-apple-card featured">
+                    <div class="popular-label">Recomendado</div>
+                    <div>
+                        <div class="p-tag">Inmersión</div>
+                        <h3>359€<span>+ IVA</span></h3>
+                        <p><strong>Auditoría de 3 horas.</strong> Análisis profundo de tus procesos y roadmap de implementación detallado.</p>
+                    </div>
+                    <button class="btn-apple-buy">Elegir Auditoría</button>
+                </div>
+                <div class="price-apple-card">
+                    <div>
+                        <div class="p-tag">Acompañamiento</div>
+                        <h3>250€<span>/mes + IVA</span></h3>
+                        <p><strong>Asesoría continua.</strong> 4 horas/mes de soporte flexible. Ideal para ejecución constante. (Suscripción mínima 3 meses).</p>
+                    </div>
+                    <button class="btn-apple-buy">Saber más</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto" class="section">
+        <div class="container">
+            <div class="contact-grid reveal">
+                <div class="contact-info">
+                    <h2>Hablemos de tu negocio.</h2>
+                    <p>Selecciona cómo prefieres conectar. Estamos en Menorca, listos para escucharte.</p>
+                    <div class="agenda-options">
+                        <a href="#" class="agenda-card magnetic-target">
+                            <div class="agenda-icon-wrapper calendar-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            </div>
+                            <div class="agenda-text">
+                                <strong>Videollamada</strong>
+                                <span>Reserva 15 min en Google Calendar</span>
+                            </div>
+                        </a>
+                        <a href="#" class="agenda-card magnetic-target">
+                            <div class="agenda-icon-wrapper whatsapp-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                            </div>
+                            <div class="agenda-text">
+                                <strong>WhatsApp</strong>
+                                <span>Hablamos por chat ahora mismo</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="contact-form-container">
+                    <form id="apple-contact-form" class="apple-form">
+                        <div class="form-group">
+                            <label for="name">Nombre</label>
+                            <input type="text" id="name" name="name" placeholder="Tu nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Teléfono</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+34 600 000 000" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="interest">Interés</label>
+                            <select id="interest" name="interest">
+                                <option value="consulta">Consulta (Sesión puntual)</option>
+                                <option value="auditoria">Auditoría (Inmersión)</option>
+                                <option value="asesoria">Asesoría Continua (Acompañamiento)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Mensaje</label>
+                            <textarea id="message" name="message" rows="3" placeholder="¿En qué te podemos ayudar?"></textarea>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="gdpr" name="gdpr" required>
+                            <label for="gdpr">He leído y acepto la <a href="privacidad.html" target="_blank">Política de Privacidad</a> y el tratamiento de mis datos.</label>
+                        </div>
+                        <button type="submit" class="btn-apple-primary full-width">Enviar solicitud</button>
+                    </form>
+                    <div id="form-success" class="form-feedback hidden">
+                        <h3>✓ ¡Recibido!</h3>
+                        <p>Te contactaremos en menos de 24h.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="apple-footer">
+        <div class="container footer-grid">
+            <p>© 2026 IA de Barrio. Hecho con ❤️ desde Menorca.</p>
+            <div class="f-links">
+                <a href="login.html">Admin</a>
+                <a href="privacidad.html">Privacidad</a>
+                <a href="cookies.html">Cookies</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="landing_apple.js"></script>
 </body>
 </html>

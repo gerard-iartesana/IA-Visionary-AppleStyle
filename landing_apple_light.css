@@ -384,8 +384,10 @@ body {
 
 .apple-footer { padding: 40px 0; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 60px; background-color: var(--bg-secondary); }
 .footer-grid { display: flex; justify-content: space-between; color: var(--text-grey); font-size: 0.75rem; }
-.f-links a { color: var(--text-grey); text-decoration: none; margin-left: 20px; }
-.f-links a:hover { text-decoration: underline; }
+.f-links a { color: var(--text-grey); text-decoration: none; margin-left: 20px; transition: color 0.3s; }
+.f-links a:hover { color: var(--text-dark); text-decoration: underline; }
+.f-links a.admin-link { color: rgba(0, 113, 227, 0.7); font-weight: 500; }
+.f-links a.admin-link:hover { color: var(--accent-blue); }
 
 /* Contact & Agenda Styles (Apple Light) */
 .contact-grid {

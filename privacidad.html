@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidad | IA de Barrio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="landing_apple_unified.css">
+    <style>
+        .legal-content { padding: 120px 0; max-width: 800px; margin: 0 auto; line-height: 1.8; }
+        .legal-content h1 { font-size: 3rem; margin-bottom: 40px; letter-spacing: -0.02em; }
+        .legal-content h2 { font-size: 1.5rem; margin-top: 32px; margin-bottom: 16px; color: var(--text-main); }
+        .legal-content p { color: var(--text-grey); margin-bottom: 16px; }
+        .btn-back { display: inline-flex; align-items: center; gap: 8px; color: var(--accent-blue); text-decoration: none; margin-bottom: 40px; font-weight: 500; }
+    </style>
+</head>
+<body data-theme="light">
+    <nav class="apple-nav">
+        <div class="container nav-content">
+            <a href="index.html" class="logo">IA<span>deBarrio</span></a>
+        </div>
+    </nav>
+
+    <main class="container legal-content">
+        <a href="index.html" class="btn-back">← Volver al inicio</a>
+        <div id="policy-content">
+            <p>Cargando política...</p>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { data, error } = await _supabase
+                .from('site_settings')
+                .select('value')
+                .eq('key', 'privacy_policy')
+                .single();
+            
+            if (data) {
+                document.getElementById('policy-content').innerHTML = data.value;
+            } else {
+                document.getElementById('policy-content').innerHTML = "<h1>Política de Privacidad</h1><p>Contenido no disponible.</p>";
+            }
+        });
+    </script>
+</body>
+</html>

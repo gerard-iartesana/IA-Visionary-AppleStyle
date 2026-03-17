@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | IA de Barrio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        /* Sidebar Layout */
+        .admin-layout { display: flex; min-height: calc(100vh - 64px); }
+        .admin-sidebar { 
+            width: 240px; 
+            background: var(--bg-card); 
+            border-right: 1px solid var(--border-color);
+            padding: 24px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .sidebar-item {
+            padding: 12px 24px;
+            color: var(--text-grey);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .sidebar-item:hover { background: rgba(255,255,255,0.05); color: var(--text-white); }
+        .sidebar-item.active { 
+            background: rgba(0, 113, 227, 0.1); 
+            color: var(--accent-blue); 
+            border-right: 3px solid var(--accent-blue);
+        }
+        .sidebar-item svg { width: 18px; height: 18px; }
+        
+        .admin-content-area { flex: 1; padding: 40px; display: none; }
+        .admin-content-area.active { display: block; }
+
+        /* Legal Editor Styles */
+        .legal-editor-group { margin-bottom: 40px; }
+        .legal-editor-group h3 { margin-bottom: 16px; font-size: 1.2rem; }
+        .legal-textarea {
+            width: 100%;
+            height: 300px;
+            background: #111;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: #ddd;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+        }
+        .legal-textarea:focus { border-color: var(--accent-blue); }
+        .btn-save-legal {
+            margin-top: 16px;
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-save-legal:hover { opacity: 0.9; transform: translateY(-1px); }
+    </style>
+</head>
+<body class="admin-body">
+    <nav class="admin-nav">
+        <div class="admin-container">
+            <div class="logo">IA<span>deBarrio</span> <small>Admin</small></div>
+            <div class="nav-user">
+                <div class="user-avatar">G</div>
+                <span>Gerard</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="admin-layout">
+        <!-- Sidebar Menu -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-item active" data-target="section-leads">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                Gestión de Leads
+            </div>
+            <div class="sidebar-item" data-target="section-legal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                Legal y Textos
+            </div>
+            <div class="sidebar-item" data-target="section-tracking">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                Tracking y Códigos
+            </div>
+            <div class="sidebar-item" data-target="section-calendar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Calendario
+            </div>
+            <div class="sidebar-item" data-target="section-analytics">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                Estadísticas y Ads
+            </div>
+            <div class="sidebar-item" onclick="alert('Próximamente: Formas de Pago')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                Pagos
+            </div>
+            <div class="sidebar-item" data-target="section-logs" style="margin-top: auto; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Actividad (Logs)
+            </div>
+            <div class="sidebar-item" data-target="section-users">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                Usuarios y Permisos
+            </div>
+        </aside>
+
+        <!-- Main Content area -->
+        <main class="admin-main" style="flex: 1;">
+            
+            <!-- Section: LEADS -->
+            <section id="section-leads" class="admin-content-area active">
+                <header class="admin-header" style="padding-top: 0;">
+                    <h1>Leads Recibidos</h1>
+                    <button id="refresh-leads" class="btn-refresh">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                        Refrescar
+                    </button>
+                </header>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">Total Leads</span>
+                        <h2 id="stat-total">0</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Pendientes</span>
+                        <h2 id="stat-pending" class="text-blue">0</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Contactados</span>
+                        <h2 id="stat-contacted" class="text-green">0</h2>
+                    </div>
+                </div>
+
+                <div class="admin-actions-bar">
+                    <div class="search-box">
+                        <svg style="width: 18px; color: var(--text-grey);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" id="search-input" placeholder="Buscar por nombre o email...">
+                    </div>
+                    <select id="filter-status" class="admin-select">
+                        <option value="all">Todos los estados</option>
+                        <option value="nuevo">Pendientes (Nuevo)</option>
+                        <option value="contactado">Contactados</option>
+                    </select>
+                </div>
+
+                <div class="leads-container">
+                    <div class="table-wrapper">
+                        <table class="leads-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha y Hora</th>
+                                    <th>Lead / Contacto</th>
+                                    <th>Interés</th>
+                                    <th>Mensaje</th>
+                                    <th>Responsable (Grupo)</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leads-body">
+                                <tr><td colspan="7" class="table-loading">Cargando prospectos...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: LEGAL -->
+            <section id="section-legal" class="admin-content-area">
+                <header class="admin-header" style="padding-top: 0;">
+                    <h1>Textos Legales</h1>
+                    <p style="color: var(--text-grey);">Edita el HTML de las páginas legales de tu sitio.</p>
+                </header>
+
+                <div class="legal-editor-group">
+                    <h3>Página de Privacidad</h3>
+                    <textarea id="editor-privacy" class="legal-textarea"></textarea>
+                    <button class="btn-save-legal" onclick="saveLegalText('privacy_policy', 'editor-privacy')">Guardar Cambios Privacidad</button>
+                </div>
+
+                <div class="legal-editor-group">
+                    <h3>Página de Cookies</h3>
+                    <textarea id="editor-cookies" class="legal-textarea"></textarea>
+                    <button class="btn-save-legal" onclick="saveLegalText('cookie_policy', 'editor-cookies')">Guardar Cambios Cookies</button>
+                </div>
+            </section>
+
+            <!-- Section: TRACKING -->
+            <section id="section-tracking" class="admin-content-area">
+                <header class="admin-header" style="padding-top: 0;">
+                    <h1>Tracking & Códigos</h1>
+                    <p style="color: var(--text-grey);">Inserta tus scripts de Google y Meta por separado.</p>
+                </header>
+
+                <div id="tracking-status-box" style="margin-bottom: 30px; padding: 16px 20px; border-radius: 12px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px; transition: 0.3s ease;">
+                    <div id="status-icon-container" style="padding: 8px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex;">
+                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-grey);" id="status-icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                    <div>
+                        <h4 style="margin: 0; font-size: 1.05rem; color: var(--text-white);" id="status-title">Comprobando estado...</h4>
+                        <p style="margin: 4px 0 0 0; font-size: 0.85rem; color: var(--text-grey);" id="status-desc">Verificando conexión con Supabase...</p>
+                    </div>
+                </div>
+
+                <!-- GOOGLE -->
+                <h2 style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Google (Analytics, Tag Manager)</h2>
+                <div class="legal-editor-group">
+                    <h3>Google - Códigos para el HEAD</h3>
+                    <textarea id="editor-google-head" class="legal-textarea" style="height: 150px;" placeholder="<!-- gtag.js, Google Site Verification -->"></textarea>
+                    <button class="btn-save-legal" onclick="saveLegalText('tracking_google_head', 'editor-google-head')">Guardar Google HEAD</button>
+                </div>
+                <div class="legal-editor-group">
+                    <h3>Google - Códigos para el BODY</h3>
+                    <textarea id="editor-google-body" class="legal-textarea" style="height: 100px;" placeholder="<!-- Google Tag Manager iframe -->"></textarea>
+                    <button class="btn-save-legal" onclick="saveLegalText('tracking_google_body', 'editor-google-body')">Guardar Google BODY</button>
+                </div>
+
+                <!-- META -->
+                <h2 style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-top: 40px;">Meta (Facebook Pixel)</h2>
+                <div class="legal-editor-group">
+                    <h3>Meta - Códigos para el HEAD</h3>
+                    <textarea id="editor-meta-head" class="legal-textarea" style="height: 150px;" placeholder="<!-- Meta Pixel Base -->"></textarea>
+                    <button class="btn-save-legal" onclick="saveLegalText('tracking_meta_head', 'editor-meta-head')">Guardar Meta HEAD</button>
+                </div>
+                <div class="legal-editor-group">
+                    <h3>Meta - Códigos para el BODY</h3>
+                    <textarea id="editor-meta-body" class="legal-textarea" style="height: 100px;" placeholder="<!-- Meta Pixel noscript -->"></textarea>
+                    <button class="btn-save-legal" onclick="saveLegalText('tracking_meta_body', 'editor-meta-body')">Guardar Meta BODY</button>
+                </div>
+            </section>
+
+            <!-- Section: CALENDAR -->
+            <section id="section-calendar" class="admin-content-area">
+                <header class="admin-header" style="padding-top: 0;">
+                    <h1>Integración de Calendario</h1>
+                    <p style="color: var(--text-grey);">Conecta tu agenda (Google Calendar, Calendly, etc.) con el botón de reservas.</p>
+                </header>
+
+                <div class="legal-editor-group" style="background: var(--bg-card); padding: 30px; border-radius: 16px; border: 1px solid var(--border-color);">
+                    <h3 style="margin-bottom: 8px;">URL de tu Calendario</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-grey); margin-bottom: 20px;">Pega aquí el enlace directo para agendar videollamadas. Funcionará en el botón de la web.</p>
+                    
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-grey);"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                        <input type="url" id="editor-calendar" placeholder="https://calendly.com/tu-usuario/15min" style="flex: 1; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); background: #111; color: white; font-size: 1rem; outline: none;">
+                    </div>
+                    
+                    <button class="btn-save-legal" style="margin-top: 24px;" onclick="saveLegalText('calendar_url', 'editor-calendar')">Guardar Enlace de Calendario</button>
+                </div>
+            </section>
+
+            <!-- Section: ANALYTICS & ADS -->
+            <section id="section-analytics" class="admin-content-area">
+                <header class="admin-header" style="padding-top: 0;">
+                    <h1>Estadísticas y Ads (Centro de Mando)</h1>
+                    <p style="color: var(--text-grey);">Espacio reservado para las integraciones de métricas en vivo de Google y Meta.</p>
+                </header>
+
+                <div class="legal-editor-group" style="background: var(--bg-card); padding: 30px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 30px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+                            Ecosistema Google (Analytics / Ads)
+                        </h3>
+                        <span style="background: rgba(255,149,0,0.1); color: #FF9500; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,149,0,0.3);">Pendiente de Conexión</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-grey); margin-bottom: 20px;">
+                        Aquí podremos visualizar el tráfico de la web o el gasto y retorno de las campañas de Search/Display.<br>
+                        <strong>Opciones de Integración:</strong> Vía Iframe a través de un dashboard de <em>Looker Studio</em> (rápido y gratis) o mediante llamadas directas a la <em>Google Analytics / Ads API</em> (avanzado).
+                    </p>
+                    <div style="width: 100%; height: 200px; background: rgba(0,0,0,0.2); border: 2px dashed rgba(255,255,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-direction: column; color: var(--text-grey); gap: 12px;">
+                        <svg viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" stroke-width="1.5" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                        <span>Caja reservada para reporte o Iframe de Google</span>
+                    </div>
+                </div>
+
+                <div class="legal-editor-group" style="background: var(--bg-card); padding: 30px; border-radius: 16px; border: 1px solid var(--border-color);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                            Ecosistema Meta (Facebook / Instagram Ads)
+                        </h3>
+                        <span style="background: rgba(255,149,0,0.1); color: #FF9500; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,149,0,0.3);">Pendiente de Conexión</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-grey); margin-bottom: 20px;">
+                        Visualización del Coste por Lead (CPL), impresiones y gasto total (ROAS).<br>
+                        <strong>Opciones de Integración:</strong> A través de la <em>Meta Graph API</em> o enviando los datos de Meta a un conector como <em>Supermetrics</em>.
+                    </p>
+                    <div style="width: 100%; height: 200px; background: rgba(0,0,0,0.2); border: 2px dashed rgba(255,255,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-direction: column; color: var(--text-grey); gap: 12px;">
+                        <svg viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" stroke-width="1.5" fill="none"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        <span>Caja reservada para reporte o Iframe de Meta Ads</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: LOGS -->
+            <section id="section-logs" class="admin-content-area">
+                <header class="admin-header" style="padding-top: 0;">
+                    <h1>Registro de Actividad (Logs)</h1>
+                    <p style="color: var(--text-grey);">Historial de todas las acciones importantes realizadas dentro de tu panel.</p>
+                </header>
+
+                <div class="leads-container">
+                    <div class="table-wrapper">
+                        <table class="leads-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha y Hora</th>
+                                    <th>Usuario</th>
+                                    <th>Acción</th>
+                                    <th>Detalles</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logs-body">
+                                <tr><td colspan="4" class="table-loading">Cargando registros...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: USERS -->
+            <section id="section-users" class="admin-content-area">
+                <header class="admin-header" style="padding-top: 0;">
+                    <h1>Gestión de Usuarios</h1>
+                    <button class="btn-refresh" style="background: var(--text-white); color: var(--bg-body); border: none;" onclick="alert('Funcionalidad de invitación en desarrollo')">
+                        + Invitar Usuario
+                    </button>
+                </header>
+                <p style="color: var(--text-grey); margin-bottom: 30px;">Administra tu equipo y asigna roles de seguridad para controlar los accesos al panel.</p>
+
+                <div class="leads-container">
+                    <div class="table-wrapper">
+                        <table class="leads-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuario / Email</th>
+                                    <th>Rol (Nivel de Acceso)</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Mock de Admin -->
+                                <tr>
+                                    <td>
+                                        <div style="font-weight: 600; color: var(--text-white);">Gerard Fanals</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-grey);">gerard@ejemplo.com</div>
+                                    </td>
+                                    <td><span style="background: rgba(255,149,0,0.1); color: #FF9500; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,149,0,0.3);">1. Propietario (Admin)</span></td>
+                                    <td><span style="color: #34c759; font-size: 0.85rem;">Activo</span></td>
+                                    <td style="color: var(--text-grey); font-size: 0.85rem;">N/A</td>
+                                </tr>
+                                <!-- Mock de Editor -->
+                                <tr>
+                                    <td>
+                                        <div style="font-weight: 600; color: var(--text-white);">Equipo Comercial</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-grey);">ventas@ejemplo.com</div>
+                                    </td>
+                                    <td><span style="background: rgba(88,86,214,0.1); color: #5856D6; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(88,86,214,0.3);">2. Editor (Gestor)</span></td>
+                                    <td><span style="color: #34c759; font-size: 0.85rem;">Activo</span></td>
+                                    <td><button class="btn-action">Editar Rol</button></td>
+                                </tr>
+                                <!-- Mock de Lector -->
+                                <tr>
+                                    <td>
+                                        <div style="font-weight: 600; color: var(--text-white);">Soporte Externo</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-grey);">soporte@ejemplo.com</div>
+                                    </td>
+                                    <td><span style="background: rgba(52,199,89,0.1); color: #34c759; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(52,199,89,0.3);">3. Lector (Solo Ver)</span></td>
+                                    <td><span style="color: #ff3b30; font-size: 0.85rem;">Pendiente Invitación</span></td>
+                                    <td><button class="btn-action">Reenviar</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL DE CONFIRMACIÓN ELIMINAR -->
+    <div id="delete-modal" class="admin-modal-overlay">
+        <div class="admin-modal">
+            <h3 style="margin-top: 0;">¿Estás seguro?</h3>
+            <p>Vas a eliminar permanentemente a este lead.</p>
+            <div class="modal-actions" style="margin-top: 24px;">
+                <button id="modal-cancel" class="btn-modal-secondary">Cancelar</button>
+                <button id="modal-confirm" class="btn-modal-danger">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FICHA CLIENTE -->
+    <div id="ficha-modal" class="admin-modal-overlay">
+        <div class="admin-modal" style="max-width: 650px; text-align: left;">
+            <h3 style="margin-top: 0; font-size: 1.5rem;">Ficha de Cliente</h3>
+            <p style="color: var(--text-grey); font-size: 0.9rem; margin-bottom: 24px;">Completa los datos fiscales, de cobro y asignación para <span id="ficha-cliente-nombre" style="color: white; font-weight: bold;"></span>.</p>
+            
+            <form id="form-ficha">
+                <input type="hidden" id="ficha-lead-id">
+                
+                <h3 style="margin-top: 20px; font-size: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 16px;">Asignación Interna</h3>
+                <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+                    <div style="flex: 1;">
+                        <label style="display: block; font-size: 0.8rem; margin-bottom: 8px; color: var(--text-grey);">Responsable (Comercial)</label>
+                        <select id="ficha-comercial" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.5); color: white; outline: none;">
+                            <option value="">Sin asignar</option>
+                            <option value="Gerard">Gerard</option>
+                            <option value="David">David</option>
+                            <option value="Comercial Externo">Comercial Externo</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="display: block; font-size: 0.8rem; margin-bottom: 8px; color: var(--text-grey);">Grupo / Segmento</label>
+                        <select id="ficha-grupo" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.5); color: white; outline: none;">
+                            <option value="">Sin grupo</option>
+                            <option value="Hot Leads">Hot Leads</option>
+                            <option value="VIP">VIP</option>
+                            <option value="Menorca Local">Menorca Local</option>
+                            <option value="Nacional">Nacional</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 20px; font-size: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 16px;">Datos Fiscales (Facturación)</h3>
+                <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+                    <div style="flex: 1;">
+                        <label style="display: block; font-size: 0.8rem; margin-bottom: 8px; color: var(--text-grey);">Razón Social</label>
+                        <input type="text" id="ficha-razonsocial" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.5); color: white; outline: none;" placeholder="Ej. Empresa Innovadora SL">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="display: block; font-size: 0.8rem; margin-bottom: 8px; color: var(--text-grey);">NIF / CIF</label>
+                        <input type="text" id="ficha-nif" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.5); color: white; outline: none;" placeholder="B00000000">
+                    </div>
+                </div>
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-size: 0.8rem; margin-bottom: 8px; color: var(--text-grey);">Dirección Fiscal Completa</label>
+                    <input type="text" id="ficha-direccion" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.5); color: white; outline: none;" placeholder="Calle Principal 1, 07701 Mahón, Islas Baleares">
+                </div>
+
+                <h3 style="margin-top: 20px; font-size: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 16px;">Datos de Cobro</h3>
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-size: 0.8rem; margin-bottom: 8px; color: var(--text-grey);">IBAN (Domiciliación / Transferencias)</label>
+                    <input type="text" id="ficha-iban" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.5); color: white; outline: none;" placeholder="ESXX 0000 0000 00 0000000000">
+                </div>
+                
+                <div class="modal-actions" style="margin-top: 24px; justify-content: flex-end;">
+                    <button type="button" class="btn-modal-secondary" onclick="document.getElementById('ficha-modal').classList.remove('active')">Cerrar</button>
+                    <button type="button" class="btn-modal-primary" onclick="saveFicha()">Guardar Ficha</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SDKs -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

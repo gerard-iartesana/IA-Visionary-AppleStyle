@@ -3,44 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IA Visionary | Design by Apple Style</title>
+    <title>IA de Barrio | Inteligencia Artificial para negocios reales</title>
+    <meta name="description" content="Aterrizamos la IA a tu negocio. Consultoría cercana, auditorías prácticas y soluciones que funcionan. Basados en Menorca.">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="landing_apple.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="landing_apple_unified.css">
+    
+    <!-- Supabase SDK (Simulado para Demo, debe ser el real en prod) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
 </head>
-<body>
-    <!-- Nav Bar (Apple Style) -->
+<body data-theme="light">
+    <!-- Nav Bar -->
     <nav class="apple-nav">
         <div class="container nav-content">
-            <div class="logo">IA<span>Visionary</span></div>
+            <div class="logo">IA<span>deBarrio</span></div>
             <div class="nav-links">
                 <a href="#problemas">Problemas</a>
                 <a href="#solucion">Solución</a>
                 <a href="#precios">Precios</a>
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema">
+                    <!-- El icono se inserta vía JS -->
+                </button>
                 <button class="btn-apple-buy">Contratar</button>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section: Cinematic -->
+    <!-- Hero Section -->
     <header class="hero">
         <div class="container hero-container">
-            <h1 class="reveal">Escala tu negocio con IA.<br><span>Sin perder el control.</span></h1>
-            <p class="hero-sub reveal">Transformamos la incertidumbre tecnológica en ventaja competitiva mediante auditorías estratégicas y despliegue a medida.</p>
+            <h1 class="reveal">IA para tu negocio.<br><span>Sin complicaciones.</span></h1>
+            <p class="hero-sub reveal">Aterrizamos la inteligencia artificial a la realidad de tu empresa. Auditoría estratégica y acompañamiento cercano desde Menorca.</p>
             <div class="hero-actions reveal">
-                <a href="#" class="btn-apple-primary magnetic-target">Agenda tu Auditoría</a>
-                <a href="#" class="link-apple-more magnetic-target">Ver metodología ></a>
+                <a href="#contacto" class="btn-apple-primary magnetic-target">Agenda tu Auditoría</a>
+                <a href="#solucion" class="link-apple-more magnetic-target">Ver metodología ></a>
             </div>
         </div>
     </header>
 
-    <!-- Problems Section: Feature Grid -->
+    <!-- Problems Section -->
     <section id="problemas" class="section">
         <div class="container">
             <header class="section-intro reveal">
-                <h2>El laberinto de la IA.</h2>
-                <p>¿Por qué el 80% de las empresas fallan al implementar IA?</p>
+                <h2>La IA, explicada fácil.</h2>
+                <p>¿Te suena a chino? Tranquilo, nosotros te ayudamos a usarla para ganar tiempo y dinero.</p>
             </header>
             
             <div class="apple-grid reveal">
@@ -49,180 +61,153 @@
                         <h3>Datos Fragmentados</h3>
                         <p>Información dispersa en silos que la IA no puede procesar eficazmente.</p>
                     </div>
-                    <img src="images/datos.png" alt="Datos Fragmentados" class="apple-card-image">
+                    <img src="images/datos.png" alt="Datos" class="apple-card-image">
                 </div>
                 <div class="apple-card">
                     <div class="card-content">
                         <h3>Falta de Talento</h3>
-                        <p>Dificultad crítica para encontrar y retener expertos en IA aplicada.</p>
+                        <p>Dificultad crítica para encontrar expertos en IA aplicada.</p>
                     </div>
-                    <img src="images/talento.png" alt="Falta de Talento" class="apple-card-image">
+                    <img src="images/talento.png" alt="Talento" class="apple-card-image">
                 </div>
                 <div class="apple-card">
                     <div class="card-content">
                         <h3>Costes Ocultos</h3>
-                        <p>Gastos descontrolados en APIs y suscripciones sin un ROI definido.</p>
+                        <p>Gastos descontrolados en APIs sin un ROI definido.</p>
                     </div>
-                    <img src="images/costes.png" alt="Costes Ocultos" class="apple-card-image">
-                </div>
-                <div class="apple-card">
-                    <div class="card-content">
-                        <h3>Resistencia Cultural</h3>
-                        <p>Fricción interna y miedo al cambio dentro de los equipos operativos.</p>
-                    </div>
-                    <img src="images/cultural.png" alt="Resistencia Cultural" class="apple-card-image">
-                </div>
-                <div class="apple-card">
-                    <div class="card-content">
-                        <h3>Saturación Técnica</h3>
-                        <p>Implementación de herramientas aisladas que no conectan entre sí.</p>
-                    </div>
-                    <img src="images/saturacion.png" alt="Saturación Técnica" class="apple-card-image">
-                </div>
-                <div class="apple-card">
-                    <div class="card-content">
-                        <h3>Inseguridad de Datos</h3>
-                        <p>Riesgos de privacidad al usar modelos públicos sin capas de protección.</p>
-                    </div>
-                    <img src="images/seguridad.png" alt="Inseguridad de Datos" class="apple-card-image">
+                    <img src="images/costes.png" alt="Costes" class="apple-card-image">
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Solución: Full-width Glass Section -->
-    <section id="solucion" class="section solution-section">
-        <div class="container flex-center">
+    <!-- Solution Section -->
+    <section id="solucion" class="section">
+        <div class="container">
             <div class="solution-card reveal">
                 <div class="solution-text">
-                    <h2>La Asesoría 360</h2>
-                    <p>No vendemos herramientas, vendemos arquitectura operativa. Nuestra auditoría diagnóstica permite identificar dónde la IA generará impacto real en menos de 30 días.</p>
+                    <h2>Auditoría IA 360</h2>
+                    <p>No implementamos por implementar. Analizamos tus procesos y detectamos dónde la IA realmente te hará ahorrar horas de trabajo.</p>
                     <ul class="apple-list">
-                        <li>Auditoría de Procesos Internos</li>
-                        <li>Selección de Tech-Stack Ético</li>
-                        <li>Formación Ejecutiva a medida</li>
+                        <li>Mapeo de procesos ineficientes</li>
+                        <li>Selección de herramientas low-code</li>
+                        <li>Acompañamiento en la puesta en marcha</li>
                     </ul>
                 </div>
                 <div class="solution-visual">
-                <!-- Video Simulator (CSS Animation) -->
-                <div class="css-video-player">
-                    <div class="ia-core"></div>
-                    <div class="ia-ring"></div>
-                    <div class="ia-ring delay-1"></div>
-                    <div class="ia-ring delay-2"></div>
-                    <div class="ia-scanner"></div>
-                    
-                    <!-- Text Sequence 30s -->
-                    <div class="video-overlay-text phase-1">1. Auditoría de IA de 360°</div>
-                    <div class="video-overlay-text phase-2">2. Diseño de Estrategia Inteligente</div>
-                    <div class="video-overlay-text phase-3">3. Optimización Continua</div>
-                    
-                    <div class="play-button-overlay">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M8 5v14l11-7z"/>
-                        </svg>
-                        <span>Explicación Integral (30s)</span>
+                    <div class="css-video-player">
+                        <div class="ia-core"></div>
+                        <div class="ia-ring"></div>
+                        <div class="ia-ring delay-1"></div>
+                        <div class="ia-ring delay-2"></div>
+                        <div class="ia-scanner"></div>
+                        <div class="video-overlay-text phase-1">1. Auditoría de IA 360°</div>
+                        <div class="video-overlay-text phase-2">2. Diseño de Estrategia</div>
+                        <div class="video-overlay-text phase-3">3. Optimización Continua</div>
+                        <div class="play-button-overlay">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            Explicación (30s)
+                        </div>
                     </div>
                 </div>
-            </div>
             </div>
         </div>
     </section>
 
-    <!-- Pricing: Clean & Breathable -->
-    <section id="precios" class="section pricing-section">
+    <!-- Pricing Section -->
+    <section id="precios" class="section">
         <div class="container">
-            <h2 class="reveal">Inversión con Retorno</h2>
-            <div class="pricing-apple-grid">
-                <div class="price-apple-card reveal">
-                    <span class="p-tag">Starter</span>
-                    <h3>990€<span>/audit</span></h3>
-                    <p>Ideal para PYMES que buscan un primer diagnóstico y roadmap.</p>
-                    <button class="btn-apple-buy">Empezar</button>
+            <header class="section-intro reveal">
+                <h2>Planes a tu medida.</h2>
+                <p>Desde consultoría puntual hasta transformación completa de tu negocio.</p>
+            </header>
+            
+            <div class="pricing-apple-grid reveal">
+                <div class="price-apple-card">
+                    <div>
+                        <div class="p-tag">Auditoría</div>
+                        <h3>950€<span>/pago único</span></h3>
+                        <p>Informe detallado de oportunidades de IA en tu empresa.</p>
+                    </div>
+                    <button class="btn-apple-buy">Elegir</button>
                 </div>
-                <div class="price-apple-card featured reveal">
-                    <span class="p-tag">Growth</span>
-                    <h3>2.500€<span>/mes</span></h3>
-                    <p>Acompañamiento mensual para implementación y soporte técnico.</p>
-                    <button class="btn-apple-primary">Plan Growth</button>
-                    <span class="popular-label">Más popular</span>
+                <div class="price-apple-card featured">
+                    <div class="popular-label">Más solicitado</div>
+                    <div>
+                        <div class="p-tag">Crecimiento</div>
+                        <h3>2.500€<span>/mes</span></h3>
+                        <p>Tu propio departamento de IA externo. Implementación constante.</p>
+                    </div>
+                    <button class="btn-apple-buy">Elegir</button>
                 </div>
-                <div class="price-apple-card reveal">
-                    <span class="p-tag">Enterprise</span>
-                    <h3>Custom</h3>
-                    <p>Desarrollo de modelos propios e infraestructura on-premise.</p>
+                <div class="price-apple-card">
+                    <div>
+                        <div class="p-tag">Enterprise</div>
+                        <h3>Custom</h3>
+                        <p>Desarrollo de herramientas de IA propietarias y formación in-company.</p>
+                    </div>
                     <button class="btn-apple-buy">Contactar</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Contact & Agenda Section -->
-    <section id="contacto" class="section contact-section">
+    <!-- Contact Section -->
+    <section id="contacto" class="section">
         <div class="container">
             <div class="contact-grid reveal">
-                <!-- Left: Agenda -->
                 <div class="contact-info">
-                    <h2>Empecemos a construir.</h2>
-                    <p>Selecciona el método que mejor se adapte a tu ritmo. Estamos listos para auditar tu potencial.</p>
-                    
+                    <h2>Hablemos de tu negocio.</h2>
+                    <p>Selecciona cómo prefieres conectar. Estamos en Menorca, listos para escucharte.</p>
                     <div class="agenda-options">
                         <a href="#" class="agenda-card magnetic-target">
                             <div class="agenda-icon-wrapper calendar-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="4" width="18" height="18" rx="4" ry="4"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                             </div>
                             <div class="agenda-text">
-                                <strong>Google Calendar</strong>
-                                <span>Reserva una sesión de 15 min</span>
+                                <strong>Videollamada</strong>
+                                <span>Reserva 15 min en Google Calendar</span>
                             </div>
                         </a>
-                        <a href="https://wa.me/tu-numero" class="agenda-card magnetic-target">
+                        <a href="#" class="agenda-card magnetic-target">
                             <div class="agenda-icon-wrapper whatsapp-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-                                </svg>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                             </div>
                             <div class="agenda-text">
-                                <strong>WhatsApp Directo</strong>
-                                <span>Respuesta inmediata de nuestro equipo</span>
+                                <strong>WhatsApp</strong>
+                                <span>Hablamos por chat ahora mismo</span>
                             </div>
                         </a>
                     </div>
                 </div>
 
-                <!-- Right: Form -->
                 <div class="contact-form-container">
                     <form id="apple-contact-form" class="apple-form">
                         <div class="form-group">
-                            <label for="name">Nombre completo</label>
+                            <label for="name">Nombre</label>
                             <input type="text" id="name" name="name" placeholder="Tu nombre" required>
                         </div>
                         <div class="form-group">
-                            <label for="email">Email corporativo</label>
-                            <input type="email" id="email" name="email" placeholder="nombre@empresa.com" required>
+                            <label for="phone">Teléfono</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+34 600 000 000" required>
                         </div>
                         <div class="form-group">
-                            <label for="interest">Interés principal</label>
+                            <label for="interest">Interés</label>
                             <select id="interest" name="interest">
-                                <option value="auditoria">Auditoría IA 360</option>
-                                <option value="formacion">Formación Ejecutiva</option>
-                                <option value="desarrollo">Desarrollo Custom</option>
+                                <option value="auditoria">Auditoría IA</option>
+                                <option value="crecimiento">Plan Crecimiento</option>
+                                <option value="custom">Desarrollo a medida</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="message">Mensaje</label>
-                            <textarea id="message" name="message" rows="4" placeholder="¿En qué podemos ayudarte?"></textarea>
+                            <textarea id="message" name="message" rows="3" placeholder="¿En qué te podemos ayudar?"></textarea>
                         </div>
                         <button type="submit" class="btn-apple-primary full-width">Enviar solicitud</button>
                     </form>
                     <div id="form-success" class="form-feedback hidden">
-                        <div class="success-icon">✓</div>
-                        <p>Solicitud enviada. Nos pondremos en contacto en menos de 24h.</p>
+                        <h3>✓ ¡Recibido!</h3>
+                        <p>Te contactaremos en menos de 24h.</p>
                     </div>
                 </div>
             </div>
@@ -231,8 +216,9 @@
 
     <footer class="apple-footer">
         <div class="container footer-grid">
-            <div class="f-copy">© 2026 IA Visionary. Inspired by Apple Design.</div>
+            <p>© 2026 IA de Barrio. Hecho con ❤️ desde Menorca.</p>
             <div class="f-links">
+                <a href="login.html">Admin</a>
                 <a href="#">Privacidad</a>
                 <a href="#">Cookies</a>
             </div>

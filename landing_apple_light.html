@@ -3,7 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IA Visionary | Light Edition (Apple Style)</title>
+    <title>IA de Barrio | IA para negocios reales (Light)</title>
+    <meta name="description" content="Escala tu negocio con IA sin perder el control. Auditoría estratégica, formación ejecutiva y desarrollo de IA a medida con IA de Barrio.">
+    <link rel="canonical" href="https://tudominio.com/landing_apple_light.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tudominio.com/landing_apple_light.html">
+    <meta property="og:title" content="IA de Barrio | IA para negocios reales">
+    <meta property="og:description" content="Aterrizamos la IA a tu negocio. Consultoría cercana, auditorías prácticas y soluciones que funcionan. Basados en Menorca.">
+    <meta property="og:image" content="https://tudominio.com/images/og-image.jpg">
+
+    <!-- Google Tag Manager / Analytics / Meta Pixel -->
+    <!-- Pega aquí tus scripts de seguimiento (GTM, GA4, Meta Pixel) -->
+    <!-- 
+    <script async src="https://www.googletagmanager.com/gtag/js?id=TU_ID_GA4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'TU_ID_GA4');
+    </script>
+    -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -13,7 +35,7 @@
     <!-- Nav Bar (Apple Light Style) -->
     <nav class="apple-nav-light">
         <div class="container nav-content">
-            <div class="logo">IA<span>Visionary</span></div>
+            <div class="logo">IA<span>deBarrio</span></div>
             <div class="nav-links">
                 <a href="#problemas">Problemas</a>
                 <a href="#solucion">Solución</a>
@@ -26,8 +48,8 @@
     <!-- Hero Section: Clean & Airy -->
     <header class="hero">
         <div class="container hero-container">
-            <h1 class="reveal">Escala tu negocio con IA.<br><span>Sin perder el control.</span></h1>
-            <p class="hero-sub reveal">Transformamos la incertidumbre tecnológica en ventaja competitiva mediante auditorías estratégicas y despliegue a medida.</p>
+            <h1 class="reveal">IA para tu negocio.<br><span>Sin complicaciones.</span></h1>
+            <p class="hero-sub reveal">Aterrizamos la inteligencia artificial a la realidad de tu empresa. Auditoría estratégica y acompañamiento cercano desde Menorca.</p>
             <div class="hero-actions reveal">
                 <a href="#" class="btn-apple-primary magnetic-target">Agenda tu Auditoría</a>
                 <a href="#" class="link-apple-more magnetic-target">Ver metodología ></a>
@@ -39,8 +61,8 @@
     <section id="problemas" class="section">
         <div class="container">
             <header class="section-intro reveal">
-                <h2>El laberinto de la IA.</h2>
-                <p>¿Por qué el 80% de las empresas fallan al implementar IA?</p>
+                <h2>La IA, explicada fácil.</h2>
+                <p>¿Te suena a chino? Tranquilo, nosotros te ayudamos a usarla para ganar tiempo y dinero.</p>
             </header>
             
             <div class="apple-grid reveal">
@@ -207,6 +229,10 @@
                             <input type="email" id="email" name="email" placeholder="nombre@empresa.com" required>
                         </div>
                         <div class="form-group">
+                            <label for="phone">Teléfono (WhatsApp)</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+34 600 000 000" required>
+                        </div>
+                        <div class="form-group">
                             <label for="interest">Interés principal</label>
                             <select id="interest" name="interest">
                                 <option value="auditoria">Auditoría IA 360</option>
@@ -231,14 +257,18 @@
 
     <footer class="apple-footer">
         <div class="container footer-grid">
-            <div class="f-copy">© 2026 IA Visionary. Clase 2 Finalizada.</div>
+            <div class="f-copy">© 2026 IA de Barrio. Hecho con ❤️ en Menorca.</div>
             <div class="f-links">
                 <a href="#">Privacidad</a>
                 <a href="#">Cookies</a>
+                <a href="admin.html?theme=light" class="admin-link">Admin Access</a>
             </div>
         </div>
     </footer>
 
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
     <script src="landing_apple.js"></script>
 </body>
 </html>
