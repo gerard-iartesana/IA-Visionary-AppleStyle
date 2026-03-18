@@ -24,16 +24,26 @@
 <body data-theme="light">
     <!-- Nav Bar -->
     <nav class="apple-nav">
+        <!-- Scroll Progress Bar -->
+        <div id="scroll-progress-bar" class="scroll-progress"></div>
+
         <div class="container nav-content">
             <div class="logo">IA<span>deBarrio</span></div>
-            <div class="nav-links">
-                <a href="#problemas">Problemas</a>
-                <a href="#solucion">Solución</a>
-                <a href="#precios">Precios</a>
-                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema">
-                    <!-- El icono se inserta vía JS -->
-                </button>
-                <button class="btn-apple-buy">Contratar</button>
+            
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="mobile-menu-toggle" aria-label="Abrir menú">
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </button>
+
+            <div class="nav-links" id="apple-nav-links">
+                <a href="#problemas" class="nav-link">Problemas</a>
+                <a href="#solucion" class="nav-link">Solución</a>
+                <a href="#precios" class="nav-link">Precios</a>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema"></button>
+                    <button class="btn-apple-buy">Contratar</button>
+                </div>
             </div>
         </div>
     </nav>

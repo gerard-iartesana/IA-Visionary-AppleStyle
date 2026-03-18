@@ -26,7 +26,69 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Intersection Observer para el estilo Apple (Entradas con peso) ---
+    // --- Menú Móvil ---
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const navLinks = document.getElementById('apple-nav-links');
+
+    if (mobileMenuBtn && navLinks) {
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenuBtn.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+        });
+
+        // Cerrar al clickear un link
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenuBtn.classList.remove('active');
+                navLinks.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+    }
+
+    // --- Barra de Progreso y Scroll Effects ---
+    const progressBar = document.getElementById('scroll-progress-bar');
+    const nav = document.querySelector('.apple-nav');
+
+    window.addEventListener('scroll', () => {
+        // Progreso
+        const totalHeight = document.body.scrollHeight - window.innerHeight;
+        const progress = (window.scrollY / totalHeight) * 100;
+        if (progressBar) progressBar.style.width = `${progress}%`;
+
+        // Nav Evolution (Glassmorphism & Depth)
+        if (nav) {
+            if (window.scrollY > 30) {
+                nav.style.borderBottom = '1px solid var(--border-color)';
+                nav.style.background = 'var(--nav-bg)';
+                nav.style.backdropFilter = 'saturate(180%) blur(20px)';
+            } else {
+                nav.style.borderBottom = '1px solid transparent';
+                nav.style.background = 'transparent';
+                nav.style.backdropFilter = 'none';
+            }
+        }
+    });
+
+    // --- Smooth Scroll Refinado ---
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+            
+            if (targetElement) {
+                const navHeight = document.querySelector('.apple-nav').offsetHeight;
+                const targetPosition = targetElement.offsetTop - navHeight;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
     const revealElements = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -60,15 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 target.style.transform = `translate(0, 0)`;
             }
         });
-    });
-
-    // --- Efecto de Scroll en Nav (Opacidad) ---
-    const nav = document.querySelector('.apple-nav');
-    window.addEventListener('scroll', () => {
-        if (nav && window.scrollY > 20) {
-            nav.style.backdropFilter = 'saturate(180%) blur(20px)';
-            // El color de fondo se maneja por CSS variable en el nav
-        }
     });
 
     // --- Manejo del Formulario de Contacto (Supabase Real) ---
