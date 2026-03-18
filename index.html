@@ -359,9 +359,9 @@
                 <p>IA de Barrio x Stripe Secure</p>
             </div>
 
-            <div class="plan-summary">
-                <div class="plan-info-title" id="checkout-plan-name">Sesión Puntual</div>
-                <div class="plan-price-tag" id="checkout-plan-price">159€</div>
+            <div class="plan-summary" style="padding: 15px; border-radius: 16px;">
+                <div class="plan-info-title" id="checkout-plan-name" style="font-size: 0.9rem;">Sesión Puntual</div>
+                <div class="plan-price-tag" id="checkout-plan-price" style="font-size: 1.1rem; text-align: right; line-height: 1.2;">192.39€ <br><span style="font-size: 0.65rem; font-weight: 400; opacity: 0.8;">(IVA incl.)</span></div>
             </div>
 
             <!-- Fast Checkout -->
@@ -375,25 +375,25 @@
             <!-- Real Stripe Elements Container -->
             <div id="stripe-card-container" class="stripe-element-mock" style="padding: 18px; background: rgba(255,255,255,0.03);">
                 <!-- Datos de Contacto -->
-                <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
+                <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 20px;">
                     <div>
-                        <div style="font-size: 0.65rem; color: var(--text-grey); margin-bottom: 5px; text-transform: uppercase;">Nombre Completo</div>
-                        <input type="text" id="checkout-name" placeholder="Tu nombre" style="background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 0.95rem;">
+                        <div style="font-size: 0.6rem; color: var(--text-grey); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;">Nombre Completo</div>
+                        <input type="text" id="checkout-name" placeholder="Tu nombre" style="background: transparent; border: none; color: var(--text-main); width: 100%; outline: none; font-size: 0.95rem;">
                     </div>
                     <div>
-                        <div style="font-size: 0.65rem; color: var(--text-grey); margin-bottom: 5px; text-transform: uppercase;">Email</div>
-                        <input type="email" id="checkout-email" placeholder="ejemplo@email.com" style="background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 0.95rem;">
+                        <div style="font-size: 0.6rem; color: var(--text-grey); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;">Email</div>
+                        <input type="email" id="checkout-email" placeholder="ejemplo@email.com" style="background: transparent; border: none; color: var(--text-main); width: 100%; outline: none; font-size: 0.95rem;">
                     </div>
                     <div>
-                        <div style="font-size: 0.65rem; color: var(--text-grey); margin-bottom: 5px; text-transform: uppercase;">Móvil <span style="font-size: 0.6rem; opacity: 0.6;">(Opcional)</span></div>
-                        <input type="tel" id="checkout-phone" placeholder="+34 600 000 000" style="background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 0.95rem;">
+                        <div style="font-size: 0.6rem; color: var(--text-grey); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;">Móvil <span style="font-size: 0.55rem; opacity: 0.6;">(Opcional)</span></div>
+                        <input type="tel" id="checkout-phone" placeholder="+34 600 000 000" style="background: transparent; border: none; color: var(--text-main); width: 100%; outline: none; font-size: 0.95rem;">
                     </div>
                 </div>
 
                 <!-- Datos de Tarjeta -->
                 <div style="margin-bottom: 5px;">
-                    <div style="font-size: 0.65rem; color: var(--text-grey); margin-bottom: 10px; text-transform: uppercase;">Datos de la tarjeta</div>
-                    <div id="card-element">
+                    <div style="font-size: 0.6rem; color: var(--text-grey); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Datos de la tarjeta</div>
+                    <div id="card-element" style="min-height: 20px;">
                         <!-- Stripe Elements se inyectará aquí de forma segura -->
                     </div>
                 </div>

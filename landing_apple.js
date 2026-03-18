@@ -305,18 +305,22 @@ function initStripe() {
         // Crear elementos con opciones refinadas
         elements = stripe.elements({
             appearance: {
-                theme: 'night',
-                variables: { colorPrimary: '#0071e3', colorBackground: 'transparent', colorText: '#f5f5f7' }
+                theme: 'flat', // Tema claro para fondo blanco
+                variables: { 
+                    colorPrimary: '#0071e3', 
+                    colorBackground: '#ffffff', 
+                    colorText: '#1d1d1f' 
+                }
             }
         });
 
         // Crear el elemento de tarjeta con el 'Link' desactivado para evitar confusión
         cardElement = elements.create('card', {
-            hidePostalCode: true, // Quitamos el código postal para simplificar
+            hidePostalCode: true,
             style: {
                 base: {
                     fontSize: '16px',
-                    color: '#f5f5f7',
+                    color: '#1d1d1f', // Texto oscuro para fondo claro
                     '::placeholder': { color: '#86868b' },
                 }
             }
@@ -345,7 +349,7 @@ function openPremiumCheckout(planName, price, fallbackUrl) {
     currentPlanAmount = Math.round(baseAmount * 100); // Monto base en céntimos para el backend
 
     document.getElementById('checkout-plan-name').innerText = planName;
-    document.getElementById('checkout-plan-price').innerText = `${totalAmount}€ (IVA incl.)`;
+    document.getElementById('checkout-plan-price').innerHTML = `${totalAmount}€ <br><span style="font-size: 0.65rem; font-weight: 400; opacity: 0.6;">(IVA incl.)</span>`;
     
     const fallbackLink = document.getElementById('checkout-fallback-link');
     if (fallbackLink) fallbackLink.href = fallbackUrl;
