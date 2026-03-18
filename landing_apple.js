@@ -318,33 +318,37 @@ function closeCheckout() {
 
 async function processMockPayment() {
     const btn = document.querySelector('.checkout-btn-primary');
+    const box = document.querySelector('.checkout-box');
     const originalText = btn.innerText;
     
     btn.innerText = 'Procesando pago seguro...';
     btn.disabled = true;
     btn.style.opacity = '0.7';
 
-    // Simulamos la latencia de la API de Stripe
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // 1. Simulación de Latencia (Cerebro de Stripe)
+    await new Promise(resolve => setTimeout(resolve, 2500));
 
-    btn.innerText = '✓ ¡PAGO COMPLETADO!';
-    btn.style.background = '#34c759';
+    // 2. Éxito Visual (Apple Style Success Check)
+    box.innerHTML = `
+        <div style="text-align: center; padding: 40px 0; animation: fadeIn 0.8s ease-out;">
+            <div style="width: 80px; height: 80px; background: #34c759; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 10px 30px rgba(52, 199, 89, 0.4);">
+                <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <h2 style="font-size: 1.8rem; margin-bottom: 12px; color: white;">¡Pago Completado!</h2>
+            <p style="color: var(--text-grey); line-height: 1.6; margin-bottom: 30px;">
+                Felicidades. Tu reserva ha sido confirmada con éxito. <br>
+                Recibirás un email con los detalles en unos minutos.
+            </p>
+            <button class="checkout-btn-primary" onclick="window.location.reload();" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border-color);">
+                Cerrar y volver
+            </button>
+        </div>
+    `;
 
-    setTimeout(() => {
-        // En un entorno de demo,redirigimos al Stripe real tras el efecto visual brutal
-        if (currentCheckoutUrl) {
-            window.location.href = currentCheckoutUrl;
-        } else {
-            alert('🎉 ¡Éxito! En un entorno real, aquí se activaría tu plan.');
-            closeCheckout();
-        }
-        
-        // Reset button for next demo
-        btn.innerText = originalText;
-        btn.style.background = '';
-        btn.disabled = false;
-        btn.style.opacity = '1';
-    }, 800);
+    // Reset cursor/scroll
+    document.body.style.overflow = '';
 }
 
 // Vinculación opcional de los botones actuales al prototipo premium (Demo Mode)
