@@ -466,6 +466,11 @@ function showFichaModal(id) {
     
     document.getElementById('ficha-lead-id').value = id;
     document.getElementById('ficha-cliente-nombre').innerText = lead.name;
+    document.getElementById('ficha-email').innerText = lead.email || '-';
+    document.getElementById('ficha-telefono').innerText = lead.phone || '-';
+    document.getElementById('ficha-interes').innerText = lead.interest || '-';
+    document.getElementById('ficha-mensaje').innerText = lead.message || 'Sin mensaje adicional.';
+    
     document.getElementById('ficha-comercial').value = lead.comercial || '';
     document.getElementById('ficha-grupo').value = lead.grupo || '';
     document.getElementById('ficha-razonsocial').value = lead.razon_social || '';
