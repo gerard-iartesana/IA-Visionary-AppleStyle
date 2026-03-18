@@ -320,7 +320,7 @@ function initStripe() {
             style: {
                 base: {
                     fontSize: '16px',
-                    color: '#1d1d1f', // Texto oscuro para fondo claro
+                    color: '#1d1d1f',
                     '::placeholder': { color: '#86868b' },
                 }
             }
@@ -328,6 +328,13 @@ function initStripe() {
         return true;
     }
     return false;
+}
+
+function closeCheckout() {
+    const modal = document.getElementById('checkout-premium');
+    if (!modal) return;
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
 }
 
 function openPremiumCheckout(planName, price, fallbackUrl) {
