@@ -290,35 +290,46 @@ injectSeoMetadata();
 injectSeoMetadata();
 
 // --- REAL STRIPE INTEGRATION (CLASE 8) ---
-const stripe = typeof Stripe !== 'undefined' ? Stripe('pk_test_51TCMDoKthauSWpyv2Ngs3LZGkjOvrJYpXGneocuANnmmsog22oJnv1UaKZuHqs1L8jIph3eppRWD0PUJfvct0s4c005lPPk8Ps') : null;
+let stripe = null;
 let elements;
 let cardElement;
 let currentCheckoutUrl = ''; 
 let currentPlanAmount = 0;
 let currentPlanName = '';
 
-// Inicializar Stripe Elements una sola vez
-if (stripe) {
-    elements = stripe.elements({
-        appearance: {
-            theme: 'night',
-            variables: { colorPrimary: '#0071e3', colorBackground: 'transparent', colorText: '#f5f5f7' }
-        }
-    });
-    cardElement = elements.create('card', {
-        style: {
-            base: {
-                fontSize: '16px',
-                color: '#f5f5f7',
-                '::placeholder': { color: '#86868b' },
+function initStripe() {
+    if (stripe) return true; // Ya inicializado
+    if (typeof Stripe !== 'undefined') {
+        stripe = Stripe('pk_test_51TCMDoKthauSWpyv2Ngs3LZGkjOvrJYpXGneocuANnmmsog22oJnv1UaKZuHqs1L8jIph3eppRWD0PUJfvct0s4c005lPPk8Ps');
+        elements = stripe.elements({
+            appearance: {
+                theme: 'night',
+                variables: { colorPrimary: '#0071e3', colorBackground: 'transparent', colorText: '#f5f5f7' }
             }
-        }
-    });
+        });
+        cardElement = elements.create('card', {
+            style: {
+                base: {
+                    fontSize: '16px',
+                    color: '#f5f5f7',
+                    '::placeholder': { color: '#86868b' },
+                }
+            }
+        });
+        return true;
+    }
+    return false;
 }
 
 function openPremiumCheckout(planName, price, fallbackUrl) {
     const modal = document.getElementById('checkout-premium');
     if (!modal) return;
+
+    // Intentar inicializar Stripe si no lo estaba
+    const isReady = initStripe();
+    if (!isReady) {
+        console.error('Stripe SDK not loaded yet.');
+    }
 
     currentCheckoutUrl = fallbackUrl;
     currentPlanName = planName;
@@ -348,37 +359,67 @@ async function processMockPayment() {
     const errorDiv = document.getElementById('card-errors');
     const box = document.querySelector('.checkout-box');
     
-    btn.innerText = 'Verificando seguridad...';
+    // Limpiar errores previos
+    if (errorDiv) errorDiv.textContent = '';
+    
+    btn.innerText = 'Procesando pago seguro...';
     btn.disabled = true;
 
     try {
-        // En un entorno real, aquí llamaríamos a tu nueva Supabase Edge Function:
-        // const { data, error } = await _supabase.functions.invoke('create-payment-intent', {
-        //     body: { amount: currentPlanAmount, plan: currentPlanName }
-        // });
-        // if (error) throw error;
-        // const clientSecret = data.clientSecret;
-        // const result = await stripe.confirmCardPayment(clientSecret, { payment_method: { card: cardElement } });
-        
-        // Simulación visual mientras configuras la función en el dashboard:
-        await new Promise(resolve => setTimeout(resolve, 2500));
+        // 1. Llamada Real a tu Backend en Supabase para crear el Intento de Pago
+        // Esto le dice a Stripe de forma segura: "Prepárame el cobro de X plan"
+        const { data, error } = await _supabase.functions.invoke('create-payment-intent', {
+            body: { amount: currentPlanAmount, plan: currentPlanName }
+        });
 
-        box.innerHTML = `
-            <div style="text-align: center; padding: 40px 0; animation: fadeIn 0.8s ease-out;">
-                <div style="width: 80px; height: 80px; background: #34c759; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 10px 30px rgba(52, 199, 89, 0.4);">
-                    <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </div>
-                <h2 style="font-size: 1.8rem; margin-bottom: 12px; color: white;">¡Pago Completado!</h2>
-                <p style="color: var(--text-grey); line-height: 1.6; margin-bottom: 30px;">
-                    Se ha procesado el pago de <b>${(currentPlanAmount*1.21/100).toFixed(2)}€ (IVA incluido)</b>.<br>
-                    Tu cuenta está siendo configurada ahora mismo.
-                </p>
-                <button class="checkout-btn-primary" onclick="window.location.reload();" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border-color);">Cerrar y volver</button>
-            </div>
-        `;
+        if (error) {
+            console.error('Error en Supabase Function:', error);
+            throw new Error('No se pudo iniciar el pago. Revisa la configuración de tu Edge Function.');
+        }
+
+        const clientSecret = data.clientSecret;
+
+        // 2. Confirmación del Pago con los datos de la tarjeta (Stripe Elements)
+        // Esta parte es ultra-segura: los datos nunca tocan tu servidor directamente
+        const result = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+                card: cardElement,
+                billing_details: {
+                    name: 'Cliente IA de Barrio', // Opcional: podrías pedir el nombre en el modal
+                }
+            }
+        });
+
+        if (result.error) {
+            // Mostrar error al cliente (ej: tarjeta rechazada)
+            throw new Error(result.error.message);
+        } else {
+            // 3. ¡ÉXITO TOTAL! El pago ha sido procesado por Stripe
+            if (result.paymentIntent.status === 'succeeded') {
+                box.innerHTML = `
+                    <div style="text-align: center; padding: 40px 0; animation: fadeIn 0.8s ease-out;">
+                        <div style="width: 80px; height: 80px; background: #34c759; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 10px 30px rgba(52, 199, 89, 0.4);">
+                            <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <h2 style="font-size: 1.8rem; margin-bottom: 12px; color: white;">¡Pago Confirmado!</h2>
+                        <p style="color: var(--text-grey); line-height: 1.6; margin-bottom: 30px;">
+                            Se ha procesado tu suscripción a <b>${currentPlanName}</b> correctamente.<br>
+                            Recibirás el recibo de Stripe en tu email en unos segundos.
+                        </p>
+                        <button class="checkout-btn-primary" onclick="window.location.reload();" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border-color);">
+                            Cerrar y volver
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
     } catch (e) {
+        console.error('Error en el proceso de pago:', e);
         if (errorDiv) errorDiv.textContent = e.message;
-        btn.innerText = 'Intentar de nuevo';
+        btn.innerText = 'Reintentar pago';
         btn.disabled = false;
     }
 }
