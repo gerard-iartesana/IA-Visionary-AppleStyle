@@ -437,13 +437,13 @@ async function processMockPayment() {
                                 <polyline points="20 6 9 17 4 12"></polyline>
                             </svg>
                         </div>
-                        <h2 style="font-size: 1.8rem; margin-bottom: 12px; color: white;">¡Pago Confirmado!</h2>
-                        <p style="color: var(--text-grey); line-height: 1.6; margin-bottom: 30px;">
+                        <h2 style="font-size: 1.8rem; margin-bottom: 12px; color: #1d1d1f;">¡Pago Confirmado!</h2>
+                        <p style="color: #86868b; line-height: 1.6; margin-bottom: 30px;">
                             Se ha procesado tu suscripción a <b>${currentPlanName}</b> correctamente.<br>
                             Recibirás el recibo de Stripe en tu email en unos segundos.
                         </p>
-                        <button class="checkout-btn-primary" onclick="window.location.reload();" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border-color);">
-                            Cerrar y volver
+                        <button class="checkout-btn-primary" onclick="window.location.reload();" style="background: #0071e3; color: white;">
+                            Finalizar y volver
                         </button>
                     </div>
                 `;
