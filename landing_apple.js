@@ -294,6 +294,7 @@ let cardElement;
 let currentCheckoutUrl = ''; 
 let currentPlanAmount = 0;
 let currentPlanName = '';
+let expressCheckoutElement;
 
 // Función para cerrar el modal (DISPONIBLE GLOBALMENTE)
 window.closeCheckout = function() {
@@ -320,7 +321,7 @@ function initStripe() {
             }
         });
 
-        // Crear el elemento de tarjeta con el 'Link' desactivado para evitar confusión
+        // Crear el elemento de tarjeta
         cardElement = elements.create('card', {
             hidePostalCode: true,
             style: {
@@ -330,6 +331,11 @@ function initStripe() {
                     '::placeholder': { color: '#86868b' },
                 }
             }
+        });
+
+        // Crear elemento de pago rápido (Google/Apple Pay y Link)
+        expressCheckoutElement = elements.create('expressCheckout', {
+            buttonType: { applePay: 'buy', googlePay: 'buy' }
         });
         return true;
     }
@@ -368,6 +374,16 @@ function openPremiumCheckout(planName, price, fallbackUrl) {
         if (cardElement) {
             document.getElementById('card-element').innerHTML = '';
             cardElement.mount('#card-element');
+        }
+        
+        // Montar el Botón de Pago Rápido al final
+        if (expressCheckoutElement) {
+            const container = document.getElementById('stripe-link-container');
+            if (container) {
+                container.style.display = 'block';
+                document.getElementById('stripe-link-container').innerHTML = '';
+                expressCheckoutElement.mount('#stripe-link-container');
+            }
         }
     }, 200);
 }
