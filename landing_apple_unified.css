@@ -177,6 +177,9 @@ body {
 .mobile-menu-toggle.active .icon-open { display: none; }
 .mobile-menu-toggle.active .icon-close { display: block; }
 
+.mobile-menu-toggle svg {
+    pointer-events: none;
+}
 
 /* Responisividad Navigation */
 @media (max-width: 768px) {
@@ -199,8 +202,10 @@ body {
     }
     
     .nav-links.active {
+        display: flex !important;
         right: 0 !important;
-        box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+        box-shadow: -20px 0 50px rgba(0,0,0,0.2);
+        visibility: visible !important;
     }
     
     .nav-links a {

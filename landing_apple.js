@@ -31,7 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.getElementById('apple-nav-links');
 
     if (mobileMenuBtn && navLinks) {
-        mobileMenuBtn.addEventListener('click', () => {
+        mobileMenuBtn.addEventListener('click', (e) => {
+            console.log('Menú clickeado'); // Debug
             mobileMenuBtn.classList.toggle('active');
             navLinks.classList.toggle('active');
             document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
