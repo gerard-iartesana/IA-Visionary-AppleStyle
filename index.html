@@ -369,24 +369,14 @@
 
             <div class="divider-line"></div>
 
-            <!-- Card Elements Mock -->
-            <div class="stripe-element-mock">
-                <div style="font-size: 0.75rem; color: var(--text-grey); margin-bottom: 8px;">NÚMERO DE TARJETA</div>
-                <div style="display: flex; align-items: center; gap: 12px; color: var(--text-main);">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-                    <input type="text" placeholder="4242 4242 4242 4242" style="background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 1rem;">
+            <!-- Real Stripe Elements Container -->
+            <div id="stripe-card-container" class="stripe-element-mock" style="padding: 18px; background: rgba(255,255,255,0.03);">
+                <div id="card-element">
+                    <!-- Stripe Elements se inyectará aquí de forma segura -->
+                    <div style="color: var(--text-grey); font-size: 0.8rem; text-align: center;">Cargando interfaz de pago segura...</div>
                 </div>
-            </div>
-
-            <div class="stripe-input-row">
-                <div class="stripe-element-mock" style="flex: 1;">
-                    <div style="font-size: 0.75rem; color: var(--text-grey); margin-bottom: 8px;">CADUCIDAD</div>
-                    <input type="text" placeholder="MM / AA" style="background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 0.9rem;">
-                </div>
-                <div class="stripe-element-mock" style="flex: 1;">
-                    <div style="font-size: 0.75rem; color: var(--text-grey); margin-bottom: 8px;">CVC</div>
-                    <input type="password" placeholder="•••" style="background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 0.9rem;">
-                </div>
+                <!-- Para errores de Stripe -->
+                <div id="card-errors" role="alert" style="color: #ff3b30; font-size: 0.75rem; margin-top: 10px;"></div>
             </div>
 
             <button class="checkout-btn-primary" onclick="processMockPayment()">Pagar ahora</button>
