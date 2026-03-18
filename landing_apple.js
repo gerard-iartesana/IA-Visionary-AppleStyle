@@ -287,8 +287,6 @@ async function injectSeoMetadata() {
 }
 injectSeoMetadata();
 
-injectSeoMetadata();
-
 // --- REAL STRIPE INTEGRATION (CLASE 8) ---
 let stripe = null;
 let elements;
@@ -296,6 +294,14 @@ let cardElement;
 let currentCheckoutUrl = ''; 
 let currentPlanAmount = 0;
 let currentPlanName = '';
+
+// Función para cerrar el modal (DISPONIBLE GLOBALMENTE)
+window.closeCheckout = function() {
+    const modal = document.getElementById('checkout-premium');
+    if (!modal) return;
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+};
 
 function initStripe() {
     if (stripe) return true; // Ya inicializado
@@ -328,13 +334,6 @@ function initStripe() {
         return true;
     }
     return false;
-}
-
-function closeCheckout() {
-    const modal = document.getElementById('checkout-premium');
-    if (!modal) return;
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
 }
 
 function openPremiumCheckout(planName, price, fallbackUrl) {
