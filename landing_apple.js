@@ -284,3 +284,57 @@ async function injectSeoMetadata() {
     }
 }
 injectSeoMetadata();
+
+// --- PREMIUM CHECKOUT PROTOTYPE LOGIC ---
+
+function openPremiumCheckout(planName, price) {
+    const modal = document.getElementById('checkout-premium');
+    if (!modal) return;
+
+    document.getElementById('checkout-plan-name').innerText = planName;
+    document.getElementById('checkout-plan-price').innerText = price;
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Bloquear scroll de fondo
+}
+
+function closeCheckout() {
+    const modal = document.getElementById('checkout-premium');
+    if (!modal) return;
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+async function processMockPayment() {
+    const btn = document.querySelector('.checkout-btn-primary');
+    const originalText = btn.innerText;
+    
+    btn.innerText = 'Procesando pago seguro...';
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+
+    // Simulamos la latencia de la API de Stripe
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    btn.innerText = '✓ ¡PAGO COMPLETADO!';
+    btn.style.background = '#34c759';
+
+    setTimeout(() => {
+        alert('🎉 ¡Éxito! En un entorno real, aquí se activaría tu plan y recibirías un email de confirmación.');
+        closeCheckout();
+        
+        // Reset button for next demo
+        btn.innerText = originalText;
+        btn.style.background = '';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+    }, 800);
+}
+
+// Vinculación opcional de los botones actuales al prototipo premium (Demo Mode)
+// Para activar el modo premium por defecto en los botones de compra:
+/* 
+document.getElementById('btn-buy-puntual').onclick = (e) => { e.preventDefault(); openPremiumCheckout('Sesión Puntual', '159€'); };
+document.getElementById('btn-buy-auditoria').onclick = (e) => { e.preventDefault(); openPremiumCheckout('Auditoría IA', '359€'); };
+document.getElementById('btn-buy-mensual').onclick = (e) => { e.preventDefault(); openPremiumCheckout('Plan Mensual', '250€'); };
+*/
