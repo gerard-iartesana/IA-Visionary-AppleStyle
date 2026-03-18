@@ -288,11 +288,14 @@ async function injectSeoMetadata() {
 injectSeoMetadata();
 
 // --- PREMIUM CHECKOUT PROTOTYPE LOGIC ---
+let currentCheckoutUrl = ''; // Variable global para el fallback automático
 
 function openPremiumCheckout(planName, price, fallbackUrl) {
     const modal = document.getElementById('checkout-premium');
     if (!modal) return;
 
+    currentCheckoutUrl = fallbackUrl; // Guardamos el link real de Stripe
+    
     document.getElementById('checkout-plan-name').innerText = planName;
     document.getElementById('checkout-plan-price').innerText = price;
     
@@ -328,8 +331,13 @@ async function processMockPayment() {
     btn.style.background = '#34c759';
 
     setTimeout(() => {
-        alert('🎉 ¡Éxito! En un entorno real, aquí se activaría tu plan y recibirías un email de confirmación.');
-        closeCheckout();
+        // En un entorno de demo,redirigimos al Stripe real tras el efecto visual brutal
+        if (currentCheckoutUrl) {
+            window.location.href = currentCheckoutUrl;
+        } else {
+            alert('🎉 ¡Éxito! En un entorno real, aquí se activaría tu plan.');
+            closeCheckout();
+        }
         
         // Reset button for next demo
         btn.innerText = originalText;
