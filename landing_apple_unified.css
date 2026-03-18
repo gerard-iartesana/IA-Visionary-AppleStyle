@@ -627,10 +627,11 @@ body {
 .price-apple-card .btn-apple-buy {
     background: var(--accent-blue);
     color: white;
-    padding: 12px 24px;
+    padding: 14px 24px;
     font-size: 0.9rem;
     border-radius: 12px;
     width: 100%;
+    margin-top: auto; /* Fuerza el botón al fondo de la tarjeta */
 }
 
 .price-apple-card.featured {
@@ -649,8 +650,9 @@ body {
 }
 
 .p-tag { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; font-weight: 600; }
-.price-apple-card h3 { font-size: 3.5rem; font-weight: 700; margin-bottom: 20px; }
-.price-apple-card h3 span { font-size: 1rem; font-weight: 400; color: var(--text-grey); }
+.price-apple-card h3 { font-size: 3.5rem; font-weight: 700; margin-bottom: 8px; }
+.price-apple-card h3 span { font-size: 0.85rem; font-weight: 400; color: var(--text-grey); display: block; margin-top: 6px; }
+.price-apple-card p { margin-bottom: 30px; }
 
 .revolut-alt-link {
     display: inline-block;
