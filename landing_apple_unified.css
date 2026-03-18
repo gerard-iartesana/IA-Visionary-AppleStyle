@@ -651,7 +651,7 @@ body {
 
 .p-tag { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; font-weight: 600; }
 .price-apple-card h3 { font-size: 3.5rem; font-weight: 700; margin-bottom: 8px; }
-.price-apple-card h3 span { font-size: 0.85rem; font-weight: 400; color: var(--text-grey); display: block; margin-top: 6px; }
+.price-apple-card h3 span { font-size: 0.85rem; font-weight: 400; color: var(--text-grey); display: block; margin-top: 6px; margin-bottom: 20px; }
 .price-apple-card p { margin-bottom: 30px; }
 
 .revolut-alt-link {
@@ -675,15 +675,19 @@ body {
 
 .popular-label {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
     background: var(--accent-blue);
     color: white;
-    padding: 4px 10px;
-    border-radius: 10px;
-    font-size: 0.6rem;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
 }
 
 /* Benefits Section Styles */
