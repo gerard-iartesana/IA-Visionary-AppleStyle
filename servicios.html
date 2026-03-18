@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestros Servicios | IA de Barrio</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="landing_apple_unified.css">
+    <style>
+        .services-hero {
+            padding: 160px 0 80px;
+            text-align: center;
+        }
+        .services-hero h1 {
+            font-size: 4.5rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 20px;
+        }
+        .services-hero p {
+            font-size: 1.5rem;
+            color: var(--text-grey);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin: 60px 0;
+        }
+
+        .service-card-premium {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 36px;
+            padding: 60px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 450px;
+        }
+
+        .service-card-premium:hover {
+            transform: scale(1.02) translateY(-10px);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.1);
+            border-color: var(--accent-blue);
+        }
+
+        .service-card-premium h2 { 
+            font-size: 2.2rem; 
+            margin-bottom: 20px; 
+            letter-spacing: -0.02em; 
+        }
+        .service-card-premium p { 
+            font-size: 1.1rem; 
+            color: var(--text-grey); 
+            line-height: 1.6; 
+            margin-bottom: 30px;
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .methodology {
+            background: var(--bg-secondary);
+            border-radius: 40px;
+            padding: 80px 40px;
+            margin-top: 100px;
+            text-align: center;
+        }
+
+        .method-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .step-item {
+            padding: 20px;
+        }
+        .step-number {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        .step-item h3 { font-size: 1.4rem; margin-bottom: 10px; }
+        .step-item p { color: var(--text-grey); font-size: 0.95rem; }
+
+        .cta-bottom {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .services-hero h1 { font-size: 3rem; }
+            .services-grid { grid-template-columns: 1fr; }
+            .method-steps { grid-template-columns: 1fr; }
+            .service-card-premium { padding: 40px; min-height: auto; }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <!-- Navbar Reutilizado -->
+    <nav class="apple-nav">
+        <div id="scroll-progress-bar" class="scroll-progress"></div>
+        <div class="container nav-content">
+            <a href="index.html" class="logo" style="text-decoration: none; color: inherit;">IA<span>deBarrio</span></a>
+            <div class="nav-links">
+                <a href="index.html#problemas">Problemas</a>
+                <a href="index.html#solucion">Solución</a>
+                <a href="index.html#precios">Precios</a>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema"></button>
+                    <a href="index.html#contacto" class="btn-apple-buy" style="text-decoration: none;">Empezar ahora</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Hero -->
+        <header class="services-hero reveal visible">
+            <h1>Potencia tu negocio.<br>Inteligencia Local.</h1>
+            <p>Especialistas en aterrizar soluciones de IA para el sector real de Menorca y el mundo.</p>
+        </header>
+
+        <!-- Main Services -->
+        <div class="services-grid">
+            <article class="service-card-premium reveal">
+                <div>
+                    <span class="service-icon">🔍</span>
+                    <h2>Auditoría IA 360</h2>
+                    <p>Analizamos tus procesos actuales, detectamos cuellos de botella y te mostramos exactamente dónde la IA te ahorrará más de 10 horas semanales.</p>
+                </div>
+                <ul class="team-credentials" style="margin-top: 30px;">
+                    <li><span>✔</span> Mapeo de procesos analógicos.</li>
+                    <li><span>✔</span> Informe de rentabilidad (ROI).</li>
+                    <li><span>✔</span> Hoja de ruta tecnológica.</li>
+                </ul>
+            </article>
+
+            <article class="service-card-premium reveal">
+                <div>
+                    <span class="service-icon">⚡</span>
+                    <h2>Implementación VIP</h2>
+                    <p>No solo te decimos qué hacer, lo hacemos por ti. Configuramos GPTs personalizados, automatizamos tu CRM y conectamos tus herramientas con IA.</p>
+                </div>
+                <ul class="team-credentials" style="margin-top: 30px;">
+                    <li><span>✔</span> Conexión de APIs y n8n.</li>
+                    <li><span>✔</span> Creación de Agentes con IA.</li>
+                    <li><span>✔</span> Soporte técnico dedicado.</li>
+                </ul>
+            </article>
+
+            <article class="service-card-premium reveal">
+                <div>
+                    <span class="service-icon">🎓</span>
+                    <h2>Formación de Equipos</h2>
+                    <p>La IA no sustituye al talento, lo potencia. Enseñamos a tu equipo a dominar el Prompt Engineering y las herramientas clave de su sector.</p>
+                </div>
+                <ul class="team-credentials" style="margin-top: 30px;">
+                    <li><span>✔</span> Talleres presenciales en Menorca.</li>
+                    <li><span>✔</span> Manuales de uso interno.</li>
+                    <li><span>✔</span> Acompañamiento post-formación.</li>
+                </ul>
+            </article>
+
+            <article class="service-card-premium reveal" style="background: var(--text-main); color: var(--bg-body);">
+                <div>
+                    <span class="service-icon">🤝</span>
+                    <h2 style="color: inherit;">Acompañamiento Mensual</h2>
+                    <p style="color: rgba(255,255,255,0.6);">Somos tu departamento externo de IA. Nos aseguramos de que siempre estés a la vanguardia sin perder el tiempo en pruebas fallidas.</p>
+                </div>
+                <a href="index.html#precios" class="btn-apple-buy" style="background: #fff; color: #000; text-align: center; text-decoration: none; padding: 16px;">Ver Planes</a>
+            </article>
+        </div>
+
+        <!-- Metodología -->
+        <section class="methodology reveal">
+            <span class="step-number">Cómo trabajamos</span>
+            <h2>El Método Visionary</h2>
+            <div class="method-steps">
+                <div class="step-item">
+                    <span class="step-number">01</span>
+                    <h3>Descubrimiento</h3>
+                    <p>Primer café para entender tu realidad sin tecnicismos.</p>
+                </div>
+                <div class="step-item">
+                    <span class="step-number">02</span>
+                    <h3>Estrategia</h3>
+                    <p>Diseño de la solución específica para tu problema.</p>
+                </div>
+                <div class="step-item">
+                    <span class="step-number">03</span>
+                    <h3>Ejecución</h3>
+                    <p>Entrega de resultados y formación para que seas autosuficiente.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Final -->
+        <section class="cta-bottom reveal">
+            <h2>¿Listo para el siguiente paso?</h2>
+            <p style="margin-bottom: 30px;">Hablemos sobre cómo la IA puede transformar tu día a día.</p>
+            <div style="display: flex; gap: 20px; justify-content: center;">
+                <a href="index.html#contacto" class="btn-apple-primary" style="text-decoration: none;">Contactar con Gerard</a>
+                <a href="index.html" class="link-apple-more" style="text-decoration: none;">Volver a Inicio</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="apple-footer">
+        <div class="container footer-grid">
+            <p>© 2026 IA de Barrio. Hecho con ❤️ desde Menorca.</p>
+            <div class="f-links">
+                <a href="privacidad.html">Privacidad</a>
+                <a href="cookies.html">Cookies</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="landing_apple.js"></script>
+    <script>
+        // Lógica de Temas
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.body.setAttribute('data-theme', currentTheme);
+        updateToggleIcon(currentTheme);
+
+        themeToggleBtn.addEventListener('click', () => {
+            const newTheme = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateToggleIcon(newTheme);
+        });
+
+        function updateToggleIcon(theme) {
+            if (!themeToggleBtn) return;
+            if (theme === 'dark') {
+                themeToggleBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="4.22" x2="19.78" y2="5.64"></line></svg>`;
+            } else {
+                themeToggleBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+            }
+        }
+    </script>
+</body>
+</html>
