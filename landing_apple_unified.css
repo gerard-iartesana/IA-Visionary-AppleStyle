@@ -97,136 +97,76 @@ body {
 }
 
 .logo { 
-    font-weight: 600; 
-    font-size: 1.1rem; 
-    letter-spacing: -0.02em; 
-    z-index: 2001;
-    cursor: default;
-}
-.logo span { color: var(--text-grey); font-weight: 300; }
-
-.nav-links { 
-    display: flex; 
-    align-items: center; 
-    gap: 30px; 
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: var(--text-main);
-    font-size: 0.75rem;
-    font-weight: 400;
-    opacity: 0.8;
-    transition: opacity 0.3s, color 0.5s;
-    position: relative;
+/* --- NAVEGACIÓN (DESKTOP) --- */
+.apple-nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: var(--nav-height);
+    background: var(--nav-bg);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    z-index: 9999;
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.5s ease;
 }
 
-.nav-links a::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background: var(--accent-blue);
-    transition: width 0.3s ease;
+.nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
 }
 
-.nav-links a:hover { opacity: 1; }
-.nav-links a:hover::after { width: 100%; }
-
-.nav-actions {
+.nav-links {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 30px;
 }
 
-.btn-apple-buy {
-    background: var(--btn-buy-bg);
-    color: var(--btn-buy-text);
-    border: none;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.5s cubic-bezier(0.28, 0.11, 0.32, 1);
-}
-
-.btn-apple-buy:hover {
-    transform: scale(1.05);
-    background: var(--accent-blue);
-}
-
-/* Mobile Menu Toggle */
 .mobile-menu-toggle {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
+    display: none; /* Oculto en desktop */
     background: none;
     border: none;
-    color: var(--text-main);
     cursor: pointer;
-    z-index: 9999;
-    padding: 0;
+    z-index: 10001;
+    color: var(--text-main);
 }
 
-.mobile-menu-toggle .icon-close { display: none; }
-.mobile-menu-toggle.active .icon-open { display: none; }
-.mobile-menu-toggle.active .icon-close { display: block; }
-
-.mobile-menu-toggle svg {
-    pointer-events: none;
-}
-
-/* Responisividad Navigation */
+/* --- NAVEGACIÓN (MÓVIL) --- */
 @media (max-width: 768px) {
-    .mobile-menu-toggle { display: flex; }
-    
+    .mobile-menu-toggle {
+        display: flex;
+    }
+
     .nav-links {
+        display: none; /* OCULTO POR DEFECTO EN MÓVIL */
         position: fixed;
         top: 0;
-        right: -100%;
+        left: 0;
         width: 100%;
         height: 100vh;
         background: var(--bg-body);
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 30px;
-        transition: right 0.6s cubic-bezier(0.28, 0.11, 0.32, 1);
-        z-index: 9998;
-        padding-top: 60px;
+        gap: 35px;
+        z-index: 10000;
     }
-    
+
     .nav-links.active {
-        display: flex !important;
-        right: 0 !important;
-        box-shadow: -20px 0 50px rgba(0,0,0,0.2);
-        visibility: visible !important;
+        display: flex !important; /* FORZAR MOSTRAR */
     }
-    
+
     .nav-links a {
-        font-size: 1.8rem;
-        font-weight: 600;
-        opacity: 0;
-        transform: translateY(20px);
-        transition: all 0.4s ease;
+        font-size: 2rem;
+        font-weight: 700;
     }
 
-    .nav-links.active a {
-        opacity: 1;
-        transform: translateY(0);
+    .nav-actions {
+        flex-direction: column;
+        gap: 20px;
     }
-
-    /* Animación en cascada de los links */
-    .nav-links.active a:nth-child(1) { transition-delay: 0.1s; }
-    .nav-links.active a:nth-child(2) { transition-delay: 0.2s; }
-    .nav-links.active a:nth-child(3) { transition-delay: 0.3s; }
-    .nav-links.active a:nth-child(4) { transition-delay: 0.4s; }
-    .nav-links.active a:nth-child(5) { transition-delay: 0.5s; }
 }
 
 /* Theme Toggle Button */
@@ -878,80 +818,28 @@ body {
     animation: fadeIn 0.5s ease-out;
 }
 
-/* Footer */
-.apple-footer { padding: 40px 0; border-top: 1px solid var(--border-color); margin-top: 60px; background-color: var(--bg-secondary); transition: background 0.5s ease; }
-.footer-grid { display: flex; justify-content: space-between; color: var(--text-grey); font-size: 0.75rem; }
-.f-links a { color: var(--text-grey); text-decoration: none; margin-left: 20px; transition: color 0.3s; }
-.f-links a:hover { color: var(--text-main); text-decoration: underline; }
-
-/* Animations */
-.reveal {
-    opacity: 0;
-    transform: translateY(40px) scale(0.98);
-    transition: all 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-    will-change: transform, opacity;
+/* Footer original */
+.apple-footer { 
+    padding: 40px 0; 
+    border-top: 1px solid var(--border-color); 
+    margin-top: 60px; 
+    background-color: var(--bg-secondary); 
+    transition: background 0.5s ease; 
 }
 
-.reveal.visible {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-}
-
-/* Micro-animación de pulso para el botón HERO */
-@keyframes breathing {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 113, 227, 0.4); }
-    50% { transform: scale(1.03); box-shadow: 0 0 20px 0 rgba(0, 113, 227, 0.2); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 113, 227, 0); }
-}
-
-.btn-apple-primary {
-    animation: breathing 4s infinite ease-in-out;
-}
-
-/* Efecto de cristal en hover para las tarjetas de beneficios */
-.beneficio-card {
-    position: relative;
-    overflow: hidden;
-}
-
-.beneficio-card::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-    opacity: 0;
-    transition: opacity 0.6s ease;
-    pointer-events: none;
-}
-
-.beneficio-card:hover::before {
-    opacity: 1;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Responsiveness */
 @media (max-width: 1024px) {
     .apple-grid, .pricing-apple-grid { grid-template-columns: repeat(2, 1fr); }
     .hero h1 { font-size: 4rem; }
 }
 
 @media (max-width: 768px) {
-    .hero h1 { font-size: 3rem; }
+    .hero h1 { font-size: 3.5rem; }
     .hero-sub { font-size: 1.2rem; }
     .apple-grid, .pricing-apple-grid { grid-template-columns: 1fr; }
     .solution-card { flex-direction: column; padding: 40px 20px; }
     .section-intro h2 { font-size: 2.5rem; }
     .section { padding: 50px 0; }
-    /* Eliminado display:none para permitir el menú móvil */
-    .contact-grid { grid-template-columns: 1fr; gap: 60px; }
-    .contact-info h2 { font-size: 2.5rem; }
+    /* Eliminado el display:none que causaba conflictos */
 }
 /* Premium Checkout Prototype */
 .checkout-overlay {
