@@ -939,7 +939,7 @@ body {
     .solution-card { flex-direction: column; padding: 40px 20px; }
     .section-intro h2 { font-size: 2.5rem; }
     .section { padding: 50px 0; }
-    .nav-links { display: none; }
+    /* Eliminado display:none para permitir el menú móvil */
     .contact-grid { grid-template-columns: 1fr; gap: 60px; }
     .contact-info h2 { font-size: 2.5rem; }
 }

@@ -65,7 +65,17 @@
     <nav class="apple-nav">
         <div class="container nav-content">
             <a href="index.html" class="logo" style="text-decoration: none; color: inherit;">IA<span>deBarrio</span></a>
-            <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema"></button>
+            
+            <button id="mobile-menu-btn" class="mobile-menu-toggle" aria-label="Abrir menú">
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </button>
+
+            <div class="nav-links" id="apple-nav-links">
+                <a href="servicios.html" class="nav-link">Servicios</a>
+                <a href="index.html#precios" class="nav-link">Precios</a>
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema"></button>
+            </div>
         </div>
     </nav>
 
@@ -106,11 +116,24 @@
         });
 
         function updateToggleIcon(theme) {
+            if (!themeToggleBtn) return;
             if (theme === 'dark') {
                 themeToggleBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="4.22" x2="19.78" y2="5.64"></line></svg>`;
             } else {
                 themeToggleBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
             }
+        }
+
+        // Lógica Menú Móvil
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const navLinks = document.getElementById('apple-nav-links');
+
+        if (mobileMenuBtn && navLinks) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenuBtn.classList.toggle('active');
+                navLinks.classList.toggle('active');
+                document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+            });
         }
 
         // Carga de contenido Supabase
