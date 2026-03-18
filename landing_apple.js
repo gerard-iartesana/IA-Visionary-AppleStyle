@@ -129,26 +129,78 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Carga dinámica URL Calendario ---
-    async function loadCalendarLink() {
+    // --- Carga dinámica URL Calendario y WhatsApp ---
+    async function loadDynamicLinks() {
         if (typeof _supabase === 'undefined') return;
+        
         try {
+            // 1. Cargar Calendario de Supabase
             const { data, error } = await _supabase.from('site_settings').select('value').eq('key', 'calendar_url').single();
-            if (data && data.value) {
-                const calLinks = document.querySelectorAll('a[href="#"], a.agenda-card');
-                calLinks.forEach(link => {
-                    // Si el enlace tiene dentro el texto 'Videollamada' o 'Reserva'
-                    if (link.innerText.includes('Videollamada') || link.innerText.includes('Reserva')) {
-                        link.href = data.value;
-                        link.target = '_blank'; // Abrir en pestaña nueva
+            const calendarUrl = (data && data.value) ? data.value : 'https://calendar.app.google/QMiJY3UbKChYgEcu6';
+
+            const forceLink = (el, url) => {
+                if (!el) return;
+                el.href = url;
+                el.target = '_blank';
+                el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation(); // Detener el "bucle" o scroll suave
+                    window.open(url, '_blank');
+                });
+            };
+
+            // Botón HERO
+            forceLink(document.getElementById('btn-hero-audit'), calendarUrl);
+
+            // Botón Videollamada
+            forceLink(document.getElementById('btn-contact-video'), calendarUrl);
+
+            // 2. Configurar WhatsApp (Número: 629494167)
+            const waBtn = document.getElementById('btn-contact-whatsapp');
+            if (waBtn) {
+                const waUrl = 'https://wa.me/34629494167?text=Hola!%20Me%20gustaría%20saber%20más%20sobre%20IA%20de%20Barrio';
+                waBtn.href = waUrl;
+                waBtn.target = '_blank';
+            }
+
+            // 3. Cargar Links de Pago de Stripe
+            const { data: payData, error: payError } = await _supabase.from('site_settings').select('key, value').in('key', [
+                'stripe_link_puntual', 'stripe_link_auditoria', 'stripe_link_mensual'
+            ]);
+
+            if (payData) {
+                payData.forEach(setting => {
+                    let btnId = '';
+                    if (setting.key === 'stripe_link_puntual') btnId = 'btn-buy-puntual';
+                    if (setting.key === 'stripe_link_auditoria') btnId = 'btn-buy-auditoria';
+                    if (setting.key === 'stripe_link_mensual') btnId = 'btn-buy-mensual';
+
+                    const btn = document.getElementById(btnId);
+                    if (btn && setting.value) {
+                        btn.onclick = (e) => {
+                            e.preventDefault();
+                            window.open(setting.value, '_blank');
+                        };
                     }
                 });
             }
+
+            // 4. Cargar Link de Revolut
+            const { data: revData } = await _supabase.from('site_settings').select('value').eq('key', 'revolut_link').single();
+            if (revData && revData.value) {
+                const revolutLinks = document.querySelectorAll('.revolut-alt-link');
+                revolutLinks.forEach(link => {
+                    link.classList.remove('hidden');
+                    link.href = revData.value;
+                    link.target = '_blank';
+                });
+            }
+
         } catch (e) {
-            console.log('Calendario no configurado.');
+            console.log('Error configurando enlaces dinámicos:', e);
         }
     }
-    loadCalendarLink();
+    loadDynamicLinks();
 });
 
 // --- Inyección Dinámica de Códigos de Tracking ---

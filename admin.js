@@ -3,6 +3,7 @@ let leadToDelete = null;
 let calendar = null; 
 let googleTokenClient;
 let googleAccessToken = null;
+let googleEventSource = null; // Para evitar duplicados
 
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Verificar Autenticación
@@ -76,6 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     sidebarItems.forEach(item => {
         item.addEventListener('click', () => {
             const target = item.getAttribute('data-target');
+            console.log('Navegando a:', target);
             
             // UI Update
             sidebarItems.forEach(i => i.classList.remove('active'));
@@ -83,7 +85,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             // Section Switch
             document.querySelectorAll('.admin-content-area').forEach(sec => sec.classList.remove('active'));
-            document.getElementById(target).classList.add('active');
+            const targetEl = document.getElementById(target);
+            if (targetEl) {
+                targetEl.classList.add('active');
+            } else {
+                console.error('No se encontró la sección:', target);
+            }
 
             if (target === 'section-legal') {
                 loadLegalTexts();
@@ -92,13 +99,26 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else if (target === 'section-calendar') {
                 loadCalendarUrl();
                 initCalendar();
+                syncWithGoogle(true);
             } else if (target === 'section-logs') {
                 loadLogs();
             } else if (target === 'section-seo') {
                 loadSeoData();
+            } else if (target === 'section-payments') {
+                console.log('Triggering Pagos section load...');
+                loadPaymentLinks();
             }
         });
     });
+
+    // Modals Genéricos
+    const btnOpenAppointment = document.getElementById('btn-open-appointment');
+    if (btnOpenAppointment) {
+        btnOpenAppointment.addEventListener('click', showAppointmentModal);
+    }
+
+    document.getElementById('btn-update-appointment').addEventListener('click', updateAppointment);
+    document.getElementById('btn-delete-appointment').addEventListener('click', deleteAppointment);
 
     fetchLeads();
 });
@@ -212,6 +232,7 @@ async function saveLegalText(key, editorId) {
             loadTrackingTexts();
         }
 
+        showToast('✓ Cambios guardados correctamente', 15000); 
         await addLog('Configuración Guardada', `Se ha actualizado la clave: ${key}`);
 
     } catch (e) {
@@ -219,6 +240,42 @@ async function saveLegalText(key, editorId) {
         alert('Error al guardar los cambios.');
         btn.innerText = originalText;
         btn.disabled = false;
+    }
+}
+
+async function loadPaymentLinks() {
+    const { data, error } = await _supabase.from('site_settings').select('key, value').in('key', [
+        'stripe_link_puntual', 'stripe_link_auditoria', 'stripe_link_mensual', 'revolut_link'
+    ]);
+    
+    if (data) {
+        data.forEach(setting => {
+            if (setting.key === 'stripe_link_puntual') document.getElementById('stripe-link-puntual').value = setting.value || '';
+            if (setting.key === 'stripe_link_auditoria') document.getElementById('stripe-link-auditoria').value = setting.value || '';
+            if (setting.key === 'stripe_link_mensual') document.getElementById('stripe-link-mensual').value = setting.value || '';
+            if (setting.key === 'revolut_link') document.getElementById('revolut-link').value = setting.value || '';
+        });
+    }
+}
+
+async function copyPaymentLink(type) {
+    let key = '';
+    if (type === 'puntual') key = 'stripe_link_puntual';
+    if (type === 'auditoria') key = 'stripe_link_auditoria';
+    if (type === 'mensual') key = 'stripe_link_mensual';
+    if (type === 'revolut') key = 'revolut_link';
+    
+    try {
+        const { data, error } = await _supabase.from('site_settings').select('value').eq('key', key).single();
+        if (data && data.value) {
+            await navigator.clipboard.writeText(data.value);
+            showToast('✓ Link copiado al portapapeles', 3000);
+        } else {
+            alert('Enlace no configurado aún.');
+        }
+    } catch (e) {
+        console.error(e);
+        alert('Error al copiar el enlace.');
     }
 }
 
@@ -285,6 +342,7 @@ function updateStats(leads) {
     document.getElementById('stat-total').innerText = leads.length;
     document.getElementById('stat-pending').innerText = leads.filter(l => l.status === 'nuevo').length;
     document.getElementById('stat-contacted').innerText = leads.filter(l => l.status === 'contactado').length;
+    document.getElementById('stat-paid').innerText = leads.filter(l => l.status === 'pagado').length;
 }
 
 async function toggleStatus(id, currentStatus) {
@@ -452,7 +510,7 @@ async function saveFicha() {
 // --- CALENDAR SYSTEM ---
 function initCalendar() {
     const calendarEl = document.getElementById('calendar-view');
-    if (!calendarEl || calendar) return; // Evitar reinicializar si ya existe
+    if (!calendarEl || calendar) return; 
 
     calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
@@ -462,63 +520,284 @@ function initCalendar() {
             right: 'dayGridMonth,timeGridWeek,listWeek'
         },
         locale: 'es',
-        events: [
-            { title: 'Auditoría IA 360', start: new Date().toISOString().split('T')[0] + 'T17:30:00', color: 'var(--accent-blue)' },
-            { title: 'Demo Innova SL', start: new Date(Date.now() + 86400000).toISOString().split('T')[0] + 'T10:30:00', color: '#FF9500' }
-        ],
+        events: async function(info, successCallback, failureCallback) {
+            try {
+                // 1. Cargar citas manuales de Supabase
+                const { data: manualEvents, error } = await _supabase
+                    .from('appointments')
+                    .select('*')
+                    .gte('start_time', info.startStr)
+                    .lte('start_time', info.endStr);
+
+                if (error) throw error;
+
+                const formattedManual = manualEvents.map(app => ({
+                    id: app.id,
+                    title: app.title,
+                    start: app.start_time,
+                    end: app.end_time,
+                    color: 'var(--accent-blue)',
+                    extendedProps: { 
+                        notes: app.notes, 
+                        type: 'manual',
+                        clientName: app.client_name,
+                        clientEmail: app.client_email,
+                        clientPhone: app.client_phone
+                    }
+                }));
+
+                // 2. Si hay Google Access Token, podríamos cargar aquí, 
+                // pero lo mantenemos separado por ahora para no complicar el flujo de auth
+                
+                successCallback(formattedManual);
+                renderUpcomingList(formattedManual);
+            } catch (e) {
+                console.error('Error cargando citas:', e);
+                // Fallback a eventos dummy si falla la tabla
+                successCallback([
+                    { title: 'Auditoría IA 360', start: new Date().toISOString().split('T')[0] + 'T17:30:00', color: 'var(--accent-blue)' }
+                ]);
+            }
+        },
         editable: true,
-        droppable: true,
         eventClick: function(info) {
-            alert('Cita: ' + info.event.title + '\nNotas: Cliente potencial de Menorca.');
+            // Si es manual o tiene ID (casi todas tienen ID en Google)
+            showEditAppointmentModal(info.event);
         }
     });
 
     calendar.render();
 }
 
-async function syncWithGoogle() {
-    // 1. Obtener Client ID desde Supabase para mayor seguridad/flexibilidad
+function showEditAppointmentModal(event) {
+    const props = event.extendedProps;
+    const modal = document.getElementById('edit-appointment-modal');
+    
+    document.getElementById('edit-app-id').value = event.id;
+    document.getElementById('edit-app-title').value = event.title;
+    document.getElementById('edit-app-client-name').value = props.clientName || '';
+    document.getElementById('edit-app-client-email').value = props.clientEmail || '';
+    document.getElementById('edit-app-client-phone').value = props.clientPhone || '';
+    
+    const start = event.start;
+    // Formateo robusto para inputs
+    const yyyy = start.getFullYear();
+    const mm = String(start.getMonth() + 1).padStart(2, '0');
+    const dd = String(start.getDate()).padStart(2, '0');
+    const hh = String(start.getHours()).padStart(2, '0');
+    const min = String(start.getMinutes()).padStart(2, '0');
+
+    document.getElementById('edit-app-date').value = `${yyyy}-${mm}-${dd}`;
+    document.getElementById('edit-app-time').value = `${hh}:${min}`;
+    document.getElementById('edit-app-notes').value = props.notes || '';
+
+    modal.classList.add('active');
+}
+
+async function updateAppointment() {
+    const id = document.getElementById('edit-app-id').value;
+    const title = document.getElementById('edit-app-title').value;
+    const client_name = document.getElementById('edit-app-client-name').value;
+    const client_email = document.getElementById('edit-app-client-email').value;
+    const client_phone = document.getElementById('edit-app-client-phone').value;
+    const date = document.getElementById('edit-app-date').value;
+    const time = document.getElementById('edit-app-time').value;
+    const notes = document.getElementById('edit-app-notes').value;
+
+    const startDateTime = new Date(`${date}T${time}`);
+
+    try {
+        const { error } = await _supabase.from('appointments').update({
+            title, client_name, client_email, client_phone,
+            start_time: startDateTime.toISOString(),
+            notes
+        }).eq('id', id);
+
+        if (error) throw error;
+
+        showToast('✓ Cita actualizada correctamente.', 5000);
+        document.getElementById('edit-appointment-modal').classList.remove('active');
+        if (calendar) calendar.refetchEvents();
+    } catch (e) {
+        showToast('❌ Error al actualizar la cita.', 10000);
+    }
+}
+
+async function deleteAppointment() {
+    if (!confirm('¿Estás seguro de que quieres eliminar esta cita?')) return;
+    
+    const id = document.getElementById('edit-app-id').value;
+
+    try {
+        const { error } = await _supabase.from('appointments').delete().eq('id', id);
+        if (error) throw error;
+
+        showToast('✓ Cita eliminada.', 5000);
+        document.getElementById('edit-appointment-modal').classList.remove('active');
+        if (calendar) calendar.refetchEvents();
+    } catch (e) {
+        showToast('❌ Error al eliminar la cita.', 10000);
+    }
+}
+
+function showAppointmentModal() {
+    console.log('Abriendo modal de cita...');
+    const modal = document.getElementById('appointment-modal');
+    const form = document.getElementById('form-appointment');
+    
+    if (!modal || !form) {
+        console.error('Error: No se encontró el modal o el formulario');
+        alert('Error técnico: El modal de citas no está disponible en este momento.');
+        return;
+    }
+
+    form.reset();
+    document.getElementById('app-date').valueAsDate = new Date();
+    modal.classList.add('active');
+}
+
+async function saveManualAppointment() {
+    const title = document.getElementById('app-title').value;
+    const client_name = document.getElementById('app-client-name').value;
+    const client_email = document.getElementById('app-client-email').value;
+    const client_phone = document.getElementById('app-client-phone').value;
+    const date = document.getElementById('app-date').value;
+    const time = document.getElementById('app-time').value;
+    const duration = parseInt(document.getElementById('app-duration').value);
+    const notes = document.getElementById('app-notes').value;
+
+    if (!title || !date || !time) return showToast('⚠️ Por favor, rellena los campos obligatorios.', 5000);
+
+    const startDateTime = new Date(`${date}T${time}`);
+    const endDateTime = new Date(startDateTime.getTime() + duration * 60000);
+
+    try {
+        const { error } = await _supabase.from('appointments').insert([{
+            title,
+            client_name,
+            client_email,
+            client_phone,
+            start_time: startDateTime.toISOString(),
+            end_time: endDateTime.toISOString(),
+            notes,
+            created_at: new Date().toISOString()
+        }]);
+
+        if (error) throw error;
+
+        // 2. Sincronizar con Google si hay token activo
+        if (googleAccessToken) {
+            await createGoogleEvent({
+                title,
+                start: startDateTime.toISOString(),
+                end: endDateTime.toISOString(),
+                description: `Cliente: ${client_name || 'N/A'}\nEmail: ${client_email || 'N/A'}\nTel: ${client_phone || 'N/A'}\n\nNotas: ${notes || ''}`
+            });
+        }
+
+        showToast('✓ Cita registrada y sincronizada con éxito.', 5000);
+        document.getElementById('appointment-modal').classList.remove('active');
+        if (calendar) calendar.refetchEvents();
+        
+        // 3. Notificaciones por Email
+        sendEmailNotification(title, client_name, client_email);
+
+        await addLog('Cita Manual', `Nueva cita registrada: ${title} (${client_name || 'Sin nombre'})`);
+    } catch (e) {
+        console.error(e);
+        showToast('❌ Error al procesar la cita. Revisa el log.', 10000);
+    }
+}
+
+async function createGoogleEvent(eventData) {
+    try {
+        const response = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${googleAccessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'summary': eventData.title,
+                'description': eventData.description,
+                'start': { 'dateTime': eventData.start },
+                'end': { 'dateTime': eventData.end }
+            })
+        });
+
+        if (!response.ok) throw new Error('Error al sincronizar con Google Calendar');
+        console.log('Evento creado en Google Calendar');
+    } catch (e) {
+        console.error('Push a Google failed:', e);
+        showToast('⚠️ Cita guardada pero falló el envío a Google Calendar.', 10000);
+    }
+}
+
+async function syncWithGoogle(isAuto = false) {
+    // 1. Intentar recuperar token de la sesión actual si existe
+    const storedToken = sessionStorage.getItem('google_access_token');
+    const tokenExpiry = sessionStorage.getItem('google_token_expiry');
+    
+    if (storedToken && tokenExpiry && Date.now() < parseInt(tokenExpiry)) {
+        googleAccessToken = storedToken;
+        updateSyncButtonUI(true);
+        loadGoogleEvents();
+        return;
+    }
+
+    // Si es auto y no hay token, no forzamos el popup para no molestar
+    if (isAuto && !storedToken) return;
+
     try {
         const { data } = await _supabase.from('site_settings').select('value').eq('key', 'google_client_id').single();
         if (!data || !data.value) {
-            alert('Falta configurar el GOOGLE_CLIENT_ID en la sección de SEO/Ajustes.');
+            if (!isAuto) alert('Falta configurar el GOOGLE_CLIENT_ID en la sección de SEO/Ajustes.');
             return;
         }
 
         const CLIENT_ID = data.value;
-        const DISCOVERY_DOC = "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest";
         const SCOPES = "https://www.googleapis.com/auth/calendar.events";
-
-        const btn = document.querySelector('button[onclick="syncWithGoogle()"]');
-        const originalContent = btn.innerHTML;
 
         if (!googleTokenClient) {
             googleTokenClient = google.accounts.oauth2.initTokenClient({
                 client_id: CLIENT_ID,
                 scope: SCOPES,
                 callback: async (resp) => {
-                    if (resp.error) {
-                        alert('Error en autenticación: ' + resp.error);
-                        return;
-                    }
+                    if (resp.error) return;
+                    
                     googleAccessToken = resp.access_token;
-                    btn.innerHTML = '✓ Sincronizado';
-                    btn.style.background = 'rgba(52, 199, 89, 0.2)';
-                    btn.style.color = '#34c759';
+                    // Guardar en sesión (dura aprox 1 hora en Google)
+                    sessionStorage.setItem('google_access_token', resp.access_token);
+                    sessionStorage.setItem('google_token_expiry', Date.now() + (3500 * 1000));
+                    
+                    updateSyncButtonUI(true);
                     await addLog('Google Sync', 'Acceso concedido al Calendario.');
                     loadGoogleEvents();
                 },
             });
         }
 
-        if (!googleAccessToken) {
-            googleTokenClient.requestAccessToken({ prompt: 'consent' });
-        } else {
-            loadGoogleEvents();
-        }
+        googleTokenClient.requestAccessToken({ prompt: isAuto ? '' : 'consent' });
     } catch (e) {
         console.error('Error en Sync:', e);
-        alert('Error conectando con Google.');
+    }
+}
+
+function updateSyncButtonUI(synced) {
+    const btn = document.querySelector('button[onclick="syncWithGoogle()"]');
+    if (!btn) return;
+    
+    if (synced) {
+        btn.innerHTML = '✓ Sincronizado';
+        btn.style.background = 'rgba(52, 199, 89, 0.2)';
+        btn.style.color = '#34c759';
+    } else {
+        btn.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px;"><path d="M4 4v5h5"></path><path d="M16 20v-5h-5"></path><path d="M20 12a8 8 0 1 0-8 8"></path></svg>
+            Sincronizar Google
+        `;
+        btn.style.background = '';
+        btn.style.color = '';
     }
 }
 
@@ -532,18 +811,35 @@ async function loadGoogleEvents() {
         const data = await response.json();
         
         if (data.items) {
-            const googleEvents = data.items.map(item => ({
-                id: item.id,
-                title: item.summary,
-                start: item.start.dateTime || item.start.date,
-                end: item.end.dateTime || item.end.date,
-                color: '#4285F4' // Color oficial Google Blue
-            }));
+            // Obtener todos los IDs de citas que ya tenemos en el calendario (las de Supabase)
+            const existingManualEvents = calendar.getEvents().filter(e => e.extendedProps.type === 'manual');
 
-            // Limpiar eventos locales y poner los de Google
-            calendar.removeAllEvents();
-            calendar.addEventSource(googleEvents);
-            renderUpcomingList(googleEvents);
+            const googleEvents = data.items
+                .map(item => ({
+                    id: item.id,
+                    title: item.summary,
+                    start: item.start.dateTime || item.start.date,
+                    end: item.end.dateTime || item.end.date,
+                    color: '#4285F4',
+                    extendedProps: {
+                        type: 'google',
+                        notes: item.description || ''
+                    }
+                }))
+                // FILTRO: Solo añadimos los de Google si NO coinciden en título y hora con uno manual
+                .filter(gEv => {
+                    const exists = existingManualEvents.some(mEv => 
+                        mEv.title === gEv.title && 
+                        new Date(mEv.start).getTime() === new Date(gEv.start).getTime()
+                    );
+                    return !exists;
+                });
+
+            if (googleEvents.length > 0) {
+                if (googleEventSource) googleEventSource.remove();
+                googleEventSource = calendar.addEventSource(googleEvents);
+                renderUpcomingList(googleEvents);
+            }
         }
     } catch (e) {
         console.error('Error cargando eventos:', e);
@@ -597,10 +893,10 @@ async function saveGoogleConfig() {
             value: clientId,
             updated_at: new Date().toISOString()
         });
-        alert('✓ Google Cloud vinculado. Ya puedes ir a la sección Calendario y sincronizar.');
+        showToast('✓ Google Cloud vinculado correctamente. Ya puedes ir a la sección Calendario.', 30000);
         addLog('Configuración API', 'Se ha guardado un nuevo Google Client ID.');
     } catch (e) {
-        alert('Error al guardar configuración de Google');
+        showToast('❌ Error al guardar configuración de Google', 10000);
     }
 }
 
@@ -615,10 +911,37 @@ async function saveSeoData() {
         ]);
         
         await addLog('SEO Actualizado', 'Se han modificado los metadatos globales del sitio.');
-        alert('✓ SEO guardado correctamente.');
+        showToast('✓ Metadatos SEO actualizados', 15000);
     } catch (e) {
-        alert('Error al guardar SEO');
+        showToast('❌ Error al guardar SEO', 10000);
     }
+}
+
+function showToast(message, duration = 4000) {
+    // Eliminar toast anterior si existe
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `
+        <div class="toast-icon">✓</div>
+        <div class="toast-message">${message}</div>
+        <div class="toast-close" onclick="this.parentElement.remove()">✕</div>
+    `;
+
+    document.body.appendChild(toast);
+
+    // Trigger animation
+    setTimeout(() => toast.classList.add('show'), 100);
+
+    // Auto remove
+    setTimeout(() => {
+        if (toast.parentElement) {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 500);
+        }
+    }, duration);
 }
 
 function runSeoTest() {
@@ -632,4 +955,43 @@ function runSeoTest() {
         speedVal.style.color = 'var(--accent-green)';
         addLog('SEO Test', `Test de velocidad ejecutado: Score ${score}`);
     }, 1500);
+}
+
+async function sendEmailNotification(title, name, email) {
+    console.log('Iniciando envío de email directo... Destino:', email);
+    
+    // Usamos fetch directo con el guion final que tiene tu slug en Supabase
+    const functionUrl = `${SUPABASE_URL}/functions/v1/send-appointment-email-`;
+
+    try {
+        const response = await fetch(functionUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'apikey': SUPABASE_ANON_KEY
+            },
+            body: JSON.stringify({
+                title,
+                client_name: name,
+                client_email: email,
+                admin_email: 'gerard@iartesana.es',
+                date: new Date().toLocaleString('es-ES')
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.warn('Error en la respuesta:', data);
+            showToast(`⚠️ Error en email: ${data.error || 'Fallo en el servidor'}`, 10000);
+            return;
+        }
+        
+        console.log('Email enviado con éxito:', data);
+        showToast('✉️ Emails de confirmación enviados.', 5000);
+    } catch (e) {
+        console.warn('Fallo crítico de conexión:', e);
+        showToast('❌ No se pudo contactar con la Edge Function. Revisa el nombre.', 10000);
+    }
 }

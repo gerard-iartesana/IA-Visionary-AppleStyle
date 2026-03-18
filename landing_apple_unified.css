@@ -535,6 +535,25 @@ body {
 .price-apple-card h3 { font-size: 3.5rem; font-weight: 700; margin-bottom: 20px; }
 .price-apple-card h3 span { font-size: 1rem; font-weight: 400; color: var(--text-grey); }
 
+.revolut-alt-link {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 0.8rem;
+    color: var(--accent-blue);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.revolut-alt-link:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+.revolut-alt-link.hidden {
+    display: none;
+}
+
 .popular-label {
     position: absolute;
     top: 20px;
