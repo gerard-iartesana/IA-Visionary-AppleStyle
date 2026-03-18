@@ -235,7 +235,6 @@
                         <p><strong>Consulta de 1 hora.</strong> Resolución de dudas específicas y diagnóstico rápido de oportunidades.</p>
                     </div>
                     <button id="btn-buy-puntual" class="btn-apple-buy">Reservar sesión</button>
-                    <a href="javascript:void(0)" onclick="openPremiumCheckout('Sesión Puntual', '159€')" style="display: block; font-size: 0.75rem; color: var(--accent-blue); margin-top: 12px; text-decoration: none;">(Probar Checkout con API)</a>
                     <a href="#" id="link-revolut-puntual" class="revolut-alt-link hidden">Pagar con Revolut</a>
                 </div>
                 <div class="price-apple-card featured">
@@ -246,7 +245,6 @@
                         <p><strong>Auditoría de 3 horas.</strong> Análisis profundo de tus procesos y roadmap de implementación detallado.</p>
                     </div>
                     <button id="btn-buy-auditoria" class="btn-apple-buy">Elegir Auditoría</button>
-                    <a href="javascript:void(0)" onclick="openPremiumCheckout('Auditoría IA', '359€')" style="display: block; font-size: 0.75rem; color: var(--accent-blue); margin-top: 12px; text-decoration: none;">(Probar Checkout con API)</a>
                     <a href="#" id="link-revolut-auditoria" class="revolut-alt-link hidden">Pagar con Revolut</a>
                 </div>
                 <div class="price-apple-card">
@@ -256,7 +254,6 @@
                         <p><strong>Asesoría continua.</strong> 4 horas/mes de soporte flexible. Ideal para ejecución constante. (Suscripción mínima 3 meses).</p>
                     </div>
                     <button id="btn-buy-mensual" class="btn-apple-buy">Saber más</button>
-                    <a href="javascript:void(0)" onclick="openPremiumCheckout('Plan Mensual', '250€')" style="display: block; font-size: 0.75rem; color: var(--accent-blue); margin-top: 12px; text-decoration: none;">(Probar Checkout con API)</a>
                     <a href="#" id="link-revolut-mensual" class="revolut-alt-link hidden">Pagar con Revolut</a>
                 </div>
             </div>
@@ -393,6 +390,11 @@
             </div>
 
             <button class="checkout-btn-primary" onclick="processMockPayment()">Pagar ahora</button>
+            
+            <p style="text-align: center; margin-top: 20px;">
+                <a href="javascript:void(0)" id="checkout-fallback-link" target="_blank" style="font-size: 0.8rem; color: var(--accent-blue); text-decoration: none;">¿Problemas con el pago? Paga directamente en Stripe →</a>
+            </p>
+
             <p style="font-size: 0.7rem; color: var(--text-grey); text-align: center; margin-top: 16px;">
                 Pago procesado de forma segura por Stripe. <br>Tus datos están encriptados.
             </p>

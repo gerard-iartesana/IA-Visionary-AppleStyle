@@ -170,16 +170,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (payData) {
                 payData.forEach(setting => {
-                    let btnId = '';
-                    if (setting.key === 'stripe_link_puntual') btnId = 'btn-buy-puntual';
-                    if (setting.key === 'stripe_link_auditoria') btnId = 'btn-buy-auditoria';
-                    if (setting.key === 'stripe_link_mensual') btnId = 'btn-buy-mensual';
+                    let btnId = '', planName = '', price = '';
+                    if (setting.key === 'stripe_link_puntual') { btnId = 'btn-buy-puntual'; planName = 'Sesión Puntual'; price = '159€'; }
+                    if (setting.key === 'stripe_link_auditoria') { btnId = 'btn-buy-auditoria'; planName = 'Auditoría IA'; price = '359€'; }
+                    if (setting.key === 'stripe_link_mensual') { btnId = 'btn-buy-mensual'; planName = 'Plan Mensual'; price = '250€'; }
 
                     const btn = document.getElementById(btnId);
                     if (btn && setting.value) {
                         btn.onclick = (e) => {
                             e.preventDefault();
-                            window.open(setting.value, '_blank');
+                            // Ahora el botón principal abre el Checkout Visualmente Brutal (API Prototype)
+                            // Y le pasamos el link real de Stripe como "fallback"
+                            openPremiumCheckout(planName, price, setting.value);
                         };
                     }
                 });
@@ -287,12 +289,18 @@ injectSeoMetadata();
 
 // --- PREMIUM CHECKOUT PROTOTYPE LOGIC ---
 
-function openPremiumCheckout(planName, price) {
+function openPremiumCheckout(planName, price, fallbackUrl) {
     const modal = document.getElementById('checkout-premium');
     if (!modal) return;
 
     document.getElementById('checkout-plan-name').innerText = planName;
     document.getElementById('checkout-plan-price').innerText = price;
+    
+    // Configurar el link de respaldo por si falla el premium
+    const fallbackLink = document.getElementById('checkout-fallback-link');
+    if (fallbackLink && fallbackUrl) {
+        fallbackLink.href = fallbackUrl;
+    }
     
     modal.classList.add('active');
     document.body.style.overflow = 'hidden'; // Bloquear scroll de fondo
