@@ -301,13 +301,18 @@ function initStripe() {
     if (stripe) return true; // Ya inicializado
     if (typeof Stripe !== 'undefined') {
         stripe = Stripe('pk_test_51TCMDoKthauSWpyv2Ngs3LZGkjOvrJYpXGneocuANnmmsog22oJnv1UaKZuHqs1L8jIph3eppRWD0PUJfvct0s4c005lPPk8Ps');
+        
+        // Crear elementos con opciones refinadas
         elements = stripe.elements({
             appearance: {
                 theme: 'night',
                 variables: { colorPrimary: '#0071e3', colorBackground: 'transparent', colorText: '#f5f5f7' }
             }
         });
+
+        // Crear el elemento de tarjeta con el 'Link' desactivado para evitar confusión
         cardElement = elements.create('card', {
+            hidePostalCode: true, // Quitamos el código postal para simplificar
             style: {
                 base: {
                     fontSize: '16px',
@@ -333,11 +338,14 @@ function openPremiumCheckout(planName, price, fallbackUrl) {
 
     currentCheckoutUrl = fallbackUrl;
     currentPlanName = planName;
-    // Extraer número del precio (ej: '159€' -> 159) y pasar a céntimos (15900)
-    currentPlanAmount = parseInt(price.replace(/[^0-9]/g, '')) * 100;
+    
+    // Calcular el precio base y el IVA (21%)
+    const baseAmount = parseInt(price.replace(/[^0-9]/g, ''));
+    const totalAmount = (baseAmount * 1.21).toFixed(2); // Total con IVA
+    currentPlanAmount = Math.round(baseAmount * 100); // Monto base en céntimos para el backend
 
     document.getElementById('checkout-plan-name').innerText = planName;
-    document.getElementById('checkout-plan-price').innerText = price;
+    document.getElementById('checkout-plan-price').innerText = `${totalAmount}€ (IVA incl.)`;
     
     const fallbackLink = document.getElementById('checkout-fallback-link');
     if (fallbackLink) fallbackLink.href = fallbackUrl;
