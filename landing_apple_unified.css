@@ -64,7 +64,7 @@ body {
     padding: 0 20px;
 }
 
-/* Apple Navigation */
+/* --- NAVEGACIÓN (UNIFICADA) --- */
 .apple-nav {
     position: fixed;
     top: 0;
@@ -73,9 +73,9 @@ body {
     background: var(--nav-bg);
     backdrop-filter: saturate(180%) blur(20px);
     -webkit-backdrop-filter: saturate(180%) blur(20px);
-    z-index: 2000;
+    z-index: 9999;
     border-bottom: 1px solid var(--border-color);
-    transition: all 0.5s cubic-bezier(0.28, 0.11, 0.32, 1);
+    transition: background 0.5s ease;
 }
 
 .scroll-progress {
@@ -85,7 +85,7 @@ body {
     width: 0%;
     height: 2px;
     background: var(--accent-blue);
-    z-index: 2001;
+    z-index: 10000;
     transition: width 0.1s ease;
 }
 
@@ -97,26 +97,13 @@ body {
 }
 
 .logo { 
-/* --- NAVEGACIÓN (DESKTOP) --- */
-.apple-nav {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    height: var(--nav-height);
-    background: var(--nav-bg);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    z-index: 9999;
-    border-bottom: 1px solid var(--border-color);
-    transition: all 0.5s ease;
+    font-weight: 600; 
+    font-size: 1.1rem; 
+    letter-spacing: -0.02em; 
+    text-decoration: none;
+    color: var(--text-main);
 }
-
-.nav-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 100%;
-}
+.logo span { color: var(--text-grey); font-weight: 300; }
 
 .nav-links {
     display: flex;
@@ -124,8 +111,17 @@ body {
     gap: 30px;
 }
 
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-main);
+    font-size: 0.8rem;
+    font-weight: 500;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
 .mobile-menu-toggle {
-    display: none; /* Oculto en desktop */
+    display: none;
     background: none;
     border: none;
     cursor: pointer;
@@ -133,14 +129,10 @@ body {
     color: var(--text-main);
 }
 
-/* --- NAVEGACIÓN (MÓVIL) --- */
 @media (max-width: 768px) {
-    .mobile-menu-toggle {
-        display: flex;
-    }
-
+    .mobile-menu-toggle { display: flex; }
     .nav-links {
-        display: none; /* OCULTO POR DEFECTO EN MÓVIL */
+        display: none;
         position: fixed;
         top: 0;
         left: 0;
@@ -153,20 +145,9 @@ body {
         gap: 35px;
         z-index: 10000;
     }
-
-    .nav-links.active {
-        display: flex !important; /* FORZAR MOSTRAR */
-    }
-
-    .nav-links a {
-        font-size: 2rem;
-        font-weight: 700;
-    }
-
-    .nav-actions {
-        flex-direction: column;
-        gap: 20px;
-    }
+    .nav-links.active { display: flex !important; }
+    .nav-links a { font-size: 2rem; }
+    .nav-actions { flex-direction: column; gap: 20px; }
 }
 
 /* Theme Toggle Button */
