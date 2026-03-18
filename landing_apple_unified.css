@@ -337,13 +337,13 @@ body {
 
 .apple-card-image {
     width: 100%;
-    flex: 1;
-    min-height: 140px;
-    margin-top: 20px;
+    height: 180px;
+    margin-top: auto;
     border-radius: 12px;
     object-fit: cover;
     display: block;
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
 }
 
 .apple-card:hover .apple-card-image {
