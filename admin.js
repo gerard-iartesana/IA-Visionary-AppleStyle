@@ -1068,7 +1068,7 @@ async function loadAnalyticsData() {
     } finally {
         if (btn) {
             btn.style.background = 'var(--text-grey)';
-            btn.innerText = 'Sincronizado Hoy';
+            // Eliminado el btn.innerText forzado para no machacar el nombre del "Modo Demo"
             btn.disabled = false;
         }
     }
