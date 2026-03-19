@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin.html
 Disallow: /login.html
 
-Sitemap: https://tudominio.com/sitemap.xml
+Sitemap: https://iadebarrio.com/sitemap.xml

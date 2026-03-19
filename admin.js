@@ -41,32 +41,41 @@ document.addEventListener('DOMContentLoaded', async () => {
         setTimeout(() => btn.classList.remove('spinning'), 800);
     });
 
-    // Delegación de eventos para la tabla
-    document.getElementById('leads-body').addEventListener('click', (e) => {
-        const btn = e.target.closest('button');
-        if (!btn) return;
+    const kanbanBoard = document.querySelector('.kanban-board');
+    if (kanbanBoard) {
+        kanbanBoard.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) {
+                // Check if card click for ficha (only if not clicking a button)
+                const card = e.target.closest('.kanban-card');
+                if (card && !e.target.closest('.lead-actions-group')) {
+                    showFichaModal(card.dataset.id);
+                }
+                return;
+            }
 
-        e.preventDefault();
-        e.stopPropagation();
+            e.preventDefault();
+            e.stopPropagation();
 
-        const leadId = btn.getAttribute('data-id');
-        const leadName = btn.getAttribute('data-name');
-        const leadStatus = btn.getAttribute('data-status');
+            const leadId = btn.getAttribute('data-id');
+            const leadName = btn.getAttribute('data-name');
+            const leadStatus = btn.getAttribute('data-status');
 
-        if (btn.classList.contains('btn-status')) {
-            toggleStatus(leadId, leadStatus);
-        } else if (btn.classList.contains('btn-whatsapp')) {
-            openWhatsApp(btn.getAttribute('data-phone'), leadName, btn.getAttribute('data-interest'));
-        } else if (btn.classList.contains('btn-email')) {
-            window.location.href = `mailto:${btn.getAttribute('data-email')}`;
-        } else if (btn.classList.contains('btn-auto')) {
-            sendToWebhook(leadId);
-        } else if (btn.classList.contains('btn-delete')) {
-            showDeleteModal(leadId, leadName);
-        } else if (btn.classList.contains('btn-ficha')) {
-            showFichaModal(leadId);
-        }
-    });
+            if (btn.classList.contains('btn-status')) {
+                toggleStatus(leadId, leadStatus);
+            } else if (btn.classList.contains('btn-whatsapp')) {
+                openWhatsApp(btn.getAttribute('data-phone'), leadName, btn.getAttribute('data-interest'));
+            } else if (btn.classList.contains('btn-email')) {
+                window.location.href = `mailto:${btn.getAttribute('data-email')}`;
+            } else if (btn.classList.contains('btn-auto')) {
+                sendToWebhook(leadId);
+            } else if (btn.classList.contains('btn-delete')) {
+                showDeleteModal(leadId, leadName);
+            } else if (btn.classList.contains('btn-ficha')) {
+                showFichaModal(leadId);
+            }
+        });
+    }
 
     // Listeners del Modal
     document.getElementById('modal-cancel').addEventListener('click', hideDeleteModal);
@@ -107,8 +116,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else if (target === 'section-payments') {
                 console.log('Triggering Pagos section load...');
                 loadPaymentLinks();
-            } else if (target === 'section-analytics') {
-                loadAnalyticsData();
             }
         });
     });
@@ -290,61 +297,192 @@ async function fetchLeads() {
         renderLeads(document.getElementById('search-input').value.toLowerCase(), document.getElementById('filter-status').value);
     } catch (error) {
         console.error('Error:', error);
-        document.getElementById('leads-body').innerHTML = '<tr><td colspan="7" class="table-loading" style="color: #ff3b30;">Error al conectar con la base de datos.</td></tr>';
+        alert('Error al conectar con la base de datos para cargar los leads.');
     }
 }
 
 function renderLeads(searchTerm = '', statusFilter = 'all') {
-    const leadsBody = document.getElementById('leads-body');
+    const listCita = document.querySelector('.list-cita-registrada');
+    const listReunion = document.querySelector('.list-reunion-hecha');
+    const listPiensa = document.querySelector('.list-se-lo-piensa');
+    const listConfirmado = document.querySelector('.list-confirmado');
+    
+    if (!listCita) return; // Not on the leads page
+    
+    [listCita, listReunion, listPiensa, listConfirmado].forEach(el => el.innerHTML = '');
+
     const filtered = allLeads.filter(lead => {
         const matchesSearch = (lead.name || '').toLowerCase().includes(searchTerm) || (lead.email || '').toLowerCase().includes(searchTerm);
-        const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
+        const matchesStatus = statusFilter === 'all' || lead.status === statusFilter || 
+                              (statusFilter === 'nuevo' && lead.status === 'cita_registrada') ||
+                              (statusFilter === 'contactado' && (lead.status === 'reunion_hecha' || lead.status === 'se_lo_piensa')) ||
+                              (statusFilter === 'pagado' && lead.status === 'confirmado');
         return matchesSearch && matchesStatus;
     });
 
     if (filtered.length === 0) {
-        leadsBody.innerHTML = '<tr><td colspan="7" class="table-loading">No se encontraron leads.</td></tr>';
-        return;
+        // Optional: show empty state message
     }
 
-    leadsBody.innerHTML = '';
     filtered.forEach(lead => {
-        const date = new Date(lead.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td style="color: var(--text-grey); font-size: 0.8rem;">${date}</td>
-            <td>
-                <div style="font-weight: 600; color: var(--text-white);">${lead.name}</div>
-                <div style="font-size: 0.8rem; color: var(--text-grey);">${lead.email}</div>
-                <div style="font-size: 0.8rem; color: var(--text-grey);">${lead.phone || '-'}</div>
-            </td>
-            <td><span style="font-size: 0.75rem; background: rgba(128,128,128,0.1); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-color); color: var(--text-white);">${lead.interest}</span></td>
-            <td style="max-width: 200px; font-size: 0.85rem; color: var(--text-grey); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${lead.message || '-'}</td>
-            <td>
-                <div style="font-weight: 500; font-size: 0.85rem; color: var(--text-white);">${lead.comercial || 'Sin asignar'}</div>
-                <div style="font-size: 0.75rem; color: var(--text-grey);">${lead.grupo || 'Sin grupo'}</div>
-            </td>
-            <td><span class="status-badge status-${lead.status || 'nuevo'}">${lead.status || 'nuevo'}</span></td>
-            <td>
-                <div class="lead-actions-group">
-                    <button type="button" class="btn-lead-action btn-ficha" data-id="${lead.id}" title="Ficha de Cliente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></button>
-                    <button type="button" class="btn-action btn-status" data-id="${lead.id}" data-status="${lead.status || 'nuevo'}">${lead.status === 'nuevo' ? 'Check' : 'Undo'}</button>
-                    <button type="button" class="btn-lead-action btn-whatsapp" data-phone="${lead.phone}" data-name="${lead.name}" data-interest="${lead.interest}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></button>
-                    <button type="button" class="btn-lead-action btn-email" data-email="${lead.email}" title="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></button>
-                    <button type="button" class="btn-lead-action btn-auto" data-id="${lead.id}" title="Automatizar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></button>
-                    <button type="button" class="btn-lead-action btn-delete" data-id="${lead.id}" data-name="${lead.name}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
+        const date = new Date(lead.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+        
+        let status = lead.status || 'cita_registrada';
+        // Mapeo retrocompatible
+        if (status === 'nuevo') status = 'cita_registrada';
+        else if (status === 'contactado') status = 'reunion_hecha';
+        else if (status === 'pagado') status = 'confirmado';
+
+        const card = document.createElement('div');
+        card.classList.add('kanban-card');
+        card.setAttribute('draggable', 'true');
+        card.dataset.id = lead.id;
+        card.dataset.status = status;
+
+        card.innerHTML = `
+            <div class="card-header">
+                <div class="card-title">${lead.name}</div>
+                <div class="lead-actions-group" style="gap: 4px;">
+                    <button type="button" class="btn-lead-action btn-ficha" style="width: 24px; height: 24px;" data-id="${lead.id}" title="Ficha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></button>
+                    <button type="button" class="btn-lead-action btn-whatsapp" style="width: 24px; height: 24px;" data-phone="${lead.phone}" data-name="${lead.name}" data-interest="${lead.interest}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></button>
                 </div>
-            </td>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-grey);">${lead.email}</div>
+            <div style="font-size: 0.8rem; color: var(--text-grey);">${lead.phone || '-'}</div>
+            <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <span class="card-interest">${lead.interest || 'Lead'}</span>
+                <span class="card-date">${date}</span>
+            </div>
         `;
-        leadsBody.appendChild(row);
+
+        if (status === 'cita_registrada') listCita.appendChild(card);
+        else if (status === 'reunion_hecha') listReunion.appendChild(card);
+        else if (status === 'se_lo_piensa') listPiensa.appendChild(card);
+        else if (status === 'confirmado') listConfirmado.appendChild(card);
+        else listCita.appendChild(card);
+    });
+
+    updateKanbanCounts();
+    initKanbanDrag();
+}
+
+function updateKanbanCounts() {
+    document.querySelectorAll('.kanban-column').forEach(col => {
+        const count = col.querySelectorAll('.kanban-card').length;
+        const countEl = col.querySelector('.card-count');
+        if(countEl) countEl.innerText = count;
     });
 }
 
 function updateStats(leads) {
     document.getElementById('stat-total').innerText = leads.length;
-    document.getElementById('stat-pending').innerText = leads.filter(l => l.status === 'nuevo').length;
-    document.getElementById('stat-contacted').innerText = leads.filter(l => l.status === 'contactado').length;
-    document.getElementById('stat-paid').innerText = leads.filter(l => l.status === 'pagado').length;
+    document.getElementById('stat-pending').innerText = leads.filter(l => ['nuevo', 'cita_registrada'].includes(l.status)).length;
+    document.getElementById('stat-contacted').innerText = leads.filter(l => ['contactado', 'reunion_hecha', 'se_lo_piensa'].includes(l.status)).length;
+    document.getElementById('stat-paid').innerText = leads.filter(l => ['pagado', 'confirmado'].includes(l.status)).length;
+}
+
+/** DRAG AND DROP KANBAN LOGIC */
+let draggedCard = null;
+
+function initKanbanDrag() {
+    const cards = document.querySelectorAll('.kanban-card');
+    const columns = document.querySelectorAll('.kanban-column');
+
+    cards.forEach(card => {
+        card.addEventListener('dragstart', handleDragStart);
+        card.addEventListener('dragend', handleDragEnd);
+    });
+
+    columns.forEach(col => {
+        col.addEventListener('dragover', handleDragOver);
+        col.addEventListener('dragenter', handleDragEnter);
+        col.addEventListener('dragleave', handleDragLeave);
+        col.addEventListener('drop', handleDrop);
+    });
+}
+
+function handleDragStart(e) {
+    draggedCard = this;
+    setTimeout(() => this.classList.add('dragging'), 0);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', this.dataset.id); 
+}
+
+function handleDragEnd(e) {
+    this.classList.remove('dragging');
+    document.querySelectorAll('.column-content').forEach(col => col.classList.remove('drag-over'));
+    draggedCard = null;
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    
+    const container = this.querySelector('.column-content');
+    if(draggedCard) {
+        const afterElement = getDragAfterElement(container, e.clientY);
+        if (afterElement == null) {
+            container.appendChild(draggedCard);
+        } else {
+            container.insertBefore(draggedCard, afterElement);
+        }
+    }
+}
+
+function handleDragEnter(e) {
+    e.preventDefault();
+    const content = this.querySelector('.column-content');
+    if (content) content.classList.add('drag-over');
+}
+
+function handleDragLeave(e) {
+    const content = this.querySelector('.column-content');
+    if (content && !content.contains(e.relatedTarget)) {
+        content.classList.remove('drag-over');
+    }
+}
+
+async function handleDrop(e) {
+    e.preventDefault();
+    const content = this.querySelector('.column-content');
+    if (content) content.classList.remove('drag-over');
+
+    const newStatus = this.dataset.status;
+    const cardId = draggedCard.dataset.id;
+    const oldStatus = draggedCard.dataset.status;
+
+    if (draggedCard && oldStatus !== newStatus) {
+        draggedCard.dataset.status = newStatus;
+        updateKanbanCounts();
+        
+        // Silent Update a Supabase
+        try {
+            await _supabase.from('leads').update({ status: newStatus }).eq('id', cardId);
+            // Actualizar el array en memoria
+            const leadIndex = allLeads.findIndex(l => l.id === cardId);
+            if (leadIndex !== -1) {
+                allLeads[leadIndex].status = newStatus;
+            }
+            updateStats(allLeads);
+            console.log(`📡 Lead ID ${cardId} movido a: ${newStatus}`);
+        } catch (err) {
+            console.error('Error al actualizar Supabase:', err);
+            showToast('❌ Error al actualizar fase en el servidor', 5000);
+        }
+    }
+}
+
+function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('.kanban-card:not(.dragging)')];
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
 async function toggleStatus(id, currentStatus) {
@@ -1000,273 +1138,5 @@ async function sendEmailNotification(title, name, email) {
     } catch (e) {
         console.warn('Fallo crítico de conexión:', e);
         showToast('❌ No se pudo contactar con la Edge Function. Revisa el nombre.', 10000);
-    }
-}
-
-// --- ANALYTICS DASHBOARD ---
-async function loadAnalyticsData(startDate = "30daysAgo", endDate = "today") {
-    console.log(`Cargando datos de GA4 desde Supabase Edge Function (Desde: ${startDate} Hasta: ${endDate})...`);
-    const btn = document.querySelector('#section-analytics .btn-action');
-    const originalText = btn ? btn.innerHTML : '';
-    if(btn) {
-        btn.innerHTML = '🔄 Cargando datos...';
-        btn.disabled = true;
-    }
-
-    const statusIcon = document.getElementById('analytics-status-icon');
-    if (statusIcon) {
-        statusIcon.style.display = 'inline-flex';
-        statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" class="lucide lucide-loader" style="color: var(--text-grey); animation: spin 1s linear infinite;"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg>`;
-    }
-
-    try {
-        const { data, error } = await _supabase.functions.invoke('get_analytics', {
-            method: 'POST',
-            body: { startDate, endDate }
-        });
-
-        if (error) {
-            console.error('Error desde la función:', error);
-            showToast('❌ Error al cargar Analytics: No se ha encontrado la Edge Function o no está desplegada.', 5000);
-            if (statusIcon) statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#FF3B30" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`;
-            return;
-        }
-
-        if (data && data.metrics) {
-            // Actualizar Tarjetas Globales
-            document.getElementById('ga-visits').textContent = data.metrics.sessions || '0';
-            document.getElementById('ga-visitors').textContent = data.metrics.activeUsers || '0';
-            document.getElementById('ga-leads').textContent = data.metrics.leads || '0';
-            document.getElementById('ga-revenue').textContent = (data.metrics.revenue || '0') + ' €';
-
-            // Actualizar Engagement / Eventos
-            document.getElementById('click-form').textContent = data.events.generate_lead || '0';
-            document.getElementById('click-wa').textContent = data.events.click_whatsapp || '0';
-            document.getElementById('click-cal').textContent = data.events.click_calendar || '0';
-
-            // Actualizar Conversiones Stripe
-            document.getElementById('conv-puntual').textContent = data.events.purchase_puntual || '0';
-            document.getElementById('conv-audit').textContent = data.events.purchase_audit || '0';
-            document.getElementById('conv-mensual').textContent = data.events.purchase_mensual || '0';
-
-            // Actualizar Google Ads si existen
-            if (data.ads) {
-                document.getElementById('ads-cost').textContent = (data.ads.cost || '0') + ' €';
-                document.getElementById('ads-clicks').textContent = data.ads.clicks || '0';
-                document.getElementById('ads-cpc').textContent = (data.ads.cpc || '0') + ' €';
-            }
-
-            // Llenar la Tabla Geográfica
-            const geoBody = document.getElementById('geo-body');
-            geoBody.innerHTML = ''; // Limpiar la carga
-            if (data.geography && data.geography.length > 0) {
-                data.geography.forEach(row => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td style="padding: 12px;">${row.country}</td>
-                        <td style="padding: 12px; color: var(--text-grey);">${row.city}</td>
-                        <td style="padding: 12px; text-align: right; font-weight: 500;">${row.sessions}</td>
-                    `;
-                    geoBody.appendChild(tr);
-                });
-            } else {
-                geoBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 20px;">No hay datos de ubicación suficientes aún en los últimos 30 días.</td></tr>';
-            }
-
-            if (statusIcon) statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#34C759" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
-        }
-    } catch (err) {
-        console.error('Error general cargando Analytics:', err);
-        if (statusIcon) statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#FF3B30" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`;
-    } finally {
-        if (btn) {
-            btn.style.background = 'var(--text-grey)';
-            // Eliminado el btn.innerText forzado para no machacar el nombre del "Modo Demo"
-            btn.disabled = false;
-        }
-    }
-}
-
-// MODO DEMO VISUAL (A petición)
-function loadDemoAnalytics() {
-    console.log("Activando Modo Demo Visual...");
-    const statusIcon = document.getElementById('analytics-status-icon');
-    if (statusIcon) {
-        statusIcon.style.display = 'inline-flex';
-        // En demo, ponemos el verde directamente para falsear la carga ultra-rápida.
-        statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#34C759" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
-    }
-
-    // Tarjetas Globales
-    document.getElementById('ga-visits').textContent = '4,892';
-    document.getElementById('ga-visitors').textContent = '3,150';
-    document.getElementById('ga-leads').textContent = '54';
-    document.getElementById('ga-revenue').textContent = '1,435 €';
-
-    // Google Ads
-    document.getElementById('ads-cost').textContent = '340.50 €';
-    document.getElementById('ads-clicks').textContent = '2,150';
-    document.getElementById('ads-cpc').textContent = '0.15';
-    document.getElementById('ads-lead').textContent = '16';
-    document.getElementById('ads-wa').textContent = '28';
-    document.getElementById('ads-cal').textContent = '8';
-    document.getElementById('ads-buy-1').textContent = '2';
-    document.getElementById('ads-buy-2').textContent = '0';
-    document.getElementById('ads-buy-3').textContent = '1';
-
-    // Meta Ads
-    document.getElementById('meta-cost').textContent = '280.00 €';
-    document.getElementById('meta-clicks').textContent = '3,450';
-    document.getElementById('meta-cpl').textContent = '8.50 €';
-    document.getElementById('meta-lead').textContent = '25';
-    document.getElementById('meta-wa').textContent = '54';
-    document.getElementById('meta-cal').textContent = '10';
-    document.getElementById('meta-buy-1').textContent = '3';
-    document.getElementById('meta-buy-2').textContent = '1';
-    document.getElementById('meta-buy-3').textContent = '1';
-
-    // Redes Sociales (Orgánico)
-    document.getElementById('social-ig-followers').textContent = '+142';
-    document.getElementById('social-ig-views').textContent = '1,890';
-    document.getElementById('social-ig-reach').textContent = '12,450';
-    document.getElementById('social-ig-engagement').textContent = '1,204';
-    
-    document.getElementById('social-fb-likes').textContent = '+54';
-    document.getElementById('social-fb-reach').textContent = '8,320';
-    document.getElementById('social-fb-interactions').textContent = '432';
-
-    // Engagement
-    document.getElementById('click-form').textContent = '41';
-    document.getElementById('click-wa').textContent = '82';
-    document.getElementById('click-cal').textContent = '18';
-
-    // Stripe
-    document.getElementById('conv-puntual').textContent = '5';
-    document.getElementById('conv-audit').textContent = '1';
-    document.getElementById('conv-mensual').textContent = '2';
-
-    // Geografía
-    const geoBody = document.getElementById('geo-body');
-    geoBody.innerHTML = `
-        <tr style="background: rgba(255,255,255,0.02);">
-            <td style="padding: 12px;">Spain 🇪🇸</td>
-            <td style="padding: 12px; color: var(--text-grey);">Barcelona</td>
-            <td style="padding: 12px; text-align: right; font-weight: 500;">1,430</td>
-        </tr>
-        <tr>
-            <td style="padding: 12px;">Spain 🇪🇸</td>
-            <td style="padding: 12px; color: var(--text-grey);">Madrid</td>
-            <td style="padding: 12px; text-align: right; font-weight: 500;">980</td>
-        </tr>
-        <tr style="background: rgba(255,255,255,0.02);">
-            <td style="padding: 12px;">Spain 🇪🇸</td>
-            <td style="padding: 12px; color: var(--text-grey);">Ciutadella de Menorca</td>
-            <td style="padding: 12px; text-align: right; font-weight: 500;">540</td>
-        </tr>
-        <tr>
-            <td style="padding: 12px;">Mexico 🇲🇽</td>
-            <td style="padding: 12px; color: var(--text-grey);">Ciudad de México</td>
-            <td style="padding: 12px; text-align: right; font-weight: 500;">320</td>
-        </tr>
-    `;
-
-    // Redes Sociales Top Publicaciones IG
-    const igPostsBody = document.getElementById('social-ig-posts');
-    if (igPostsBody) {
-        igPostsBody.innerHTML = `
-            <tr style="background: rgba(255,255,255,0.02);">
-                <td style="padding: 12px; text-align: center;">📸</td>
-                <td style="padding: 12px;"><strong style="color: var(--text-color);">Reel: "Cómo la IA cambia tu negocio"</strong><br><span style="font-size: 0.8rem; color: var(--text-grey);">Ayer, 18:30</span></td>
-                <td style="padding: 12px; text-align: center; color: var(--text-grey);">IG Reel</td>
-                <td style="padding: 12px; text-align: right; font-weight: 500; color: #E1306C;">4,250</td>
-                <td style="padding: 12px; text-align: right; color: var(--text-color);">342</td>
-                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">+12 clics</td>
-            </tr>
-            <tr>
-                <td style="padding: 12px; text-align: center;">📸</td>
-                <td style="padding: 12px;"><strong style="color: var(--text-color);">Foto: Nuestra auditoría en Menorca</strong><br><span style="font-size: 0.8rem; color: var(--text-grey);">Hace 1 semana</span></td>
-                <td style="padding: 12px; text-align: center; color: var(--text-grey);">IG Foto</td>
-                <td style="padding: 12px; text-align: right; font-weight: 500; color: #E1306C;">1,840</td>
-                <td style="padding: 12px; text-align: right; color: var(--text-color);">89</td>
-                <td style="padding: 12px; text-align: right; color: var(--text-grey);">0 clics</td>
-            </tr>
-            <tr style="background: rgba(255,255,255,0.02);">
-                <td style="padding: 12px; text-align: center;">📸</td>
-                <td style="padding: 12px;"><strong style="color: var(--text-color);">Reel: Setup Mac para IA</strong><br><span style="font-size: 0.8rem; color: var(--text-grey);">Hace 2 semanas</span></td>
-                <td style="padding: 12px; text-align: center; color: var(--text-grey);">IG Reel</td>
-                <td style="padding: 12px; text-align: right; font-weight: 500; color: #E1306C;">6,120</td>
-                <td style="padding: 12px; text-align: right; color: var(--text-color);">650</td>
-                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">+24 clics</td>
-            </tr>
-        `;
-    }
-
-    // Redes Sociales Top Publicaciones FB
-    const fbPostsBody = document.getElementById('social-fb-posts');
-    if (fbPostsBody) {
-        fbPostsBody.innerHTML = `
-            <tr style="background: rgba(255,255,255,0.02);">
-                <td style="padding: 12px; text-align: center;">📘</td>
-                <td style="padding: 12px;"><strong style="color: var(--text-color);">Post: Los 3 errores SEO de las peluquerías</strong><br><span style="font-size: 0.8rem; color: var(--text-grey);">Hace 3 días</span></td>
-                <td style="padding: 12px; text-align: center; color: var(--text-grey);">FB Carrusel</td>
-                <td style="padding: 12px; text-align: right; font-weight: 500; color: #1877F2;">2,890</td>
-                <td style="padding: 12px; text-align: right; color: var(--text-color);">125</td>
-                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">+5 clics</td>
-            </tr>
-            <tr>
-                <td style="padding: 12px; text-align: center;">📘</td>
-                <td style="padding: 12px;"><strong style="color: var(--text-color);">Post: Entrevista IA de Barrio en la Radio</strong><br><span style="font-size: 0.8rem; color: var(--text-grey);">Ayer</span></td>
-                <td style="padding: 12px; text-align: center; color: var(--text-grey);">FB Enlace</td>
-                <td style="padding: 12px; text-align: right; font-weight: 500; color: #1877F2;">1,420</td>
-                <td style="padding: 12px; text-align: right; color: var(--text-color);">80</td>
-                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">+18 clics</td>
-            </tr>
-        `;
-    }
-
-    showToast('Modo Demo Activado. Puedes tomar tu captura de pantalla.', 3000);
-}
-
-// Selector de Fechas Analytics
-function handleAnalyticsDateChange(value, textOption) {
-    const customPicker = document.getElementById('custom-date-picker');
-    const dateText = document.getElementById('analytics-date-text');
-    
-    if (value === 'custom') {
-        customPicker.style.display = 'flex';
-        updateCustomDateText();
-    } else {
-        customPicker.style.display = 'none';
-        dateText.innerHTML = `Mostrando datos para: <strong style="color: var(--text-color);">${textOption}</strong>`;
-        
-        let startDate = '30daysAgo';
-        const endDate = 'today';
-        switch(value) {
-            case 'el ultimo dia': startDate = 'yesterday'; break;
-            case 'la ultima semana': startDate = '7daysAgo'; break;
-            case 'el ultimo mes': startDate = '30daysAgo'; break;
-            case 'el ultimo trimestre': startDate = '90daysAgo'; break;
-            case 'el ultimo semestre': startDate = '180daysAgo'; break;
-            case 'el ultimo año': startDate = '365daysAgo'; break;
-            case '7 dias para atras': startDate = '7daysAgo'; break;
-            case '30 dias para atras': startDate = '30daysAgo'; break;
-            case '120 dias para atras': startDate = '120daysAgo'; break;
-            case '365 dias para atras': startDate = '365daysAgo'; break;
-        }
-        
-        loadAnalyticsData(startDate, endDate);
-    }
-}
-
-function updateCustomDateText() {
-    const start = document.getElementById('date-start').value;
-    const end = document.getElementById('date-end').value;
-    const dateText = document.getElementById('analytics-date-text');
-    
-    if (start && end) {
-        dateText.innerHTML = `Mostrando datos del: <strong style="color: var(--text-color);">${start} al ${end}</strong>`;
-        loadAnalyticsData(start, end);
-    } else {
-        dateText.innerHTML = `Mostrando datos: <strong style="color: var(--text-color);">Selecciona un rango de fechas</strong>`;
     }
 }

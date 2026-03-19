@@ -26,70 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Menú Móvil ---
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    const navLinks = document.getElementById('apple-nav-links');
-
-    if (mobileMenuBtn && navLinks) {
-        mobileMenuBtn.addEventListener('click', (e) => {
-            console.log('Menú clickeado'); // Debug
-            mobileMenuBtn.classList.toggle('active');
-            navLinks.classList.toggle('active');
-            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
-        });
-
-        // Cerrar al clickear un link
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenuBtn.classList.remove('active');
-                navLinks.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-        });
-    }
-
-    // --- Barra de Progreso y Scroll Effects ---
-    const progressBar = document.getElementById('scroll-progress-bar');
-    const nav = document.querySelector('.apple-nav');
-
-    window.addEventListener('scroll', () => {
-        // Progreso
-        const totalHeight = document.body.scrollHeight - window.innerHeight;
-        const progress = (window.scrollY / totalHeight) * 100;
-        if (progressBar) progressBar.style.width = `${progress}%`;
-
-        // Nav Evolution (Glassmorphism & Depth)
-        if (nav) {
-            if (window.scrollY > 30) {
-                nav.style.borderBottom = '1px solid var(--border-color)';
-                nav.style.background = 'var(--nav-bg)';
-                nav.style.backdropFilter = 'saturate(180%) blur(20px)';
-            } else {
-                nav.style.borderBottom = '1px solid transparent';
-                nav.style.background = 'transparent';
-                nav.style.backdropFilter = 'none';
-            }
-        }
-    });
-
-    // --- Smooth Scroll Refinado ---
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
-            const targetElement = document.getElementById(targetId);
-            
-            if (targetElement) {
-                const navHeight = document.querySelector('.apple-nav').offsetHeight;
-                const targetPosition = targetElement.offsetTop - navHeight;
-                
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
+    // --- Intersection Observer para el estilo Apple (Entradas con peso) ---
     const revealElements = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -125,6 +62,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- Efecto de Scroll en Nav (Opacidad) ---
+    const nav = document.querySelector('.apple-nav');
+    window.addEventListener('scroll', () => {
+        if (nav && window.scrollY > 20) {
+            nav.style.backdropFilter = 'saturate(180%) blur(20px)';
+            // El color de fondo se maneja por CSS variable en el nav
+        }
+    });
+
     // --- Manejo del Formulario de Contacto (Supabase Real) ---
     const contactForm = document.getElementById('apple-contact-form');
     const formSuccess = document.getElementById('form-success');
@@ -157,18 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const { error } = await _supabase.from('leads').insert([leadData]);
 
                 if (error) throw error;
-                
-                // GA4 Event - Lead Form
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'generate_lead', {
-                        event_category: 'engagement',
-                        event_label: leadData.interest
-                    });
-                }
-                // Meta Pixel Event - Lead
-                if (typeof fbq === 'function') {
-                    fbq('track', 'Lead', { content_name: leadData.interest });
-                }
 
                 contactForm.style.transition = 'opacity 0.5s, transform 0.5s';
                 contactForm.style.opacity = '0';
@@ -211,12 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 el.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation(); // Detener el "bucle" o scroll suave
-                    
-                    // GA4 Event - Calendar
-                    if (typeof gtag !== 'undefined') gtag('event', 'click_calendar', { event_category: 'engagement' });
-                    // Meta Pixel Event - Schedule
-                    if (typeof fbq === 'function') fbq('track', 'Schedule', { method: 'calendly' });
-
                     window.open(url, '_blank');
                 });
             };
@@ -233,12 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const waUrl = 'https://wa.me/34629494167?text=Hola!%20Me%20gustaría%20saber%20más%20sobre%20IA%20de%20Barrio';
                 waBtn.href = waUrl;
                 waBtn.target = '_blank';
-                waBtn.addEventListener('click', () => {
-                    // GA4 Event - WhatsApp
-                    if (typeof gtag !== 'undefined') gtag('event', 'click_whatsapp', { event_category: 'engagement' });
-                    // Meta Pixel Event - Contact
-                    if (typeof fbq === 'function') fbq('track', 'Contact', { content_name: 'WhatsApp' });
-                });
             }
 
             // 3. Cargar Links de Pago de Stripe
@@ -259,24 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             e.preventDefault();
                             // Ahora el botón principal abre el Checkout Visualmente Brutal (API Prototype)
                             // Y le pasamos el link real de Stripe como "fallback"
-                            
-                            // GA4 Event - Begin Checkout
-                            if (typeof gtag !== 'undefined') {
-                                gtag('event', 'begin_checkout', {
-                                    items: [{ item_name: planName, price: parseFloat(price) }],
-                                    currency: 'EUR',
-                                    value: parseFloat(price)
-                                });
-                            }
-                            // Meta Pixel Event - Initiate Checkout
-                            if (typeof fbq === 'function') {
-                                fbq('track', 'InitiateCheckout', {
-                                    content_name: planName,
-                                    value: parseFloat(price),
-                                    currency: 'EUR'
-                                });
-                            }
-
                             openPremiumCheckout(planName, price, setting.value);
                         };
                     }
@@ -526,22 +430,6 @@ async function processMockPayment() {
         } else {
             // 3. ¡ÉXITO TOTAL! El pago ha sido procesado por Stripe
             if (result.paymentIntent.status === 'succeeded') {
-                // GA4 Event - Purchase
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'purchase', {
-                        currency: 'EUR',
-                        value: currentPlanAmount / 100,
-                        items: [{ item_name: currentPlanName, price: currentPlanAmount / 100 }]
-                    });
-                }
-                // Meta Pixel Event - Purchase
-                if (typeof fbq === 'function') {
-                    fbq('track', 'Purchase', {
-                        content_name: currentPlanName,
-                        value: currentPlanAmount / 100,
-                        currency: 'EUR'
-                    });
-                }
                 box.innerHTML = `
                     <div style="text-align: center; padding: 40px 0; animation: fadeIn 0.8s ease-out;">
                         <div style="width: 80px; height: 80px; background: #34c759; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 10px 30px rgba(52, 199, 89, 0.4);">
