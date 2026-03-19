@@ -322,14 +322,39 @@
 
             <!-- Section: ANALYTICS & ADS -->
             <section id="section-analytics" class="admin-content-area">
-                <header class="admin-header" style="padding-top: 0; display: flex; justify-content: space-between; align-items: center;">
+                <header class="admin-header" style="padding-top: 0; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
                     <div>
                         <h1>Estadísticas y Conversiones</h1>
-                        <p style="color: var(--text-grey);">Vista general del rendimiento de tu web en los últimos 30 días.</p>
+                        <p id="analytics-date-text" style="color: var(--text-grey);">Mostrando datos del período clasificado.</p>
                     </div>
-                    <button class="btn-action" style="background: var(--text-grey); border: none; font-weight: 500;" onclick="loadDemoAnalytics()">
-                        👁️ Llenar Visualmente (Modo Demo)
-                    </button>
+                    
+                    <div style="display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; justify-content: flex-end;">
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <select id="analytics-date-preset" style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-color); padding: 10px 16px; border-radius: 8px; font-family: 'Inter', sans-serif; cursor: pointer; outline: none;" onchange="handleAnalyticsDateChange(this.value, this.options[this.selectedIndex].text)">
+                                <option value="el ultimo dia">el ultimo dia</option>
+                                <option value="la ultima semana">la ultima semana</option>
+                                <option value="el ultimo mes">el ultimo mes</option>
+                                <option value="el ultimo trimestre">el ultimo trimestre</option>
+                                <option value="el ultimo semestre">el ultimo semestre</option>
+                                <option value="el ultimo año">el ultimo año</option>
+                                <option value="7 dias para atras">7 dias para atras</option>
+                                <option value="30 dias para atras" selected>30 dias para atras</option>
+                                <option value="120 dias para atras">120 dias para atras</option>
+                                <option value="365 dias para atras">365 dias para atras</option>
+                                <option value="custom">seleccionar las fechas</option>
+                            </select>
+                            
+                            <div id="custom-date-picker" style="display: none; gap: 8px; align-items: center; background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                <input type="date" id="date-start" style="background: transparent; border: none; color: var(--text-color); outline: none;" onchange="updateCustomDateText()">
+                                <span style="color: var(--text-grey); font-size: 0.9rem;">a</span>
+                                <input type="date" id="date-end" style="background: transparent; border: none; color: var(--text-color); outline: none;" onchange="updateCustomDateText()">
+                            </div>
+                        </div>
+
+                        <button id="btn-demo-mode" class="btn-action" style="background: var(--text-grey); border: none; font-weight: 500;" onclick="loadDemoAnalytics()">
+                            👁️ Llenar Visualmente
+                        </button>
+                    </div>
                 </header>
 
                 <!-- Tarjetas Principales -->

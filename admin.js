@@ -1142,3 +1142,30 @@ function loadDemoAnalytics() {
 
     showToast('Modo Demo Activado. Puedes tomar tu captura de pantalla.', 3000);
 }
+
+// Selector de Fechas Analytics
+function handleAnalyticsDateChange(value, textOption) {
+    const customPicker = document.getElementById('custom-date-picker');
+    const dateText = document.getElementById('analytics-date-text');
+    
+    if (value === 'custom') {
+        customPicker.style.display = 'flex';
+        updateCustomDateText();
+    } else {
+        customPicker.style.display = 'none';
+        dateText.innerHTML = `Mostrando datos para: <strong style="color: var(--text-color);">${textOption}</strong>`;
+        // Aquí en el futuro llamaríamos a loadAnalyticsData() pasándole la fecha para refrescar
+    }
+}
+
+function updateCustomDateText() {
+    const start = document.getElementById('date-start').value;
+    const end = document.getElementById('date-end').value;
+    const dateText = document.getElementById('analytics-date-text');
+    
+    if (start && end) {
+        dateText.innerHTML = `Mostrando datos del: <strong style="color: var(--text-color);">${start} al ${end}</strong>`;
+    } else {
+        dateText.innerHTML = `Mostrando datos: <strong style="color: var(--text-color);">Selecciona un rango de fechas</strong>`;
+    }
+}
