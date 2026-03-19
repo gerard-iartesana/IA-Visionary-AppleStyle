@@ -1153,6 +1153,45 @@ function loadDemoAnalytics() {
         </tr>
     `;
 
+    // Redes Sociales Top Publicaciones
+    const postsBody = document.getElementById('social-posts-body');
+    if (postsBody) {
+        postsBody.innerHTML = `
+            <tr style="background: rgba(255,255,255,0.02);">
+                <td style="padding: 12px; text-align: center;">📸</td>
+                <td style="padding: 12px;"><strong style="color: var(--text-color);">Reel: "Cómo la IA cambia tu negocio"</strong><br><span style="font-size: 0.8rem; color: var(--text-grey);">Ayer, 18:30</span></td>
+                <td style="padding: 12px; text-align: center; color: var(--text-grey);">IG Reel</td>
+                <td style="padding: 12px; text-align: right; font-weight: 500; color: #E1306C;">4,250</td>
+                <td style="padding: 12px; text-align: right; color: var(--text-color);">342</td>
+                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">+12 clics</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; text-align: center;">📘</td>
+                <td style="padding: 12px;"><strong style="color: var(--text-color);">Post: Los 3 errores SEO de las peluquerías</strong><br><span style="font-size: 0.8rem; color: var(--text-grey);">Hace 3 días</span></td>
+                <td style="padding: 12px; text-align: center; color: var(--text-grey);">FB Carrusel</td>
+                <td style="padding: 12px; text-align: right; font-weight: 500; color: #1877F2;">2,890</td>
+                <td style="padding: 12px; text-align: right; color: var(--text-color);">125</td>
+                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">+5 clics</td>
+            </tr>
+            <tr style="background: rgba(255,255,255,0.02);">
+                <td style="padding: 12px; text-align: center;">📸</td>
+                <td style="padding: 12px;"><strong style="color: var(--text-color);">Foto: Nuestra auditoría en Menorca</strong><br><span style="font-size: 0.8rem; color: var(--text-grey);">Hace 1 semana</span></td>
+                <td style="padding: 12px; text-align: center; color: var(--text-grey);">IG Foto</td>
+                <td style="padding: 12px; text-align: right; font-weight: 500; color: #E1306C;">1,840</td>
+                <td style="padding: 12px; text-align: right; color: var(--text-color);">89</td>
+                <td style="padding: 12px; text-align: right; color: var(--text-grey);">0 clics</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; text-align: center;">📸</td>
+                <td style="padding: 12px;"><strong style="color: var(--text-color);">Reel: Setup Mac para IA</strong><br><span style="font-size: 0.8rem; color: var(--text-grey);">Hace 2 semanas</span></td>
+                <td style="padding: 12px; text-align: center; color: var(--text-grey);">IG Reel</td>
+                <td style="padding: 12px; text-align: right; font-weight: 500; color: #E1306C;">6,120</td>
+                <td style="padding: 12px; text-align: right; color: var(--text-color);">650</td>
+                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">+24 clics</td>
+            </tr>
+        `;
+    }
+
     showToast('Modo Demo Activado. Puedes tomar tu captura de pantalla.', 3000);
 }
 
