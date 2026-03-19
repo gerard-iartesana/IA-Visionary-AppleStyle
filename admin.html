@@ -353,44 +353,303 @@
 
             <!-- Section: ANALYTICS & ADS -->
             <section id="section-analytics" class="admin-content-area">
-                <header class="admin-header" style="padding-top: 0;">
-                    <h1>Estadísticas y Ads (Centro de Mando)</h1>
-                    <p style="color: var(--text-grey);">Espacio reservado para las integraciones de métricas en vivo de Google y Meta.</p>
+                <header class="admin-header" style="padding-top: 0; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+                    <div>
+                        <h1 style="display: flex; align-items: center; gap: 12px;">
+                            Estadísticas y Conversiones
+                            <span id="analytics-status-icon" style="display: none; align-items: center; justify-content: center; width: 24px; height: 24px;"></span>
+                        </h1>
+                        <p id="analytics-date-text" style="color: var(--text-grey);">Mostrando datos del período clasificado.</p>
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; justify-content: flex-end;">
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <select id="analytics-date-preset" style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-color); padding: 10px 16px; border-radius: 8px; font-family: 'Inter', sans-serif; cursor: pointer; outline: none;" onchange="handleAnalyticsDateChange(this.value, this.options[this.selectedIndex].text)">
+                                <option value="el ultimo dia">el ultimo dia</option>
+                                <option value="la ultima semana">la ultima semana</option>
+                                <option value="el ultimo mes">el ultimo mes</option>
+                                <option value="el ultimo trimestre">el ultimo trimestre</option>
+                                <option value="el ultimo semestre">el ultimo semestre</option>
+                                <option value="el ultimo año">el ultimo año</option>
+                                <option value="7 dias para atras">7 dias para atras</option>
+                                <option value="30 dias para atras" selected>30 dias para atras</option>
+                                <option value="120 dias para atras">120 dias para atras</option>
+                                <option value="365 dias para atras">365 dias para atras</option>
+                                <option value="custom">seleccionar las fechas</option>
+                            </select>
+                            
+                            <div id="custom-date-picker" style="display: none; gap: 8px; align-items: center; background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                <input type="date" id="date-start" style="background: transparent; border: none; color: var(--text-color); outline: none;" onchange="updateCustomDateText()">
+                                <span style="color: var(--text-grey); font-size: 0.9rem;">a</span>
+                                <input type="date" id="date-end" style="background: transparent; border: none; color: var(--text-color); outline: none;" onchange="updateCustomDateText()">
+                            </div>
+                        </div>
+
+                        <button id="btn-demo-mode" class="btn-action" style="background: var(--text-grey); border: none; font-weight: 500;" onclick="loadDemoAnalytics()">
+                            👁️ Llenar Visualmente
+                        </button>
+                    </div>
                 </header>
 
-                <div class="legal-editor-group" style="background: var(--bg-card); padding: 30px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 30px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
-                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
-                            Ecosistema Google (Analytics / Ads)
-                        </h3>
-                        <span style="background: rgba(255,149,0,0.1); color: #FF9500; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,149,0,0.3);">Pendiente de Conexión</span>
+                <!-- Tarjetas Principales -->
+                <div class="stats-grid" style="margin-bottom: 24px;">
+                    <div class="stat-card" style="box-shadow: 0 4px 20px rgba(0, 113, 227, 0.1); border: 1px solid rgba(0, 113, 227, 0.2);">
+                        <span class="stat-label">Visitas Totales</span>
+                        <h2 id="ga-visits" class="text-white">--</h2>
                     </div>
-                    <p style="font-size: 0.9rem; color: var(--text-grey); margin-bottom: 20px;">
-                        Aquí podremos visualizar el tráfico de la web o el gasto y retorno de las campañas de Search/Display.<br>
-                        <strong>Opciones de Integración:</strong> Vía Iframe a través de un dashboard de <em>Looker Studio</em> (rápido y gratis) o mediante llamadas directas a la <em>Google Analytics / Ads API</em> (avanzado).
-                    </p>
-                    <div style="width: 100%; height: 200px; background: rgba(0,0,0,0.2); border: 2px dashed rgba(255,255,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-direction: column; color: var(--text-grey); gap: 12px;">
-                        <svg viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" stroke-width="1.5" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-                        <span>Caja reservada para reporte o Iframe de Google</span>
+                    <div class="stat-card">
+                        <span class="stat-label">Visitantes Únicos</span>
+                        <h2 id="ga-visitors" class="text-white">--</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Leads Recibidos</span>
+                        <h2 id="ga-leads" class="text-blue">--</h2>
+                    </div>
+                    <div class="stat-card" style="box-shadow: 0 4px 20px rgba(52, 199, 89, 0.1); border: 1px solid rgba(52, 199, 89, 0.2);">
+                        <span class="stat-label">Ingresos Mensuales</span>
+                        <h2 id="ga-revenue" class="text-green">-- €</h2>
                     </div>
                 </div>
 
-                <div class="legal-editor-group" style="background: var(--bg-card); padding: 30px; border-radius: 16px; border: 1px solid var(--border-color);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
-                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-                            Ecosistema Meta (Facebook / Instagram Ads)
-                        </h3>
-                        <span style="background: rgba(255,149,0,0.1); color: #FF9500; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,149,0,0.3);">Pendiente de Conexión</span>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                    <!-- Engagement (Clics) -->
+                    <div class="stat-card" style="padding: 24px;">
+                        <h3 style="margin-top: 0; margin-bottom: 16px; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Interacción (Clics Clave)</h3>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                <span style="display: flex; align-items: center; gap: 8px;">📄 Formulario Enviado (Lead)</span>
+                                <strong id="click-form">--</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(52, 199, 89, 0.05); border-radius: 8px;">
+                                <span style="display: flex; align-items: center; gap: 8px; color: var(--accent-green);">💬 Clic a WhatsApp</span>
+                                <strong id="click-wa" class="text-green">--</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(0, 113, 227, 0.05); border-radius: 8px;">
+                                <span style="display: flex; align-items: center; gap: 8px; color: var(--accent-blue);">📅 Reserva Videollamada</span>
+                                <strong id="click-cal" class="text-blue">--</strong>
+                            </div>
+                        </div>
                     </div>
-                    <p style="font-size: 0.9rem; color: var(--text-grey); margin-bottom: 20px;">
-                        Visualización del Coste por Lead (CPL), impresiones y gasto total (ROAS).<br>
-                        <strong>Opciones de Integración:</strong> A través de la <em>Meta Graph API</em> o enviando los datos de Meta a un conector como <em>Supermetrics</em>.
-                    </p>
-                    <div style="width: 100%; height: 200px; background: rgba(0,0,0,0.2); border: 2px dashed rgba(255,255,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-direction: column; color: var(--text-grey); gap: 12px;">
-                        <svg viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" stroke-width="1.5" fill="none"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                        <span>Caja reservada para reporte o Iframe de Meta Ads</span>
+
+                    <!-- Planes Vendidos -->
+                    <div class="stat-card" style="padding: 24px;">
+                        <h3 style="margin-top: 0; margin-bottom: 16px; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Desglose de Ventas (Stripe)</h3>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                <span>Sesión Puntual (159€)</span>
+                                <strong id="conv-puntual">--</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid var(--accent-blue); background: rgba(0, 113, 227, 0.05); border-radius: 8px;">
+                                <span style="color: var(--accent-blue); font-weight: 500;">Auditoría IA (359€) ⭐</span>
+                                <strong id="conv-audit" class="text-blue">--</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                                <span>Acompañamiento Mensual (250€)</span>
+                                <strong id="conv-mensual">--</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Geografía -->
+                <div class="stat-card" style="padding: 24px; margin-bottom: 24px;">
+                    <h3 style="margin-top: 0; margin-bottom: 16px; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Desglose Geográfico (País y Ciudad)</h3>
+                    <div class="table-wrapper" style="max-height: 250px; overflow-y: auto;">
+                        <table class="leads-table" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th style="padding: 12px;">País</th>
+                                    <th style="padding: 12px;">Ciudad</th>
+                                    <th style="padding: 12px; text-align: right;">Visitas</th>
+                                </tr>
+                            </thead>
+                            <tbody id="geo-body">
+                                <tr><td colspan="3" class="table-loading">Conecta GA4 para ver la procedencia real de tus visitantes...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Google Ads Rendimiento -->
+                <div class="stat-card" style="padding: 24px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(255, 149, 0, 0.1); border: 1px solid rgba(255, 149, 0, 0.2);">
+                    <h3 style="margin-top: 0; margin-bottom: 16px; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#FF9500" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                        Rendimiento Google Ads
+                    </h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Inversión (Gasto)</span>
+                            <h3 id="ads-cost" style="margin: 8px 0 0 0; color: #FF9500;">-- €</h3>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Clics en Anuncios</span>
+                            <h3 id="ads-clicks" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Coste por Clic (CPC)</span>
+                            <h3 id="ads-cpc" style="margin: 8px 0 0 0;">-- €</h3>
+                        </div>
+
+                        <!-- Interacciones Google -->
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Leads (Formulario)</span>
+                            <h3 id="ads-lead" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Clics a WhatsApp</span>
+                            <h3 id="ads-wa" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Llamadas Reservadas</span>
+                            <h3 id="ads-cal" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+
+                        <!-- Conversiones Stripe Google -->
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Puntuales (159€)</span>
+                            <h3 id="ads-buy-1" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Auditorías (359€)</span>
+                            <h3 id="ads-buy-2" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Planes Mensuales (250€)</span>
+                            <h3 id="ads-buy-3" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meta Ads Rendimiento -->
+                <div class="stat-card" style="padding: 24px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(0, 113, 227, 0.1); border: 1px solid rgba(0, 113, 227, 0.2);">
+                    <h3 style="margin-top: 0; margin-bottom: 16px; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--accent-blue)" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        Rendimiento Meta Ads (Facebook/Instagram)
+                    </h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Inversión (Gasto)</span>
+                            <h3 id="meta-cost" style="margin: 8px 0 0 0; color: var(--accent-blue);">-- €</h3>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Visitas a la Web</span>
+                            <h3 id="meta-clicks" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Coste por Lead (CPL)</span>
+                            <h3 id="meta-cpl" style="margin: 8px 0 0 0;">-- €</h3>
+                        </div>
+                        
+                        <!-- Interacciones Meta -->
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Leads (Formulario)</span>
+                            <h3 id="meta-lead" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Clics a WhatsApp</span>
+                            <h3 id="meta-wa" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Llamadas Reservadas</span>
+                            <h3 id="meta-cal" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+
+                        <!-- Conversiones Stripe Meta -->
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Puntuales (159€)</span>
+                            <h3 id="meta-buy-1" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Auditorías (359€)</span>
+                            <h3 id="meta-buy-2" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Planes Mensuales (250€)</span>
+                            <h3 id="meta-buy-3" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Redes Sociales Orgánicas -->
+                <div class="stat-card" style="padding: 24px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(100, 100, 100, 0.1); border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <h3 style="margin-top: 0; margin-bottom: 16px; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#E1306C" stroke-width="2"><path d="M16 2H8a6 6 0 0 0-6 6v8a6 6 0 0 0 6 6h8a6 6 0 0 0 6-6V8a6 6 0 0 0-6-6z"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                        Rendimiento Instagram (Orgánico)
+                    </h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; margin-bottom: 32px;">
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Nuevos Seguidores</span>
+                            <h3 id="social-ig-followers" style="margin: 8px 0 0 0; color: #E1306C;">--</h3>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Visitas al Perfil</span>
+                            <h3 id="social-ig-views" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Alcance Total</span>
+                            <h3 id="social-ig-reach" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Engagement (Likes/Guar)</span>
+                            <h3 id="social-ig-engagement" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+                    </div>
+
+                    <!-- Top IG Posts-->
+                    <div class="table-wrapper" style="max-height: 250px; overflow-y: auto; margin-bottom: 32px;">
+                        <table class="leads-table" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th style="padding: 12px; width: 50px;">Red</th>
+                                    <th style="padding: 12px;">Publicación</th>
+                                    <th style="padding: 12px; text-align: center;">Tipo</th>
+                                    <th style="padding: 12px; text-align: right;">Alcance</th>
+                                    <th style="padding: 12px; text-align: right;">Interacciones</th>
+                                    <th style="padding: 12px; text-align: right;">Leads / Clics</th>
+                                </tr>
+                            </thead>
+                            <tbody id="social-ig-posts">
+                                <tr><td colspan="6" class="table-loading">Cargando publicaciones orgánicas de Instagram...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 style="margin-top: 0; margin-bottom: 16px; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1877F2" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        Rendimiento Facebook Page (Orgánico)
+                    </h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Me Gusta de la Página</span>
+                            <h3 id="social-fb-likes" style="margin: 8px 0 0 0; color: #1877F2;">--</h3>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Alcance Orgánico</span>
+                            <h3 id="social-fb-reach" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px;">
+                            <span style="font-size: 0.85rem; color: var(--text-grey);">Interacciones Totales</span>
+                            <h3 id="social-fb-interactions" style="margin: 8px 0 0 0;">--</h3>
+                        </div>
+                    </div>
+
+                    <!-- Top FB Posts-->
+                    <div class="table-wrapper" style="max-height: 250px; overflow-y: auto;">
+                        <table class="leads-table" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th style="padding: 12px; width: 50px;">Red</th>
+                                    <th style="padding: 12px;">Publicación</th>
+                                    <th style="padding: 12px; text-align: center;">Tipo</th>
+                                    <th style="padding: 12px; text-align: right;">Alcance</th>
+                                    <th style="padding: 12px; text-align: right;">Interacciones</th>
+                                    <th style="padding: 12px; text-align: right;">Leads / Clics</th>
+                                </tr>
+                            </thead>
+                            <tbody id="social-fb-posts">
+                                <tr><td colspan="6" class="table-loading">Cargando publicaciones orgánicas de Facebook Page...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </section>

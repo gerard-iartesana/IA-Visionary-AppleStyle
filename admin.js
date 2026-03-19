@@ -524,25 +524,33 @@ async function handleDrop(e) {
     const oldStatus = draggedCard.dataset.status;
 
     if (draggedCard && oldStatus !== newStatus) {
+        // Optimistic UI Update
         draggedCard.dataset.status = newStatus;
-        updateKanbanCounts();
         
+        // Actualizar el array en memoria inmediatamente
+        const leadIndex = allLeads.findIndex(l => l.id === cardId);
+        if (leadIndex !== -1) {
+            allLeads[leadIndex].status = newStatus;
+            allLeads[leadIndex].updated_at = new Date().toISOString(); // Move time in memory
+        }
+        
+        updateKanbanCounts();
+        updateStats(allLeads);
+        
+        // Re-renderizar visualmente para actualizar las etiquetas de fecha
+        const searchVal = document.getElementById('search-input') ? document.getElementById('search-input').value.toLowerCase() : '';
+        const filterVal = document.getElementById('filter-status') ? document.getElementById('filter-status').value : 'all';
+        renderLeads(searchVal, filterVal);
+
         // Silent Update a Supabase
         try {
             await _supabase.from('leads').update({ status: newStatus }).eq('id', cardId);
-            // Actualizar el array en memoria
-            const leadIndex = allLeads.findIndex(l => l.id === cardId);
-            if (leadIndex !== -1) {
-                allLeads[leadIndex].status = newStatus;
-                allLeads[leadIndex].updated_at = new Date().toISOString(); // Para reflejar el movimiento al instante
-            }
-            updateStats(allLeads);
-            // Volvemos a renderizar para que se vea la fecha 'Movido' actualizada
-            renderLeads(document.getElementById('search-input').value.toLowerCase(), document.getElementById('filter-status').value);
             console.log(`📡 Lead ID ${cardId} movido a: ${newStatus}`);
         } catch (err) {
             console.error('Error al actualizar Supabase:', err);
-            showToast('❌ Error al actualizar fase en el servidor', 5000);
+            showToast('❌ Error al sincronizar fase con el servidor', 5000);
+            // Si falla, podrías revertir o refrescar
+            fetchLeads();
         }
     }
 }
@@ -1213,5 +1221,272 @@ async function sendEmailNotification(title, name, email) {
     } catch (e) {
         console.warn('Fallo crítico de conexión:', e);
         showToast('❌ No se pudo contactar con la Edge Function. Revisa el nombre.', 10000);
+    }
+}
+// --- ANALYTICS DASHBOARD ---
+async function loadAnalyticsData(startDate = "30daysAgo", endDate = "today") {
+    console.log(`Cargando datos de GA4 desde Supabase Edge Function (Desde: ${startDate} Hasta: ${endDate})...`);
+    const btn = document.querySelector('#section-analytics .btn-action');
+    const originalText = btn ? btn.innerHTML : '';
+    if(btn) {
+        btn.innerHTML = '🔄 Cargando datos...';
+        btn.disabled = true;
+    }
+
+    const statusIcon = document.getElementById('analytics-status-icon');
+    if (statusIcon) {
+        statusIcon.style.display = 'inline-flex';
+        statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" class="lucide lucide-loader" style="color: var(--text-grey); animation: spin 1s linear infinite;"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg>`;
+    }
+
+    try {
+        const { data, error } = await _supabase.functions.invoke('get_analytics', {
+            method: 'POST',
+            body: { startDate, endDate }
+        });
+
+        if (error) {
+            console.error('Error desde la función:', error);
+            showToast('❌ Error al cargar Analytics: No se ha encontrado la Edge Function o no está desplegada.', 5000);
+            if (statusIcon) statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#FF3B30" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`;
+            return;
+        }
+
+        if (data && data.metrics) {
+            // Actualizar Tarjetas Globales
+            document.getElementById('ga-visits').textContent = data.metrics.sessions || '0';
+            document.getElementById('ga-visitors').textContent = data.metrics.activeUsers || '0';
+            document.getElementById('ga-leads').textContent = data.metrics.leads || '0';
+            document.getElementById('ga-revenue').textContent = (data.metrics.revenue || '0') + ' €';
+
+            // Actualizar Engagement / Eventos
+            document.getElementById('click-form').textContent = data.events.generate_lead || '0';
+            document.getElementById('click-wa').textContent = data.events.click_whatsapp || '0';
+            document.getElementById('click-cal').textContent = data.events.click_calendar || '0';
+
+            // Actualizar Conversiones Stripe
+            document.getElementById('conv-puntual').textContent = data.events.purchase_puntual || '0';
+            document.getElementById('conv-audit').textContent = data.events.purchase_audit || '0';
+            document.getElementById('conv-mensual').textContent = data.events.purchase_mensual || '0';
+
+            // Actualizar Google Ads si existen
+            if (data.ads) {
+                document.getElementById('ads-cost').textContent = (data.ads.cost || '0') + ' €';
+                document.getElementById('ads-clicks').textContent = data.ads.clicks || '0';
+                document.getElementById('ads-cpc').textContent = (data.ads.cpc || '0') + ' €';
+            }
+
+            // Llenar la Tabla Geográfica
+            const geoBody = document.getElementById('geo-body');
+            geoBody.innerHTML = ''; // Limpiar la carga
+            if (data.geography && data.geography.length > 0) {
+                data.geography.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="padding: 12px;">${row.country}</td>
+                        <td style="padding: 12px; color: var(--text-grey);">${row.city}</td>
+                        <td style="padding: 12px; text-align: right; font-weight: 500;">${row.sessions}</td>
+                    `;
+                    geoBody.appendChild(tr);
+                });
+            } else {
+                geoBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 20px;">No hay datos de ubicación suficientes aún en los últimos 30 días.</td></tr>';
+            }
+
+            if (statusIcon) statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#34C759" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+        }
+    } catch (err) {
+        console.error('Error general cargando Analytics:', err);
+        if (statusIcon) statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#FF3B30" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`;
+    } finally {
+        if (btn) {
+            btn.style.background = 'var(--text-grey)';
+            // Eliminado el btn.innerText forzado para no machacar el nombre del "Modo Demo"
+            btn.disabled = false;
+        }
+    }
+}
+
+// MODO DEMO VISUAL (A petición)
+function loadDemoAnalytics() {
+    console.log("Activando Modo Demo Visual...");
+    const statusIcon = document.getElementById('analytics-status-icon');
+    if (statusIcon) {
+        statusIcon.style.display = 'inline-flex';
+        // En demo, ponemos el verde directamente para falsear la carga ultra-rápida.
+        statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#34C759" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+    }
+
+    // Tarjetas Globales
+    document.getElementById('ga-visits').textContent = '4,892';
+    document.getElementById('ga-visitors').textContent = '3,150';
+    document.getElementById('ga-leads').textContent = '54';
+    document.getElementById('ga-revenue').textContent = '1,435 €';
+
+    // Google Ads
+    document.getElementById('ads-cost').textContent = '340.50 €';
+    document.getElementById('ads-clicks').textContent = '2,150';
+    document.getElementById('ads-cpc').textContent = '0.15';
+    document.getElementById('ads-lead').textContent = '16';
+    document.getElementById('ads-wa').textContent = '28';
+    document.getElementById('ads-cal').textContent = '8';
+    document.getElementById('ads-buy-1').textContent = '2';
+    document.getElementById('ads-buy-2').textContent = '0';
+    document.getElementById('ads-buy-3').textContent = '1';
+
+    // Meta Ads
+    document.getElementById('meta-cost').textContent = '280.00 €';
+    document.getElementById('meta-clicks').textContent = '3,450';
+    document.getElementById('meta-cpl').textContent = '8.50 €';
+    document.getElementById('meta-lead').textContent = '25';
+    document.getElementById('meta-wa').textContent = '54';
+    document.getElementById('meta-cal').textContent = '10';
+    document.getElementById('meta-buy-1').textContent = '3';
+    document.getElementById('meta-buy-2').textContent = '1';
+    document.getElementById('meta-buy-3').textContent = '1';
+
+    // Redes Sociales (Orgánico)
+    document.getElementById('social-ig-followers').textContent = '+142';
+    document.getElementById('social-ig-views').textContent = '1,890';
+    document.getElementById('social-ig-reach').textContent = '12,450';
+    document.getElementById('social-ig-engagement').textContent = '1,204';
+    
+    document.getElementById('social-fb-likes').textContent = '+54';
+    document.getElementById('social-fb-reach').textContent = '8,320';
+    document.getElementById('social-fb-interactions').textContent = '432';
+
+    // Engagement
+    document.getElementById('click-form').textContent = '41';
+    document.getElementById('click-wa').textContent = '82';
+    document.getElementById('click-cal').textContent = '18';
+
+    // Stripe
+    document.getElementById('conv-puntual').textContent = '5';
+    document.getElementById('conv-audit').textContent = '1';
+    document.getElementById('conv-mensual').textContent = '2';
+
+    // Geografía
+    const geoBody = document.getElementById('geo-body');
+    geoBody.innerHTML = `
+        <tr style="background: rgba(255,255,255,0.02);">
+            <td style="padding: 12px;">Spain 🇪🇸</td>
+            <td style="padding: 12px; color: var(--text-grey);">Barcelona</td>
+            <td style="padding: 12px; text-align: right; font-weight: 500;">1,430</td>
+        </tr>
+        <tr>
+            <td style="padding: 12px;">Spain 🇪🇸</td>
+            <td style="padding: 12px; color: var(--text-grey);">Madrid</td>
+            <td style="padding: 12px; text-align: right; font-weight: 500;">980</td>
+        </tr>
+        <tr style="background: rgba(255,255,255,0.02);">
+            <td style="padding: 12px;">Spain 🇪🇸</td>
+            <td style="padding: 12px; color: var(--text-grey);">Ciutadella de Menorca</td>
+            <td style="padding: 12px; text-align: right; font-weight: 500;">540</td>
+        </tr>
+        <tr>
+            <td style="padding: 12px;">Mexico 🇲🇽</td>
+            <td style="padding: 12px; color: var(--text-grey);">Ciudad de México</td>
+            <td style="padding: 12px; text-align: right; font-weight: 500;">320</td>
+        </tr>
+    `;
+
+    // Redes Sociales Top Publicaciones IG
+    const igPostsBody = document.getElementById('social-ig-posts');
+    if (igPostsBody) {
+        igPostsBody.innerHTML = `
+            <tr style="background: rgba(255,255,255,0.02);">
+                <td style="padding: 12px; text-align: center;">📸</td>
+                <td style="padding: 12px;"><strong style="color: var(--text-color);">Reel: "Cómo la IA cambia tu negocio"</strong><br><span style="font-size: 0.8rem; color: var(--text-grey);">Ayer, 18:30</span></td>
+                <td style="padding: 12px; text-align: center; color: var(--text-grey);">IG Reel</td>
+                <td style="padding: 12px; text-align: right; font-weight: 500; color: #E1306C;">4,250</td>
+                <td style="padding: 12px; text-align: right; color: var(--text-color);">342</td>
+                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">+12 clics</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; text-align: center;">📸</td>
+                <td style="padding: 12px;"><strong style="color: var(--text-color);">Foto: Nuestra auditoría en Menorca</strong><br><span style="font-size: 0.8rem; color: var(--text-grey);">Hace 1 semana</span></td>
+                <td style="padding: 12px; text-align: center; color: var(--text-grey);">IG Foto</td>
+                <td style="padding: 12px; text-align: right; font-weight: 500; color: #E1306C;">1,840</td>
+                <td style="padding: 12px; text-align: right; color: var(--text-color);">89</td>
+                <td style="padding: 12px; text-align: right; color: var(--text-grey);">0 clics</td>
+            </tr>
+            <tr style="background: rgba(255,255,255,0.02);">
+                <td style="padding: 12px; text-align: center;">📸</td>
+                <td style="padding: 12px;"><strong style="color: var(--text-color);">Reel: Setup Mac para IA</strong><br><span style="font-size: 0.8rem; color: var(--text-grey);">Hace 2 semanas</span></td>
+                <td style="padding: 12px; text-align: center; color: var(--text-grey);">IG Reel</td>
+                <td style="padding: 12px; text-align: right; font-weight: 500; color: #E1306C;">6,120</td>
+                <td style="padding: 12px; text-align: right; color: var(--text-color);">650</td>
+                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">+24 clics</td>
+            </tr>
+        `;
+    }
+
+    // Redes Sociales Top Publicaciones FB
+    const fbPostsBody = document.getElementById('social-fb-posts');
+    if (fbPostsBody) {
+        fbPostsBody.innerHTML = `
+            <tr style="background: rgba(255,255,255,0.02);">
+                <td style="padding: 12px; text-align: center;">📘</td>
+                <td style="padding: 12px;"><strong style="color: var(--text-color);">Post: Los 3 errores SEO de las peluquerías</strong><br><span style="font-size: 0.8rem; color: var(--text-grey);">Hace 3 días</span></td>
+                <td style="padding: 12px; text-align: center; color: var(--text-grey);">FB Carrusel</td>
+                <td style="padding: 12px; text-align: right; font-weight: 500; color: #1877F2;">2,890</td>
+                <td style="padding: 12px; text-align: right; color: var(--text-color);">125</td>
+                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">+5 clics</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; text-align: center;">📘</td>
+                <td style="padding: 12px;"><strong style="color: var(--text-color);">Post: Entrevista IA de Barrio en la Radio</strong><br><span style="font-size: 0.8rem; color: var(--text-grey);">Ayer</span></td>
+                <td style="padding: 12px; text-align: center; color: var(--text-grey);">FB Enlace</td>
+                <td style="padding: 12px; text-align: right; font-weight: 500; color: #1877F2;">1,420</td>
+                <td style="padding: 12px; text-align: right; color: var(--text-color);">80</td>
+                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">+18 clics</td>
+            </tr>
+        `;
+    }
+
+    showToast('Modo Demo Activado. Puedes tomar tu captura de pantalla.', 3000);
+}
+
+// Selector de Fechas Analytics
+function handleAnalyticsDateChange(value, textOption) {
+    const customPicker = document.getElementById('custom-date-picker');
+    const dateText = document.getElementById('analytics-date-text');
+    
+    if (value === 'custom') {
+        customPicker.style.display = 'flex';
+        updateCustomDateText();
+    } else {
+        customPicker.style.display = 'none';
+        dateText.innerHTML = `Mostrando datos para: <strong style="color: var(--text-color);">${textOption}</strong>`;
+        
+        let startDate = '30daysAgo';
+        const endDate = 'today';
+        switch(value) {
+            case 'el ultimo dia': startDate = 'yesterday'; break;
+            case 'la ultima semana': startDate = '7daysAgo'; break;
+            case 'el ultimo mes': startDate = '30daysAgo'; break;
+            case 'el ultimo trimestre': startDate = '90daysAgo'; break;
+            case 'el ultimo semestre': startDate = '180daysAgo'; break;
+            case 'el ultimo año': startDate = '365daysAgo'; break;
+            case '7 dias para atras': startDate = '7daysAgo'; break;
+            case '30 dias para atras': startDate = '30daysAgo'; break;
+            case '120 dias para atras': startDate = '120daysAgo'; break;
+            case '365 dias para atras': startDate = '365daysAgo'; break;
+        }
+        
+        loadAnalyticsData(startDate, endDate);
+    }
+}
+
+function updateCustomDateText() {
+    const start = document.getElementById('date-start').value;
+    const end = document.getElementById('date-end').value;
+    const dateText = document.getElementById('analytics-date-text');
+    
+    if (start && end) {
+        dateText.innerHTML = `Mostrando datos del: <strong style="color: var(--text-color);">${start} al ${end}</strong>`;
+        loadAnalyticsData(start, end);
+    } else {
+        dateText.innerHTML = `Mostrando datos: <strong style="color: var(--text-color);">Selecciona un rango de fechas</strong>`;
     }
 }
