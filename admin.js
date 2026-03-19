@@ -385,13 +385,24 @@ function renderLeads(searchTerm = '', statusFilter = 'all') {
 
     // Render Kanban Cards
     filtered.forEach(lead => {
-        const date = new Date(lead.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
-        
         let status = lead.status || 'cita_registrada';
         // Mapeo retrocompatible
         if (status === 'nuevo') status = 'cita_registrada';
         else if (status === 'contactado') status = 'reunion_hecha';
         else if (status === 'pagado') status = 'confirmado';
+
+        // Determinar qué fecha mostrar (en la 1ra columna la creación, en las otras el movimiento)
+        let displayDate = lead.created_at;
+        let dateLabel = 'Entrada: ';
+        
+        if (status !== 'cita_registrada' && lead.updated_at) {
+            displayDate = lead.updated_at;
+            dateLabel = 'Movido: ';
+        }
+
+        const dateStr = new Date(displayDate).toLocaleDateString('es-ES', { 
+            day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' 
+        });
 
         const card = document.createElement('div');
         card.classList.add('kanban-card');
@@ -412,7 +423,7 @@ function renderLeads(searchTerm = '', statusFilter = 'all') {
             <div style="font-size: 0.8rem; color: var(--text-grey);">${lead.phone || '-'}</div>
             <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
                 <span class="card-interest">${lead.interest || 'Lead'}</span>
-                <span class="card-date">${date}</span>
+                <span class="card-date" style="font-size: 0.7rem; opacity: 0.8;">${dateLabel}${dateStr}</span>
             </div>
         `;
 
@@ -523,8 +534,11 @@ async function handleDrop(e) {
             const leadIndex = allLeads.findIndex(l => l.id === cardId);
             if (leadIndex !== -1) {
                 allLeads[leadIndex].status = newStatus;
+                allLeads[leadIndex].updated_at = new Date().toISOString(); // Para reflejar el movimiento al instante
             }
             updateStats(allLeads);
+            // Volvemos a renderizar para que se vea la fecha 'Movido' actualizada
+            renderLeads(document.getElementById('search-input').value.toLowerCase(), document.getElementById('filter-status').value);
             console.log(`📡 Lead ID ${cardId} movido a: ${newStatus}`);
         } catch (err) {
             console.error('Error al actualizar Supabase:', err);
