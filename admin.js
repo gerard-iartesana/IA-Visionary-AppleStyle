@@ -107,6 +107,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else if (target === 'section-payments') {
                 console.log('Triggering Pagos section load...');
                 loadPaymentLinks();
+            } else if (target === 'section-analytics') {
+                loadAnalyticsData();
             }
         });
     });
@@ -998,5 +1000,69 @@ async function sendEmailNotification(title, name, email) {
     } catch (e) {
         console.warn('Fallo crítico de conexión:', e);
         showToast('❌ No se pudo contactar con la Edge Function. Revisa el nombre.', 10000);
+    }
+}
+
+// --- ANALYTICS DASHBOARD ---
+async function loadAnalyticsData() {
+    console.log('Cargando datos de GA4 desde Supabase Edge Function...');
+    const btn = document.querySelector('#section-analytics .btn-action');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '🔄 Cargando datos...';
+    btn.disabled = true;
+
+    try {
+        const { data, error } = await supabase.functions.invoke('get_analytics', {
+            method: 'POST'
+        });
+
+        if (error) {
+            console.error('Error desde la función:', error);
+            showToast('❌ Error al cargar Analytics: No se ha encontrado la Edge Function o no está desplegada.', 5000);
+            return;
+        }
+
+        if (data && data.metrics) {
+            // Actualizar Tarjetas Globales
+            document.getElementById('ga-visits').textContent = data.metrics.sessions || '0';
+            document.getElementById('ga-visitors').textContent = data.metrics.activeUsers || '0';
+            document.getElementById('ga-leads').textContent = data.metrics.leads || '0';
+            document.getElementById('ga-revenue').textContent = (data.metrics.revenue || '0') + ' €';
+
+            // Actualizar Engagement / Eventos
+            document.getElementById('click-form').textContent = data.events.generate_lead || '0';
+            document.getElementById('click-wa').textContent = data.events.click_whatsapp || '0';
+            document.getElementById('click-cal').textContent = data.events.click_calendar || '0';
+
+            // Actualizar Conversiones Stripe
+            document.getElementById('conv-puntual').textContent = data.events.purchase_puntual || '0';
+            document.getElementById('conv-audit').textContent = data.events.purchase_audit || '0';
+            document.getElementById('conv-mensual').textContent = data.events.purchase_mensual || '0';
+
+            // Llenar la Tabla Geográfica
+            const geoBody = document.getElementById('geo-body');
+            geoBody.innerHTML = ''; // Limpiar la carga
+            if (data.geography && data.geography.length > 0) {
+                data.geography.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="padding: 12px;">${row.country}</td>
+                        <td style="padding: 12px; color: var(--text-grey);">${row.city}</td>
+                        <td style="padding: 12px; text-align: right; font-weight: 500;">${row.sessions}</td>
+                    `;
+                    geoBody.appendChild(tr);
+                });
+            } else {
+                geoBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 20px;">No hay datos de ubicación suficientes aún en los últimos 30 días.</td></tr>';
+            }
+        }
+    } catch (err) {
+        console.error('Error general cargando Analytics:', err);
+    } finally {
+        if(btn) {
+            btn.style.background = 'var(--text-grey)';
+            btn.innerText = 'Sincronizado Hoy';
+            btn.disabled = false;
+        }
     }
 }
