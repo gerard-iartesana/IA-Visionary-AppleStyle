@@ -1087,6 +1087,12 @@ function loadDemoAnalytics() {
     document.getElementById('ads-cost').textContent = '340.50 €';
     document.getElementById('ads-clicks').textContent = '2,150';
     document.getElementById('ads-cpc').textContent = '0.15';
+    document.getElementById('ads-lead').textContent = '16';
+    document.getElementById('ads-wa').textContent = '28';
+    document.getElementById('ads-cal').textContent = '8';
+    document.getElementById('ads-buy-1').textContent = '2';
+    document.getElementById('ads-buy-2').textContent = '0';
+    document.getElementById('ads-buy-3').textContent = '1';
 
     // Meta Ads
     document.getElementById('meta-cost').textContent = '280.00 €';
