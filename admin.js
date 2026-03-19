@@ -1012,7 +1012,7 @@ async function loadAnalyticsData() {
     btn.disabled = true;
 
     try {
-        const { data, error } = await supabase.functions.invoke('get_analytics', {
+        const { data, error } = await _supabase.functions.invoke('get_analytics', {
             method: 'POST'
         });
 
