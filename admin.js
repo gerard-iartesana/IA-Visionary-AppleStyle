@@ -1013,6 +1013,12 @@ async function loadAnalyticsData(startDate = "30daysAgo", endDate = "today") {
         btn.disabled = true;
     }
 
+    const statusIcon = document.getElementById('analytics-status-icon');
+    if (statusIcon) {
+        statusIcon.style.display = 'inline-flex';
+        statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" class="lucide lucide-loader" style="color: var(--text-grey); animation: spin 1s linear infinite;"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg>`;
+    }
+
     try {
         const { data, error } = await _supabase.functions.invoke('get_analytics', {
             method: 'POST',
@@ -1022,6 +1028,7 @@ async function loadAnalyticsData(startDate = "30daysAgo", endDate = "today") {
         if (error) {
             console.error('Error desde la función:', error);
             showToast('❌ Error al cargar Analytics: No se ha encontrado la Edge Function o no está desplegada.', 5000);
+            if (statusIcon) statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#FF3B30" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`;
             return;
         }
 
@@ -1065,9 +1072,12 @@ async function loadAnalyticsData(startDate = "30daysAgo", endDate = "today") {
             } else {
                 geoBody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 20px;">No hay datos de ubicación suficientes aún en los últimos 30 días.</td></tr>';
             }
+
+            if (statusIcon) statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#34C759" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
         }
     } catch (err) {
         console.error('Error general cargando Analytics:', err);
+        if (statusIcon) statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#FF3B30" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`;
     } finally {
         if (btn) {
             btn.style.background = 'var(--text-grey)';
@@ -1080,6 +1090,13 @@ async function loadAnalyticsData(startDate = "30daysAgo", endDate = "today") {
 // MODO DEMO VISUAL (A petición)
 function loadDemoAnalytics() {
     console.log("Activando Modo Demo Visual...");
+    const statusIcon = document.getElementById('analytics-status-icon');
+    if (statusIcon) {
+        statusIcon.style.display = 'inline-flex';
+        // En demo, ponemos el verde directamente para falsear la carga ultra-rápida.
+        statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#34C759" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+    }
+
     // Tarjetas Globales
     document.getElementById('ga-visits').textContent = '4,892';
     document.getElementById('ga-visitors').textContent = '3,150';
