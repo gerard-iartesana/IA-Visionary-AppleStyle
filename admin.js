@@ -1108,6 +1108,16 @@ function loadDemoAnalytics() {
     document.getElementById('meta-buy-2').textContent = '1';
     document.getElementById('meta-buy-3').textContent = '1';
 
+    // Redes Sociales (Orgánico)
+    document.getElementById('social-ig-followers').textContent = '+142';
+    document.getElementById('social-ig-views').textContent = '1,890';
+    document.getElementById('social-ig-reach').textContent = '12,450';
+    document.getElementById('social-ig-engagement').textContent = '1,204';
+    
+    document.getElementById('social-fb-likes').textContent = '+54';
+    document.getElementById('social-fb-reach').textContent = '8,320';
+    document.getElementById('social-fb-interactions').textContent = '432';
+
     // Engagement
     document.getElementById('click-form').textContent = '41';
     document.getElementById('click-wa').textContent = '82';
