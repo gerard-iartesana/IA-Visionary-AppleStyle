@@ -1004,16 +1004,19 @@ async function sendEmailNotification(title, name, email) {
 }
 
 // --- ANALYTICS DASHBOARD ---
-async function loadAnalyticsData() {
-    console.log('Cargando datos de GA4 desde Supabase Edge Function...');
+async function loadAnalyticsData(startDate = "30daysAgo", endDate = "today") {
+    console.log(`Cargando datos de GA4 desde Supabase Edge Function (Desde: ${startDate} Hasta: ${endDate})...`);
     const btn = document.querySelector('#section-analytics .btn-action');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '🔄 Cargando datos...';
-    btn.disabled = true;
+    const originalText = btn ? btn.innerHTML : '';
+    if(btn) {
+        btn.innerHTML = '🔄 Cargando datos...';
+        btn.disabled = true;
+    }
 
     try {
         const { data, error } = await _supabase.functions.invoke('get_analytics', {
-            method: 'POST'
+            method: 'POST',
+            body: { startDate, endDate }
         });
 
         if (error) {
@@ -1154,7 +1157,23 @@ function handleAnalyticsDateChange(value, textOption) {
     } else {
         customPicker.style.display = 'none';
         dateText.innerHTML = `Mostrando datos para: <strong style="color: var(--text-color);">${textOption}</strong>`;
-        // Aquí en el futuro llamaríamos a loadAnalyticsData() pasándole la fecha para refrescar
+        
+        let startDate = '30daysAgo';
+        const endDate = 'today';
+        switch(value) {
+            case 'el ultimo dia': startDate = 'yesterday'; break;
+            case 'la ultima semana': startDate = '7daysAgo'; break;
+            case 'el ultimo mes': startDate = '30daysAgo'; break;
+            case 'el ultimo trimestre': startDate = '90daysAgo'; break;
+            case 'el ultimo semestre': startDate = '180daysAgo'; break;
+            case 'el ultimo año': startDate = '365daysAgo'; break;
+            case '7 dias para atras': startDate = '7daysAgo'; break;
+            case '30 dias para atras': startDate = '30daysAgo'; break;
+            case '120 dias para atras': startDate = '120daysAgo'; break;
+            case '365 dias para atras': startDate = '365daysAgo'; break;
+        }
+        
+        loadAnalyticsData(startDate, endDate);
     }
 }
 
@@ -1165,6 +1184,7 @@ function updateCustomDateText() {
     
     if (start && end) {
         dateText.innerHTML = `Mostrando datos del: <strong style="color: var(--text-color);">${start} al ${end}</strong>`;
+        loadAnalyticsData(start, end);
     } else {
         dateText.innerHTML = `Mostrando datos: <strong style="color: var(--text-color);">Selecciona un rango de fechas</strong>`;
     }
