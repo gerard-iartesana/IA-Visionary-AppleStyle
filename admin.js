@@ -1088,6 +1088,11 @@ function loadDemoAnalytics() {
     document.getElementById('ads-clicks').textContent = '2,150';
     document.getElementById('ads-cpc').textContent = '0.15';
 
+    // Meta Ads
+    document.getElementById('meta-cost').textContent = '280.00 €';
+    document.getElementById('meta-clicks').textContent = '3,450';
+    document.getElementById('meta-cpl').textContent = '8.50 €';
+
     // Engagement
     document.getElementById('click-form').textContent = '41';
     document.getElementById('click-wa').textContent = '82';
