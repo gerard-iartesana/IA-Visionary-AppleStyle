@@ -433,8 +433,8 @@ body.admin-body {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
-    min-width: 300px;
-    width: 300px;
+    min-width: 350px;
+    width: 350px;
     display: flex;
     flex-direction: column;
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
