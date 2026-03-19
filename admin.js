@@ -1039,6 +1039,13 @@ async function loadAnalyticsData() {
             document.getElementById('conv-audit').textContent = data.events.purchase_audit || '0';
             document.getElementById('conv-mensual').textContent = data.events.purchase_mensual || '0';
 
+            // Actualizar Google Ads si existen
+            if (data.ads) {
+                document.getElementById('ads-cost').textContent = (data.ads.cost || '0') + ' €';
+                document.getElementById('ads-clicks').textContent = data.ads.clicks || '0';
+                document.getElementById('ads-cpc').textContent = (data.ads.cpc || '0') + ' €';
+            }
+
             // Llenar la Tabla Geográfica
             const geoBody = document.getElementById('geo-body');
             geoBody.innerHTML = ''; // Limpiar la carga
