@@ -1066,10 +1066,62 @@ async function loadAnalyticsData() {
     } catch (err) {
         console.error('Error general cargando Analytics:', err);
     } finally {
-        if(btn) {
+        if (btn) {
             btn.style.background = 'var(--text-grey)';
             btn.innerText = 'Sincronizado Hoy';
             btn.disabled = false;
         }
     }
+}
+
+// MODO DEMO VISUAL (A petición)
+function loadDemoAnalytics() {
+    console.log("Activando Modo Demo Visual...");
+    // Tarjetas Globales
+    document.getElementById('ga-visits').textContent = '4,892';
+    document.getElementById('ga-visitors').textContent = '3,150';
+    document.getElementById('ga-leads').textContent = '54';
+    document.getElementById('ga-revenue').textContent = '1,435 €';
+
+    // Google Ads
+    document.getElementById('ads-cost').textContent = '340.50 €';
+    document.getElementById('ads-clicks').textContent = '2,150';
+    document.getElementById('ads-cpc').textContent = '0.15';
+
+    // Engagement
+    document.getElementById('click-form').textContent = '41';
+    document.getElementById('click-wa').textContent = '82';
+    document.getElementById('click-cal').textContent = '18';
+
+    // Stripe
+    document.getElementById('conv-puntual').textContent = '5';
+    document.getElementById('conv-audit').textContent = '1';
+    document.getElementById('conv-mensual').textContent = '2';
+
+    // Geografía
+    const geoBody = document.getElementById('geo-body');
+    geoBody.innerHTML = `
+        <tr style="background: rgba(255,255,255,0.02);">
+            <td style="padding: 12px;">Spain 🇪🇸</td>
+            <td style="padding: 12px; color: var(--text-grey);">Barcelona</td>
+            <td style="padding: 12px; text-align: right; font-weight: 500;">1,430</td>
+        </tr>
+        <tr>
+            <td style="padding: 12px;">Spain 🇪🇸</td>
+            <td style="padding: 12px; color: var(--text-grey);">Madrid</td>
+            <td style="padding: 12px; text-align: right; font-weight: 500;">980</td>
+        </tr>
+        <tr style="background: rgba(255,255,255,0.02);">
+            <td style="padding: 12px;">Spain 🇪🇸</td>
+            <td style="padding: 12px; color: var(--text-grey);">Ciutadella de Menorca</td>
+            <td style="padding: 12px; text-align: right; font-weight: 500;">540</td>
+        </tr>
+        <tr>
+            <td style="padding: 12px;">Mexico 🇲🇽</td>
+            <td style="padding: 12px; color: var(--text-grey);">Ciudad de México</td>
+            <td style="padding: 12px; text-align: right; font-weight: 500;">320</td>
+        </tr>
+    `;
+
+    showToast('Modo Demo Activado. Puedes tomar tu captura de pantalla.', 3000);
 }
