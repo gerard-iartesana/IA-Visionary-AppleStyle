@@ -77,6 +77,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    const leadsBodyDoc = document.getElementById('leads-body');
+    if (leadsBodyDoc) {
+        leadsBodyDoc.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            e.preventDefault();
+            e.stopPropagation();
+
+            const leadId = btn.getAttribute('data-id');
+            const leadName = btn.getAttribute('data-name');
+            const leadStatus = btn.getAttribute('data-status');
+
+            if (btn.classList.contains('btn-status')) toggleStatus(leadId, leadStatus);
+            else if (btn.classList.contains('btn-whatsapp')) openWhatsApp(btn.getAttribute('data-phone'), leadName, btn.getAttribute('data-interest'));
+            else if (btn.classList.contains('btn-email')) window.location.href = `mailto:${btn.getAttribute('data-email')}`;
+            else if (btn.classList.contains('btn-auto')) sendToWebhook(leadId);
+            else if (btn.classList.contains('btn-delete')) showDeleteModal(leadId, leadName);
+            else if (btn.classList.contains('btn-ficha')) showFichaModal(leadId);
+        });
+    }
+
     // Listeners del Modal
     document.getElementById('modal-cancel').addEventListener('click', hideDeleteModal);
     document.getElementById('modal-confirm').addEventListener('click', confirmDelete);
@@ -306,10 +327,12 @@ function renderLeads(searchTerm = '', statusFilter = 'all') {
     const listReunion = document.querySelector('.list-reunion-hecha');
     const listPiensa = document.querySelector('.list-se-lo-piensa');
     const listConfirmado = document.querySelector('.list-confirmado');
+    const leadsBody = document.getElementById('leads-body');
     
     if (!listCita) return; // Not on the leads page
     
     [listCita, listReunion, listPiensa, listConfirmado].forEach(el => el.innerHTML = '');
+    if (leadsBody) leadsBody.innerHTML = '';
 
     const filtered = allLeads.filter(lead => {
         const matchesSearch = (lead.name || '').toLowerCase().includes(searchTerm) || (lead.email || '').toLowerCase().includes(searchTerm);
@@ -321,9 +344,45 @@ function renderLeads(searchTerm = '', statusFilter = 'all') {
     });
 
     if (filtered.length === 0) {
-        // Optional: show empty state message
+        if (leadsBody) leadsBody.innerHTML = '<tr><td colspan="7" class="table-loading">No se encontraron leads.</td></tr>';
     }
 
+    // Render Table (Max 5)
+    if (leadsBody) {
+        filtered.slice(0, 5).forEach(lead => {
+            const date = new Date(lead.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="color: var(--text-grey); font-size: 0.8rem;">${date}</td>
+                <td>
+                    <div style="font-weight: 600; color: var(--text-white);">${lead.name}</div>
+                    <div style="font-size: 0.8rem; color: var(--text-grey);">${lead.email}</div>
+                    <div style="font-size: 0.8rem; color: var(--text-grey);">${lead.phone || '-'}</div>
+                </td>
+                <td><span style="font-size: 0.75rem; background: rgba(128,128,128,0.1); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-color); color: var(--text-white);">${lead.interest}</span></td>
+                <td style="max-width: 200px; font-size: 0.85rem; color: var(--text-grey); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${lead.message || '-'}</td>
+                <td>
+                    <div style="font-weight: 500; font-size: 0.85rem; color: var(--text-white);">${lead.comercial || 'Sin asignar'}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-grey);">${lead.grupo || 'Sin grupo'}</div>
+                </td>
+                <td><span class="status-badge status-${lead.status || 'nuevo'}">${lead.status || 'nuevo'}</span></td>
+                <td>
+                    <div class="lead-actions-group">
+                        <button type="button" class="btn-lead-action btn-ficha" data-id="${lead.id}" title="Ficha de Cliente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></button>
+                        <button type="button" class="btn-action btn-status" style="width: 32px; height: 32px;" data-id="${lead.id}" data-status="${lead.status || 'nuevo'}">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </button>
+                        <button type="button" class="btn-lead-action btn-whatsapp" data-phone="${lead.phone}" data-name="${lead.name}" data-interest="${lead.interest}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></button>
+                        <button type="button" class="btn-lead-action btn-email" data-email="${lead.email}" title="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></button>
+                        <button type="button" class="btn-lead-action btn-delete" data-id="${lead.id}" data-name="${lead.name}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
+                    </div>
+                </td>
+            `;
+            leadsBody.appendChild(row);
+        });
+    }
+
+    // Render Kanban Cards
     filtered.forEach(lead => {
         const date = new Date(lead.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
         
