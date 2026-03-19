@@ -1092,6 +1092,12 @@ function loadDemoAnalytics() {
     document.getElementById('meta-cost').textContent = '280.00 €';
     document.getElementById('meta-clicks').textContent = '3,450';
     document.getElementById('meta-cpl').textContent = '8.50 €';
+    document.getElementById('meta-lead').textContent = '25';
+    document.getElementById('meta-wa').textContent = '54';
+    document.getElementById('meta-cal').textContent = '10';
+    document.getElementById('meta-buy-1').textContent = '3';
+    document.getElementById('meta-buy-2').textContent = '1';
+    document.getElementById('meta-buy-3').textContent = '1';
 
     // Engagement
     document.getElementById('click-form').textContent = '41';
