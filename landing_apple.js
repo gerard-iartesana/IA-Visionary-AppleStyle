@@ -165,6 +165,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         event_label: leadData.interest
                     });
                 }
+                // Meta Pixel Event - Lead
+                if (typeof fbq === 'function') {
+                    fbq('track', 'Lead', { content_name: leadData.interest });
+                }
 
                 contactForm.style.transition = 'opacity 0.5s, transform 0.5s';
                 contactForm.style.opacity = '0';
@@ -210,6 +214,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     // GA4 Event - Calendar
                     if (typeof gtag !== 'undefined') gtag('event', 'click_calendar', { event_category: 'engagement' });
+                    // Meta Pixel Event - Schedule
+                    if (typeof fbq === 'function') fbq('track', 'Schedule', { method: 'calendly' });
 
                     window.open(url, '_blank');
                 });
@@ -230,6 +236,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 waBtn.addEventListener('click', () => {
                     // GA4 Event - WhatsApp
                     if (typeof gtag !== 'undefined') gtag('event', 'click_whatsapp', { event_category: 'engagement' });
+                    // Meta Pixel Event - Contact
+                    if (typeof fbq === 'function') fbq('track', 'Contact', { content_name: 'WhatsApp' });
                 });
             }
 
@@ -258,6 +266,14 @@ document.addEventListener('DOMContentLoaded', () => {
                                     items: [{ item_name: planName, price: parseFloat(price) }],
                                     currency: 'EUR',
                                     value: parseFloat(price)
+                                });
+                            }
+                            // Meta Pixel Event - Initiate Checkout
+                            if (typeof fbq === 'function') {
+                                fbq('track', 'InitiateCheckout', {
+                                    content_name: planName,
+                                    value: parseFloat(price),
+                                    currency: 'EUR'
                                 });
                             }
 
@@ -516,6 +532,14 @@ async function processMockPayment() {
                         currency: 'EUR',
                         value: currentPlanAmount / 100,
                         items: [{ item_name: currentPlanName, price: currentPlanAmount / 100 }]
+                    });
+                }
+                // Meta Pixel Event - Purchase
+                if (typeof fbq === 'function') {
+                    fbq('track', 'Purchase', {
+                        content_name: currentPlanName,
+                        value: currentPlanAmount / 100,
+                        currency: 'EUR'
                     });
                 }
                 box.innerHTML = `
