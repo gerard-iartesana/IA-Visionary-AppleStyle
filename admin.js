@@ -1507,18 +1507,21 @@ const PROPOSALS = {
         title: "Sesión Puntual de Consultoría IA",
         price: "159€",
         url: "https://ia-visionary.vercel.app/proposals/sesion-puntual-visionary.pdf",
+        buy: "https://buy.stripe.com/test_puntual_fallback",
         text: "Aquí tienes la propuesta para la Sesión Puntual de Consultoría IA (159€). Incluye diagnóstico y hoja de ruta inmediata."
     },
     auditoria: {
         title: "Auditoría e Inmersión IA Completa",
         price: "359€",
         url: "https://ia-visionary.vercel.app/proposals/auditoria-ia-visionary.pdf",
+        buy: "https://buy.stripe.com/test_auditoria_fallback",
         text: "Te adjunto la propuesta para la Auditoría e Inmersión IA Completa (359€). Es nuestro plan estrella para transformar tu negocio con agentes IA."
     },
     mensual: {
         title: "Acompañamiento Mensual IA de Barrio",
         price: "250€/mes",
         url: "https://ia-visionary.vercel.app/proposals/acompanamiento-mensual-visionary.pdf",
+        buy: "https://buy.stripe.com/test_mensual_fallback",
         text: "Esta es la propuesta para el Acompañamiento Mensual (250€/mes). Estaremos a tu lado mes a mes optimizando tus procesos con IA."
     }
 };
@@ -1539,27 +1542,23 @@ async function sendProposal(planKey, channel) {
     }
 
     const inputId = `stripe-link-${planKey === 'puntual' ? 'puntual' : (planKey === 'auditoria' ? 'auditoria' : 'mensual')}`;
-    const buyLink = document.getElementById(inputId)?.value || '';
+    const buyLink = document.getElementById(inputId)?.value || plan.buy; // Fallback al link hardcoded si el input está vacío
 
     document.getElementById('proposal-modal').classList.remove('active');
     showToast(`⏳ Preparando envío de ${plan.title}...`, 2000);
 
     if (channel === 'whatsapp') {
-        let text = `Hola ${lead.name}, soy Gerard de IA de Barrio.\n\n${plan.text}\n\nPropuesta detallada: ${plan.url}\n\n`;
-        if (buyLink) {
-            text += `Si quieres empezar ya mismo para reservar tu plaza, puedes contratarlo aquí: ${buyLink}\n\n`;
-        } else {
-            console.warn('⚠️ No se ha encontrado link de Stripe para este plan en la configuración.');
-        }
-        text += `¿Qué te parece?`;
+        let text = `Hola ${lead.name}, soy Gerard de IA de Barrio.\n\n${plan.text}\n\n`;
+        text += `💳 OPCIÓN DE COMPRA (PAGO SEGURO):\n${buyLink}\n\n`;
+        text += `📄 DOCUMENTO PROPUESTA PDF:\n${plan.url}\n\n`;
+        text += `¿Qué te parece? Si tienes cualquier duda, dime.`;
         
         const encodedText = encodeURIComponent(text);
-        // Limpiar el teléfono de espacios y caracteres raros, pero mantener el + si existe
         const phone = lead.phone ? lead.phone.replace(/[^0-9+]/g, '') : '';
         window.open(`https://wa.me/${phone}?text=${encodedText}`, '_blank');
         addLog('Presupuesto Enviado', `Presupuesto ${plan.title} enviado vía WhatsApp a ${lead.name}`);
     } else if (channel === 'email') {
-        const fullMessage = `${plan.text} \n\nLink a la propuesta: ${plan.url}${buyLink ? ` \n\nSi quieres empezar ya mismo para reservar tu plaza, puedes contratarlo aquí: ${buyLink}` : ''}`;
+        const fullMessage = `${plan.text} \n\n💳 OPCIÓN DE COMPRA (PAGO SEGURO): ${buyLink} \n\n📄 DOCUMENTO PROPUESTA PDF: ${plan.url}`;
         
         try {
             const functionUrl = `${SUPABASE_URL}/functions/v1/send-appointment-email-`;
