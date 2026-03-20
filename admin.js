@@ -105,6 +105,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('modal-cancel').addEventListener('click', hideDeleteModal);
     document.getElementById('modal-confirm').addEventListener('click', confirmDelete);
 
+    // 2. Inicializar Datos Globales
+    fetchLeads();
+    loadStats();
+    loadPaymentLinks(); // Cargar links para que estén disponibles en el sistema de propuestas
+
     // Navegación Sidebar
     const sidebarItems = document.querySelectorAll('.sidebar-item[data-target]');
     sidebarItems.forEach(item => {
