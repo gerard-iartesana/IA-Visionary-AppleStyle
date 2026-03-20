@@ -1508,21 +1508,21 @@ const PROPOSALS = {
         price: "159€",
         url: "https://ia-visionary.vercel.app/proposals/sesion-puntual-visionary.pdf",
         buy: "https://buy.stripe.com/test_puntual_fallback",
-        text: "Aquí tienes la propuesta para la Sesión Puntual de Consultoría IA (159€). Incluye diagnóstico y hoja de ruta inmediata."
+        text: "Te adjunto el texto de servicio para la Sesión Puntual de Consultoría IA (159€). Incluye diagnóstico y hoja de ruta inmediata."
     },
     auditoria: {
         title: "Auditoría e Inmersión IA Completa",
         price: "359€",
         url: "https://ia-visionary.vercel.app/proposals/auditoria-ia-visionary.pdf",
         buy: "https://buy.stripe.com/test_auditoria_fallback",
-        text: "Te adjunto la propuesta para la Auditoría e Inmersión IA Completa (359€). Es nuestro plan estrella para transformar tu negocio con agentes IA."
+        text: "Te adjunto el texto de servicio para la Auditoría e Inmersión IA Completa (359€). Es nuestro plan estrella para transformar tu negocio con agentes IA."
     },
     mensual: {
         title: "Acompañamiento Mensual IA de Barrio",
         price: "250€/mes",
         url: "https://ia-visionary.vercel.app/proposals/acompanamiento-mensual-visionary.pdf",
         buy: "https://buy.stripe.com/test_mensual_fallback",
-        text: "Esta es la propuesta para el Acompañamiento Mensual (250€/mes). Estaremos a tu lado mes a mes optimizando tus procesos con IA."
+        text: "Te adjunto el texto de servicio para el Acompañamiento Mensual (250€/mes). Estaremos a tu lado mes a mes optimizando tus procesos con IA."
     }
 };
 
