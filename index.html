@@ -6,6 +6,12 @@
     <title>IA de Barrio | Inteligencia Artificial para negocios reales</title>
     <meta name="description" content="Aterrizamos la IA a tu negocio. Consultoría cercana, auditorías prácticas y soluciones que funcionan. Basados en Menorca.">
     
+    <!-- Open Graph / Meta -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="IA de Barrio | Inteligencia Artificial para negocios reales">
+    <meta property="og:description" content="Aterrizamos la IA a tu negocio. Consultoría cercana, auditorías prácticas y soluciones que funcionan.">
+    <meta property="og:image" content="https://ia-visionary.vercel.app/images/og-image.jpg">
+    
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -61,45 +67,45 @@
             <div class="apple-grid reveal">
                 <div class="apple-card">
                     <div class="card-content">
-                        <h3>El Papelero Loco</h3>
-                        <p>Tienes los datos de tu empresa repartidos por mil sitios y carpetas. Así, ni tú ni la IA encontraréis nunca nada útil.</p>
+                        <h3>Datos Fragmentados</h3>
+                        <p>Información dispersa en silos que la IA no puede procesar eficazmente. El "Papelero Loco" del siglo XXI.</p>
                     </div>
-                    <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=800&q=80" alt="Caos de post-its y desorden" class="apple-card-image">
+                    <img src="images/datos.png" alt="Datos Fragmentados" class="apple-card-image">
                 </div>
                 <div class="apple-card">
                     <div class="card-content">
-                        <h3>Nadie nace sabiendo</h3>
-                        <p>La IA mola mucho, pero tu equipo no sabe ni por dónde empezar. Sin alguien que enseñe, es como tener un Ferrari sin carnet.</p>
+                        <h3>Falta de Talento</h3>
+                        <p>Dificultad crítica para encontrar expertos en IA aplicada. Nadie nace sabiendo, pero el tiempo corre.</p>
                     </div>
-                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" alt="Equipo confundido" class="apple-card-image">
+                    <img src="images/talento.png" alt="Falta de Talento" class="apple-card-image">
                 </div>
                 <div class="apple-card">
                     <div class="card-content">
-                        <h3>Gastos Hormiga</h3>
-                        <p>Te apuntas a mil herramientas que luego nadie usa. Al final del mes, has tirado el dinero y no has ahorrado ni un minuto.</p>
+                        <h3>Costes Ocultos</h3>
+                        <p>Gastos descontrolados en APIs y suscripciones sin un ROI definido. Evita los "Gastos Hormiga" digitales.</p>
                     </div>
-                    <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80" alt="Persona estresada por gastos" class="apple-card-image">
+                    <img src="images/costes.png" alt="Costes Ocultos" class="apple-card-image">
                 </div>
                 <div class="apple-card">
                     <div class="card-content">
-                        <h3>El miedo a lo nuevo</h3>
-                        <p>A veces da miedo que una máquina nos quite el trabajo. Si el equipo no está convencido, la IA solo traerá problemas.</p>
+                        <h3>Resistencia Cultural</h3>
+                        <p>Fricción interna y miedo al cambio dentro de los equipos operativos. Vence el miedo a lo nuevo.</p>
                     </div>
-                    <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=800&q=80" alt="Persona a la defensiva y escéptica" class="apple-card-image">
+                    <img src="images/cultural.png" alt="Resistencia Cultural" class="apple-card-image">
                 </div>
                 <div class="apple-card">
                     <div class="card-content">
-                        <h3>Programas que no hablan</h3>
-                        <p>Tienes un programa para una cosa y otro para otra, pero no se entienden entre ellos. Al final, trabajas más para la máquina que ella para ti.</p>
+                        <h3>Saturación Técnica</h3>
+                        <p>Implementación de herramientas aisladas que no conectan entre sí. Programas que no se hablan.</p>
                     </div>
-                    <img src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&w=800&q=80" alt="Hombre frustrado frente al ordenador" class="apple-card-image">
+                    <img src="images/saturacion.png" alt="Saturación Técnica" class="apple-card-image">
                 </div>
                 <div class="apple-card">
                     <div class="card-content">
-                        <h3>Secretos al aire</h3>
-                        <p>Si usas la IA sin cuidado, los secretos de tu negocio acaban en internet. Es como contar tus cuentas en medio de la plaza del pueblo.</p>
+                        <h3>Inseguridad de Datos</h3>
+                        <p>Riesgos de privacidad al usar modelos públicos sin capas de protección. Tus secretos, a buen recaudo.</p>
                     </div>
-                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80" alt="Privacidad en peligro" class="apple-card-image">
+                    <img src="images/seguridad.png" alt="Inseguridad de Datos" class="apple-card-image">
                 </div>
             </div>
         </div>
@@ -325,8 +331,9 @@
                         <button type="submit" class="btn-apple-primary full-width">Enviar solicitud</button>
                     </form>
                     <div id="form-success" class="form-feedback hidden">
-                        <h3>✓ ¡Recibido!</h3>
-                        <p>Te contactaremos en menos de 24h.</p>
+                        <div class="success-icon" style="width: 60px; height: 60px; background: #34c759; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 1.8rem;">✓</div>
+                        <h3>¡Recibido con éxito!</h3>
+                        <p>Gerard o David se pondrán en contacto contigo en menos de 24h laborables.</p>
                     </div>
                 </div>
             </div>
