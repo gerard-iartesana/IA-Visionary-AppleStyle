@@ -1533,16 +1533,29 @@ async function sendProposal(planKey, channel) {
         return;
     }
 
+    const inputId = `stripe-link-${planKey === 'puntual' ? 'puntual' : (planKey === 'auditoria' ? 'auditoria' : 'mensual')}`;
+    const buyLink = document.getElementById(inputId)?.value || '';
+
     document.getElementById('proposal-modal').classList.remove('active');
     showToast(`⏳ Preparando envío de ${plan.title}...`, 2000);
 
     if (channel === 'whatsapp') {
-        const buyLink = document.getElementById(`stripe-link-${planKey === 'puntual' ? 'puntual' : (planKey === 'auditoria' ? 'auditoria' : 'mensual')}`)?.value || '';
-        const message = `Hola ${lead.name}, soy Gerard de IA de Barrio. %0A%0A${plan.text} %0A%0APuedes ver los detalles aquí: ${plan.url} %0A%0A¿Qué te parece? Si quieres empezar ya mismo, puedes contratarlo directamente en este enlace seguro: ${buyLink}`;
-        const phone = lead.phone ? lead.phone.replace(/\s+/g, '') : '';
-        window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+        let text = `Hola ${lead.name}, soy Gerard de IA de Barrio.\n\n${plan.text}\n\nPropuesta detallada: ${plan.url}\n\n`;
+        if (buyLink) {
+            text += `Si quieres empezar ya mismo para reservar tu plaza, puedes contratarlo aquí: ${buyLink}\n\n`;
+        } else {
+            console.warn('⚠️ No se ha encontrado link de Stripe para este plan en la configuración.');
+        }
+        text += `¿Qué te parece?`;
+        
+        const encodedText = encodeURIComponent(text);
+        // Limpiar el teléfono de espacios y caracteres raros, pero mantener el + si existe
+        const phone = lead.phone ? lead.phone.replace(/[^0-9+]/g, '') : '';
+        window.open(`https://wa.me/${phone}?text=${encodedText}`, '_blank');
         addLog('Presupuesto Enviado', `Presupuesto ${plan.title} enviado vía WhatsApp a ${lead.name}`);
     } else if (channel === 'email') {
+        const fullMessage = `${plan.text} \n\nLink a la propuesta: ${plan.url}${buyLink ? ` \n\nSi quieres empezar ya mismo para reservar tu plaza, puedes contratarlo aquí: ${buyLink}` : ''}`;
+        
         try {
             const functionUrl = `${SUPABASE_URL}/functions/v1/send-appointment-email-`;
             const response = await fetch(functionUrl, {
@@ -1558,7 +1571,7 @@ async function sendProposal(planKey, channel) {
                     client_email: lead.email,
                     admin_email: 'gerard@iartesana.es',
                     date: new Date().toLocaleString('es-ES'),
-                    custom_message: `${plan.text} \n\nLink a la propuesta: ${plan.url} \n\nSi quieres empezar ya mismo para reservar tu plaza, puedes contratarlo aquí: ${document.getElementById(`stripe-link-${planKey === 'puntual' ? 'puntual' : (planKey === 'auditoria' ? 'auditoria' : 'mensual')}`)?.value || ''}`
+                    custom_message: fullMessage
                 })
             });
 
@@ -1570,10 +1583,8 @@ async function sendProposal(planKey, channel) {
             }
         } catch (e) {
             console.error(e);
-            // Fallback to mailto if function fails or not available
-            const buyLink = document.getElementById(`stripe-link-${planKey === 'puntual' ? 'puntual' : (planKey === 'auditoria' ? 'auditoria' : 'mensual')}`)?.value || '';
             const subject = encodeURIComponent(`Propuesta: ${plan.title} - IA de Barrio`);
-            const body = encodeURIComponent(`Hola ${lead.name},\n\n${plan.text}\n\nLink a la propuesta: ${plan.url}\n\nSi quieres empezar ya mismo para reservar tu plaza, puedes contratarlo aquí: ${buyLink}\n\nUn saludo,\nGerard.`);
+            const body = encodeURIComponent(`Hola ${lead.name},\n\n${fullMessage}\n\nUn saludo,\nGerard.`);
             window.location.href = `mailto:${lead.email}?subject=${subject}&body=${body}`;
             showToast('📂 Abriendo cliente de correo local (Fallback)...', 3000);
         }
