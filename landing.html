@@ -124,6 +124,52 @@
         </div>
     </section>
 
+    <!-- FAQ Section (AEO optimized) -->
+    <style>
+        .faq-section-simple { padding: 80px 0; background: rgba(255,255,255,0.02); }
+        .faq-container-simple { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+        .faq-title-simple { font-size: 2.5rem; text-align: center; margin-bottom: 40px; color: #fff; font-family: 'Outfit', sans-serif; }
+        .faq-item-simple { background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.1); }
+        .faq-question-simple { width: 100%; padding: 20px; background: none; border: none; color: #fff; text-align: left; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; font-size: 1.1rem; }
+        .faq-answer-simple { max-height: 0; overflow: hidden; padding: 0 20px; color: rgba(255,255,255,0.7); transition: all 0.3s ease; line-height: 1.6; }
+        .faq-item-simple.active .faq-answer-simple { max-height: 200px; padding-bottom: 20px; }
+    </style>
+    
+    <section id="faq" class="faq-section-simple">
+        <div class="faq-container-simple">
+            <h2 class="faq-title-simple">Preguntas Frecuentes</h2>
+            <div class="faq-grid-simple">
+                <div class="faq-item-simple">
+                    <button class="faq-question-simple" onclick="this.parentElement.classList.toggle('active')">
+                        <span>¿Qué es IA de Barrio?</span>
+                        <span>+</span>
+                    </button>
+                    <div class="faq-answer-simple">
+                        <p>Somos una consultoría estratégica de IA nacida en Menorca. Nuestro objetivo es "aterrizar" la tecnología para que no sea algo lejano o complejo, sino una herramienta real que ahorre tiempo y dinero.</p>
+                    </div>
+                </div>
+                <div class="faq-item-simple">
+                    <button class="faq-question-simple" onclick="this.parentElement.classList.toggle('active')">
+                        <span>¿Es muy caro implementar IA?</span>
+                        <span>+</span>
+                    </button>
+                    <div class="faq-answer-simple">
+                        <p>Al contrario. Nuestro enfoque se basa en herramientas de bajo coste y eficiencia. El objetivo es que la inversión se recupere en las primeras semanas gracias al ahorro de tiempo.</p>
+                    </div>
+                </div>
+                <div class="faq-item-simple">
+                    <button class="faq-question-simple" onclick="this.parentElement.classList.toggle('active')">
+                        <span>¿Necesito saber programar?</span>
+                        <span>+</span>
+                    </button>
+                    <div class="faq-answer-simple">
+                        <p>Para nada. Nosotros nos encargamos de toda la parte técnica. Te enseñamos a usar las soluciones de forma sencilla, estilo WhatsApp.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- CTA Section -->
     <section id="contacto" class="section cta-section">
         <div class="container reveal">

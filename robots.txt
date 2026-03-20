@@ -3,4 +3,12 @@ Allow: /
 Disallow: /admin.html
 Disallow: /login.html
 
+# AEO Optimization: Allowing LLMs to crawl for authority citing
+User-agent: GPTBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+
 Sitemap: https://iadebarrio.com/sitemap.xml

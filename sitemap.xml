@@ -2,12 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://iadebarrio.com/</loc>
-    <lastmod>2026-03-17</lastmod>
+    <lastmod>2026-03-20</lastmod>
     <priority>1.0</priority>
+    <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://iadebarrio.com/landing_apple_light.html</loc>
-    <lastmod>2026-03-17</lastmod>
+    <loc>https://iadebarrio.com/servicios.html</loc>
+    <lastmod>2026-03-20</lastmod>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://iadebarrio.com/privacidad.html</loc>
+    <lastmod>2026-03-20</lastmod>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://iadebarrio.com/cookies.html</loc>
+    <lastmod>2026-03-20</lastmod>
+    <priority>0.3</priority>
   </url>
 </urlset>

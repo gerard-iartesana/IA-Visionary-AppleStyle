@@ -298,6 +298,24 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Error configurando enlaces dinámicos:', e);
         }
     }
+    // --- FAQ Accordion Logic (AEO) ---
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        if (question) {
+            question.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                // Cerrar otros abiertos (estilo acordeón limpio)
+                faqItems.forEach(otherItem => otherItem.classList.remove('active'));
+                
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        }
+    });
+
     loadDynamicLinks();
 });
 

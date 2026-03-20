@@ -7,7 +7,8 @@
 | **Clase 3** | ✅ | Control de Versiones con Git y consolidación de Estilos. |
 | **Clase 4** | ✅ | Backend con Supabase, Captura de Leads y Panel Admin. |
 | **Clase 5** | ✅ | URLs, Dominios y Automatizaciones Inteligentes. |
-| **Clase 6** | 🚀 | **Lanzamiento y optimización final.** |
+| **Clase 10** | ✅ | CRM Kanban y Gestión Avanzada de Leads. |
+| **Clase 11** | ✅ | SEO Técnico, GEO y Answer Engine Optimization (AEO). |
 
 ---
 
