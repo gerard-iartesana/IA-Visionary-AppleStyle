@@ -1020,7 +1020,7 @@ async function syncWithGoogle(isAuto = false) {
             });
         }
 
-        googleTokenClient.requestAccessToken({ prompt: isAuto ? '' : 'consent' });
+        googleTokenClient.requestAccessToken({ prompt: 'select_account' });
     } catch (e) {
         console.error('Error en Sync:', e);
     }
@@ -1655,6 +1655,12 @@ async function loadSearchConsoleData() {
                 rowLimit: 10
             })
         });
+
+        if (response.status === 403) {
+            sessionStorage.removeItem('google_access_token');
+            googleAccessToken = null;
+            throw new Error('Permisos insuficientes. Haz clic en Sincronizar de nuevo para renovar el acceso.');
+        }
 
         const data = await response.json();
 
