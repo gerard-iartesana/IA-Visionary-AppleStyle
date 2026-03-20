@@ -1000,7 +1000,7 @@ async function syncWithGoogle(isAuto = false) {
         }
 
         const CLIENT_ID = data.value;
-        const SCOPES = "https://www.googleapis.com/auth/calendar.events";
+        const SCOPES = "https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/webmasters.readonly";
 
         if (!googleTokenClient) {
             googleTokenClient = google.accounts.oauth2.initTokenClient({
@@ -1605,70 +1605,118 @@ async function sendProposal(planKey, channel) {
 async function loadSearchConsoleData() {
     console.log("Cargando datos de Google Search Console...");
     const btn = document.getElementById('refresh-gsc');
-    const originalText = btn ? btn.innerHTML : '';
+    const statusIcon = document.getElementById('gsc-status-icon');
     
     if (btn) {
         btn.innerHTML = '🔄 Cargando...';
         btn.disabled = true;
     }
 
+    if (statusIcon) {
+        statusIcon.style.display = 'inline-flex';
+        statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" class="lucide lucide-loader" style="color: var(--text-grey); animation: spin 1s linear infinite;"><path d="M12 2v4"/><path d="m16.2 7.8 2.9-2.9"/><path d="M18 12h4"/><path d="m16.2 16.2 2.9 2.9"/><path d="M12 18v4"/><path d="m4.9 19.1 2.9-2.9"/><path d="M2 12h4"/><path d="m4.9 4.9 2.9 2.9"/></svg>`;
+    }
+
+    // 1. Verificar si tenemos token
+    if (!googleAccessToken) {
+        const storedToken = sessionStorage.getItem('google_access_token');
+        if (storedToken) {
+            googleAccessToken = storedToken;
+        } else {
+            console.log("No hay token de Google. Intentando sincronizar...");
+            await syncWithGoogle();
+            if (!googleAccessToken) {
+                if (btn) btn.innerHTML = 'Sincronizar Web';
+                if (statusIcon) statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#FF3B30" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`;
+                return;
+            }
+        }
+    }
+
     try {
-        // En un escenario real, esto llamaría a una Edge Function de Supabase
-        // const { data, error } = await _supabase.functions.invoke('get_search_console');
+        // Datos de los últimos 30 días
+        const today = new Date();
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(today.getDate() - 30);
         
-        // De momento, cargamos datos demo para que el usuario vea la UI funcionando
-        loadDemoSearchConsoleData();
-        
+        const formatDate = (date) => date.toISOString().split('T')[0];
+        const siteUrl = "https://iadebarrio.com/";
+        const siteUrlEncoded = encodeURIComponent(siteUrl);
+
+        const response = await fetch(`https://www.googleapis.com/webmasters/v3/sites/${siteUrlEncoded}/searchAnalytics/query`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${googleAccessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                startDate: formatDate(thirtyDaysAgo),
+                endDate: formatDate(today),
+                dimensions: ["query"],
+                rowLimit: 10
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error(data.error.message || 'Fallo al consultar Search Console');
+        }
+
+        if (data.rows) {
+            // Calcular totales
+            let totalClicks = 0;
+            let totalImpressions = 0;
+            let totalCtr = 0;
+            let totalPos = 0;
+
+            const gscBody = document.getElementById('gsc-body');
+            gscBody.innerHTML = '';
+
+            data.rows.forEach((row, idx) => {
+                totalClicks += row.clicks;
+                totalImpressions += row.impressions;
+                totalCtr += row.ctr;
+                totalPos += row.position;
+
+                const tr = document.createElement('tr');
+                if (idx % 2 === 0) tr.style.background = 'rgba(255,255,255,0.02)';
+                
+                tr.innerHTML = `
+                    <td style="padding: 12px; font-weight: 600;">${row.keys[0]}</td>
+                    <td style="padding: 12px; text-align: right;">${row.clicks}</td>
+                    <td style="padding: 12px; text-align: right; color: var(--text-grey);">${row.impressions}</td>
+                    <td style="padding: 12px; text-align: right; color: var(--accent-blue);">${(row.ctr * 100).toFixed(1)}%</td>
+                    <td style="padding: 12px; text-align: right;">${row.position.toFixed(1)}</td>
+                `;
+                gscBody.appendChild(tr);
+            });
+
+            // Actualizar tarjetas
+            document.getElementById('gsc-clicks').textContent = totalClicks.toLocaleString();
+            document.getElementById('gsc-impressions').textContent = (totalImpressions / 1000).toFixed(1) + 'K';
+            document.getElementById('gsc-ctr').textContent = ((totalCtr / data.rows.length) * 100).toFixed(1) + ' %';
+            document.getElementById('gsc-position').textContent = (totalPos / data.rows.length).toFixed(1);
+
+            if (statusIcon) statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#34C759" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+        } else {
+            document.getElementById('gsc-body').innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px;">No se encontraron términos de búsqueda en los últimos 30 días.</td></tr>';
+            if (statusIcon) statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#34C759" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+        }
+
     } catch (err) {
         console.error('Error cargando Search Console:', err);
         showToast('❌ Error de conexión con Search Console', 5000);
+        if (statusIcon) statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#FF3B30" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`;
+        
+        // Fallback a demo si es un error de "sin propiedades" para no dejarlo vacío al inicio
+        if (err.message.includes('permission')) {
+             showToast('Asegúrate de estar logueado con la cuenta propietaria de Search Console.', 10000);
+        }
     } finally {
         if (btn) {
-            btn.innerHTML = originalText;
+            btn.innerHTML = 'Sincronizar Web';
             btn.disabled = false;
         }
-    }
-}
-
-function loadDemoSearchConsoleData() {
-    console.log("Activando Datos Demo de Search Console...");
-    
-    document.getElementById('gsc-clicks').textContent = '142';
-    document.getElementById('gsc-impressions').textContent = '5.8K';
-    document.getElementById('gsc-ctr').textContent = '2.4 %';
-    document.getElementById('gsc-position').textContent = '12.8';
-    
-    const gscBody = document.getElementById('gsc-body');
-    if (gscBody) {
-        gscBody.innerHTML = `
-            <tr style="background: rgba(255,255,255,0.02);">
-                <td style="padding: 12px; font-weight: 600;">ia Menorca</td>
-                <td style="padding: 12px; text-align: right;">45</td>
-                <td style="padding: 12px; text-align: right; color: var(--text-grey);">1.2K</td>
-                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">3.7%</td>
-                <td style="padding: 12px; text-align: right;">3.2</td>
-            </tr>
-            <tr>
-                <td style="padding: 12px; font-weight: 600;">consultoría ia estratégica</td>
-                <td style="padding: 12px; text-align: right;">28</td>
-                <td style="padding: 12px; text-align: right; color: var(--text-grey);">850</td>
-                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">3.3%</td>
-                <td style="padding: 12px; text-align: right;">5.1</td>
-            </tr>
-            <tr style="background: rgba(255,255,255,0.02);">
-                <td style="padding: 12px; font-weight: 600;">automatización negocios baleares</td>
-                <td style="padding: 12px; text-align: right;">14</td>
-                <td style="padding: 12px; text-align: right; color: var(--text-grey);">420</td>
-                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">3.3%</td>
-                <td style="padding: 12px; text-align: right;">8.4</td>
-            </tr>
-            <tr>
-                <td style="padding: 12px; font-weight: 600;">iadebarrio</td>
-                <td style="padding: 12px; text-align: right;">12</td>
-                <td style="padding: 12px; text-align: right; color: var(--text-grey);">310</td>
-                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">3.8%</td>
-                <td style="padding: 12px; text-align: right;">1.5</td>
-            </tr>
-        `;
     }
 }
