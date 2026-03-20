@@ -142,7 +142,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 loadLogs();
             } else if (target === 'section-seo') {
                 loadSeoData();
-                loadSearchConsoleData();
             } else if (target === 'section-payments') {
                 console.log('Triggering Pagos section load...');
                 loadPaymentLinks();
