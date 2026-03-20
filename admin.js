@@ -69,6 +69,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 window.location.href = `mailto:${btn.getAttribute('data-email')}`;
             } else if (btn.classList.contains('btn-auto')) {
                 sendToWebhook(leadId);
+            } else if (btn.classList.contains('btn-proposal')) {
+                openProposalModal(leadId);
             } else if (btn.classList.contains('btn-delete')) {
                 showDeleteModal(leadId, leadName);
             } else if (btn.classList.contains('btn-ficha')) {
@@ -93,6 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             else if (btn.classList.contains('btn-whatsapp')) openWhatsApp(btn.getAttribute('data-phone'), leadName, btn.getAttribute('data-interest'));
             else if (btn.classList.contains('btn-email')) window.location.href = `mailto:${btn.getAttribute('data-email')}`;
             else if (btn.classList.contains('btn-auto')) sendToWebhook(leadId);
+            else if (btn.classList.contains('btn-proposal')) openProposalModal(leadId);
             else if (btn.classList.contains('btn-delete')) showDeleteModal(leadId, leadName);
             else if (btn.classList.contains('btn-ficha')) showFichaModal(leadId);
         });
@@ -374,6 +377,7 @@ function renderLeads(searchTerm = '', statusFilter = 'all') {
                         </button>
                         <button type="button" class="btn-lead-action btn-whatsapp" data-phone="${lead.phone}" data-name="${lead.name}" data-interest="${lead.interest}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></button>
                         <button type="button" class="btn-lead-action btn-email" data-email="${lead.email}" title="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></button>
+                        <button type="button" class="btn-lead-action btn-proposal" data-id="${lead.id}" title="Enviar Presupuesto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></button>
                         <button type="button" class="btn-lead-action btn-auto" data-id="${lead.id}" title="Automatizar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></button>
                         <button type="button" class="btn-lead-action btn-delete" data-id="${lead.id}" data-name="${lead.name}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
                     </div>
@@ -416,6 +420,7 @@ function renderLeads(searchTerm = '', statusFilter = 'all') {
                 <div class="lead-actions-group" style="gap: 4px;">
                     <button type="button" class="btn-lead-action btn-ficha" style="width: 24px; height: 24px;" data-id="${lead.id}" title="Ficha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></button>
                     <button type="button" class="btn-lead-action btn-whatsapp" style="width: 24px; height: 24px;" data-phone="${lead.phone}" data-name="${lead.name}" data-interest="${lead.interest}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></button>
+                    <button type="button" class="btn-lead-action btn-proposal" style="width: 24px; height: 24px;" data-id="${lead.id}" title="Presupuesto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></button>
                     <button type="button" class="btn-lead-action btn-auto" style="width: 24px; height: 24px;" data-id="${lead.id}" title="Automatizar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></button>
                 </div>
             </div>
@@ -1488,5 +1493,87 @@ function updateCustomDateText() {
         loadAnalyticsData(start, end);
     } else {
         dateText.innerHTML = `Mostrando datos: <strong style="color: var(--text-color);">Selecciona un rango de fechas</strong>`;
+    }
+}
+
+// --- GESTIÓN DE PRESUPUESTOS ---
+const PROPOSALS = {
+    puntual: {
+        title: "Sesión Puntual de Consultoría IA",
+        price: "159€",
+        url: "https://ia-visionary.vercel.app/proposals/sesion-puntual-visionary.pdf",
+        text: "Aquí tienes la propuesta para la Sesión Puntual de Consultoría IA (159€). Incluye diagnóstico y hoja de ruta inmediata."
+    },
+    auditoria: {
+        title: "Auditoría e Inmersión IA Completa",
+        price: "359€",
+        url: "https://ia-visionary.vercel.app/proposals/auditoria-ia-visionary.pdf",
+        text: "Te adjunto la propuesta para la Auditoría e Inmersión IA Completa (359€). Es nuestro plan estrella para transformar tu negocio con agentes IA."
+    },
+    mensual: {
+        title: "Acompañamiento Mensual IA de Barrio",
+        price: "250€/mes",
+        url: "https://ia-visionary.vercel.app/proposals/acompanamiento-mensual-visionary.pdf",
+        text: "Esta es la propuesta para el Acompañamiento Mensual (250€/mes). Estaremos a tu lado mes a mes optimizando tus procesos con IA."
+    }
+};
+
+function openProposalModal(leadId) {
+    document.getElementById('proposal-lead-id').value = leadId;
+    document.getElementById('proposal-modal').classList.add('active');
+}
+
+async function sendProposal(planKey, channel) {
+    const leadId = document.getElementById('proposal-lead-id').value;
+    const plan = PROPOSALS[planKey];
+    const lead = allLeads.find(l => l.id === leadId);
+
+    if (!lead) {
+        showToast('❌ Error: No se encontró el lead.', 3000);
+        return;
+    }
+
+    document.getElementById('proposal-modal').classList.remove('active');
+    showToast(`⏳ Preparando envío de ${plan.title}...`, 2000);
+
+    if (channel === 'whatsapp') {
+        const message = `Hola ${lead.name}, soy Gerard de IA de Barrio. %0A%0A${plan.text} %0A%0APuedes ver los detalles aquí: ${plan.url} %0A%0A¿Qué te parece?`;
+        const phone = lead.phone ? lead.phone.replace(/\s+/g, '') : '';
+        window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+        addLog('Presupuesto Enviado', `Presupuesto ${plan.title} enviado vía WhatsApp a ${lead.name}`);
+    } else if (channel === 'email') {
+        try {
+            const functionUrl = `${SUPABASE_URL}/functions/v1/send-appointment-email-`;
+            const response = await fetch(functionUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'apikey': SUPABASE_ANON_KEY
+                },
+                body: JSON.stringify({
+                    title: `Tu Propuesta: ${plan.title}`,
+                    client_name: lead.name,
+                    client_email: lead.email,
+                    admin_email: 'gerard@iartesana.es',
+                    date: new Date().toLocaleString('es-ES'),
+                    custom_message: `${plan.text} \n\nLink a la propuesta: ${plan.url}`
+                })
+            });
+
+            if (response.ok) {
+                showToast(`✅ Email con presupuesto ${planKey} enviado con éxito.`, 5000);
+                addLog('Presupuesto Enviado', `Presupuesto ${plan.title} enviado vía Email a ${lead.name}`);
+            } else {
+                throw new Error('Fallo en el servidor de correo');
+            }
+        } catch (e) {
+            console.error(e);
+            // Fallback to mailto if function fails or not available
+            const subject = encodeURIComponent(`Propuesta: ${plan.title} - IA de Barrio`);
+            const body = encodeURIComponent(`Hola ${lead.name},\n\n${plan.text}\n\nLink a la propuesta: ${plan.url}\n\nUn saludo,\nGerard.`);
+            window.location.href = `mailto:${lead.email}?subject=${subject}&body=${body}`;
+            showToast('📂 Abriendo cliente de correo local (Fallback)...', 3000);
+        }
     }
 }
