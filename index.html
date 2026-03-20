@@ -6,19 +6,13 @@
     <title>IA de Barrio | Inteligencia Artificial para negocios reales</title>
     <meta name="description" content="Aterrizamos la IA a tu negocio. Consultoría cercana, auditorías prácticas y soluciones que funcionan. Basados en Menorca.">
     
-    <!-- Open Graph / Meta -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="IA de Barrio | Inteligencia Artificial para negocios reales">
-    <meta property="og:description" content="Aterrizamos la IA a tu negocio. Consultoría cercana, auditorías prácticas y soluciones que funcionan.">
-    <meta property="og:image" content="https://ia-visionary.vercel.app/images/og-image.jpg">
-    
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Styles -->
-    <link rel="stylesheet" href="landing_apple_unified.css">
+    <link rel="stylesheet" href="landing_apple_unified.css?v=11">
     
     <!-- Stripe SDK -->
     <script src="https://js.stripe.com/v3/"></script>
@@ -26,20 +20,59 @@
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-client.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6GPF3HWGJ7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6GPF3HWGJ7');
+    </script>
+
+    <!-- Meta Pixel Code (DESACTIVADO HASTA CREAR CUENTA) 
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', 'TU_PIXEL_ID_AQUI');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=TU_PIXEL_ID_AQUI&ev=PageView&noscript=1"
+    /></noscript>
+    End Meta Pixel Code -->
 </head>
 <body data-theme="light">
     <!-- Nav Bar -->
     <nav class="apple-nav">
+        <!-- Scroll Progress Bar -->
+        <div id="scroll-progress-bar" class="scroll-progress"></div>
+
         <div class="container nav-content">
             <div class="logo">IA<span>deBarrio</span></div>
-            <div class="nav-links">
-                <a href="#problemas">Problemas</a>
-                <a href="#solucion">Solución</a>
-                <a href="#precios">Precios</a>
-                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema">
-                    <!-- El icono se inserta vía JS -->
-                </button>
-                <button class="btn-apple-buy">Contratar</button>
+            
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="mobile-menu-toggle" aria-label="Abrir menú">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-open"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-close"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+
+            <div class="nav-links" id="apple-nav-links">
+                <a href="servicios.html" class="nav-link">Servicios</a>
+                <a href="#problemas" class="nav-link">Problemas</a>
+                <a href="#solucion" class="nav-link">Solución</a>
+                <a href="#precios" class="nav-link">Precios</a>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema"></button>
+                    <button class="btn-apple-buy">Contratar</button>
+                </div>
             </div>
         </div>
     </nav>
@@ -60,52 +93,55 @@
     <section id="problemas" class="section">
         <div class="container">
             <header class="section-intro reveal">
-                <h2>La IA, explicada fácil.</h2>
-                <p>¿Te suena a chino? Tranquilo, nosotros te ayudamos a usarla para ganar tiempo y dinero.</p>
+                <h2>9 señales de que tu negocio necesita IA. Ya.</h2>
+                <p>Si te identificas con 3 o más, estamos aquí para ayudarte.</p>
             </header>
             
             <div class="apple-grid reveal">
                 <div class="apple-card">
-                    <div class="card-content">
-                        <h3>Datos Fragmentados</h3>
-                        <p>Información dispersa en silos que la IA no puede procesar eficazmente. El "Papelero Loco" del siglo XXI.</p>
-                    </div>
+                    <h3>El papelero loco en todas partes</h3>
                     <img src="images/datos.png" alt="Datos Fragmentados" class="apple-card-image">
+                    <p>Tienes los datos de tu empresa repartidos por mil sitios y carpetas. Así, ni tú ni la IA encontraréis nunca nada útil.</p>
                 </div>
                 <div class="apple-card">
-                    <div class="card-content">
-                        <h3>Falta de Talento</h3>
-                        <p>Dificultad crítica para encontrar expertos en IA aplicada. Nadie nace sabiendo, pero el tiempo corre.</p>
-                    </div>
+                    <h3>Nadie nace sabiendo de IA</h3>
                     <img src="images/talento.png" alt="Falta de Talento" class="apple-card-image">
+                    <p>La IA mola mucho, pero tu equipo no sabe ni por dónde empezar. Sin alguien que enseñe, es como tener un Ferrari sin carnet.</p>
                 </div>
                 <div class="apple-card">
-                    <div class="card-content">
-                        <h3>Costes Ocultos</h3>
-                        <p>Gastos descontrolados en APIs y suscripciones sin un ROI definido. Evita los "Gastos Hormiga" digitales.</p>
-                    </div>
+                    <h3>Gastos hormiga que se acumulan</h3>
                     <img src="images/costes.png" alt="Costes Ocultos" class="apple-card-image">
+                    <p>Te apuntas a mil herramientas que luego nadie usa. Al final del mes, has tirado el dinero y no has ahorrado ni un minuto.</p>
                 </div>
                 <div class="apple-card">
-                    <div class="card-content">
-                        <h3>Resistencia Cultural</h3>
-                        <p>Fricción interna y miedo al cambio dentro de los equipos operativos. Vence el miedo a lo nuevo.</p>
-                    </div>
+                    <h3>El miedo a lo nuevo y desconocido</h3>
                     <img src="images/cultural.png" alt="Resistencia Cultural" class="apple-card-image">
+                    <p>A veces da miedo que una máquina nos quite el trabajo. Si el equipo no está convencido, la IA solo traerá problemas.</p>
                 </div>
                 <div class="apple-card">
-                    <div class="card-content">
-                        <h3>Saturación Técnica</h3>
-                        <p>Implementación de herramientas aisladas que no conectan entre sí. Programas que no se hablan.</p>
-                    </div>
+                    <h3>Programas que no hablan contigo</h3>
                     <img src="images/saturacion.png" alt="Saturación Técnica" class="apple-card-image">
+                    <p>Tienes un programa para una cosa y otro para otra, pero no se entienden entre ellos. Al final, trabajas más para la máquina que ella para ti.</p>
                 </div>
                 <div class="apple-card">
-                    <div class="card-content">
-                        <h3>Inseguridad de Datos</h3>
-                        <p>Riesgos de privacidad al usar modelos públicos sin capas de protección. Tus secretos, a buen recaudo.</p>
-                    </div>
+                    <h3>Tus secretos al aire y al descubierto</h3>
                     <img src="images/seguridad.png" alt="Inseguridad de Datos" class="apple-card-image">
+                    <p>Si usas la IA sin cuidado, los secretos de tu negocio acaban en internet. Es como contar tus cuentas en medio de la plaza del pueblo.</p>
+                </div>
+                <div class="apple-card">
+                    <h3>El boca a boca ya no basta</h3>
+                    <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=800&q=80" alt="Persona buscando en Google sin resultados" class="apple-card-image">
+                    <p>Tu negocio siempre ha funcionado por recomendaciones, pero los clientes nuevos te buscan en Google y no te encuentran. Tu competencia ya usa IA para captar clientes mientras duerme.</p>
+                </div>
+                <div class="apple-card">
+                    <h3>Copiar y pegar todo el día</h3>
+                    <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=800&q=80" alt="Persona agotada con papeleo repetitivo" class="apple-card-image">
+                    <p>Pasas horas copiando datos de un Excel a otro, mandando los mismos emails a mano y repitiendo tareas que un robot haría en segundos. Tu tiempo vale oro, pero lo gastas en trabajo de becario.</p>
+                </div>
+                <div class="apple-card">
+                    <h3>Decisiones a ojo que perjudican</h3>
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Dashboard de datos y gráficos" class="apple-card-image">
+                    <p>Tomas decisiones importantes basándote en la intuición porque no tienes datos claros. Es como conducir de noche sin luces: al final llegas, pero con muchos sustos por el camino.</p>
                 </div>
             </div>
         </div>
@@ -205,24 +241,24 @@
             <div class="beneficios-grid reveal">
                 <div class="beneficio-card">
                     <div class="beneficio-icon-wrapper icon-time">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                     </div>
-                    <h3>Recupera tu tiempo</h3>
-                    <p>Deja de ser un esclavo de las tareas que te quitan energía. Automatizamos lo aburrido para que tú vuelvas a ser el jefe de tu agenda.</p>
+                    <h3>De "voy tirando" a "voy volando"</h3>
+                    <p>Tu negocio funciona, pero podría ir mucho más rápido. La IA es el turbo que convierte un negocio que sobrevive en uno que despega de verdad. <strong>Resultado: más productividad desde la primera semana.</strong></p>
                 </div>
                 <div class="beneficio-card">
                     <div class="beneficio-icon-wrapper icon-money">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
                     </div>
-                    <h3>Vende más, gasta menos</h3>
-                    <p>Haz que tu negocio rinda el doble sin multiplicar tus costes. La IA te permite llegar a más clientes con el mismo equipo que tienes hoy.</p>
+                    <h3>Escala sin contratar (todavía)</h3>
+                    <p>Antes de buscar más personal, exprime lo que ya tienes. La IA multiplica la capacidad de tu equipo actual para que crezcas sin inflar la nómina. <strong>Resultado: crece un 30% sin ampliar plantilla.</strong></p>
                 </div>
                 <div class="beneficio-card">
                     <div class="beneficio-icon-wrapper icon-target">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
                     </div>
                     <h3>Control y Tranquilidad</h3>
-                    <p>Se acabó el ir a ciegas. Tendrás datos claros para decidir y la seguridad de que tu negocio está a la última en tecnología.</p>
+                    <p>Se acabó el ir a ciegas. Tendrás datos claros para decidir y la seguridad de que tu negocio está a la última en tecnología. <strong>Resultado: recupera hasta 10 horas semanales de trabajo manual.</strong></p>
                 </div>
             </div>
         </div>
@@ -331,7 +367,7 @@
                         <button type="submit" class="btn-apple-primary full-width">Enviar solicitud</button>
                     </form>
                     <div id="form-success" class="form-feedback hidden">
-                        <div class="success-icon" style="width: 60px; height: 60px; background: #34c759; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 1.8rem;">✓</div>
+                        <div class="success-icon" style="width: 60px; height: 60px; background: #34c759; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 1.8rem; box-shadow: 0 10px 20px rgba(52, 199, 89, 0.3);">✓</div>
                         <h3>¡Recibido con éxito!</h3>
                         <p>Gerard o David se pondrán en contacto contigo en menos de 24h laborables.</p>
                     </div>
