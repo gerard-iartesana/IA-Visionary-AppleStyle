@@ -1633,15 +1633,37 @@ async function loadSearchConsoleData() {
     }
 
     try {
-        // Datos de los últimos 30 días
         const today = new Date();
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(today.getDate() - 30);
-        
         const formatDate = (date) => date.toISOString().split('T')[0];
-        const siteUrl = "https://iadebarrio.com/";
-        const siteUrlEncoded = encodeURIComponent(siteUrl);
 
+        // 1. Detectar qué propiedad exacta tiene el usuario (con slashes, www o sc-domain)
+        const siteListResponse = await fetch(`https://www.googleapis.com/webmasters/v3/sites`, {
+            headers: { 'Authorization': `Bearer ${googleAccessToken}` }
+        });
+        const sitesData = await siteListResponse.json();
+        
+        const propStatus = document.getElementById('gsc-property-status');
+        const propText = document.getElementById('gsc-p-text');
+        
+        let targetSiteUrl = null;
+        if (sitesData.siteEntry) {
+            const match = sitesData.siteEntry.find(s => s.siteUrl.includes('iadebarrio.com'));
+            if (match) targetSiteUrl = match.siteUrl;
+        }
+
+        if (!targetSiteUrl) {
+            if (propStatus) propStatus.style.display = 'flex';
+            if (propText) propText.innerHTML = '<span style="color:#ff3b30">Propiedad no encontrada en Search Console.</span>';
+            throw new Error('No se encontró ninguna propiedad para iadebarrio.com');
+        }
+
+        if (propStatus) propStatus.style.display = 'flex';
+        if (propText) propText.innerHTML = `Propiedad detectada: <strong style="color:var(--accent-green)">${targetSiteUrl}</strong>`;
+
+        // 2. Pedir los datos para ESA URL
+        const siteUrlEncoded = encodeURIComponent(targetSiteUrl);
         const response = await fetch(`https://www.googleapis.com/webmasters/v3/sites/${siteUrlEncoded}/searchAnalytics/query`, {
             method: 'POST',
             headers: {
