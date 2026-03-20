@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 2. Inicializar Datos Globales
     fetchLeads();
-    loadStats();
+    // loadStats(); <-- Esta función no está definida y rompe la ejecución de los listeners de abajo
     loadPaymentLinks(); // Cargar links para que estén disponibles en el sistema de propuestas
 
     // Navegación Sidebar
