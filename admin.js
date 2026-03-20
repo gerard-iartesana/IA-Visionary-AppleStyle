@@ -142,6 +142,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 loadLogs();
             } else if (target === 'section-seo') {
                 loadSeoData();
+                loadSearchConsoleData();
             } else if (target === 'section-payments') {
                 console.log('Triggering Pagos section load...');
                 loadPaymentLinks();
@@ -150,6 +151,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Modals Genéricos
+    const btnRefreshGSC = document.getElementById('refresh-gsc');
+    if (btnRefreshGSC) {
+        btnRefreshGSC.addEventListener('click', loadSearchConsoleData);
+    }
+
     const btnOpenAppointment = document.getElementById('btn-open-appointment');
     if (btnOpenAppointment) {
         btnOpenAppointment.addEventListener('click', showAppointmentModal);
@@ -1592,5 +1598,77 @@ async function sendProposal(planKey, channel) {
             window.location.href = `mailto:${lead.email}?subject=${subject}&body=${body}`;
             showToast('📂 Abriendo cliente de correo local (Fallback)...', 3000);
         }
+    }
+}
+
+// --- SEARCH CONSOLE DASHBOARD ---
+async function loadSearchConsoleData() {
+    console.log("Cargando datos de Google Search Console...");
+    const btn = document.getElementById('refresh-gsc');
+    const originalText = btn ? btn.innerHTML : '';
+    
+    if (btn) {
+        btn.innerHTML = '🔄 Cargando...';
+        btn.disabled = true;
+    }
+
+    try {
+        // En un escenario real, esto llamaría a una Edge Function de Supabase
+        // const { data, error } = await _supabase.functions.invoke('get_search_console');
+        
+        // De momento, cargamos datos demo para que el usuario vea la UI funcionando
+        loadDemoSearchConsoleData();
+        
+    } catch (err) {
+        console.error('Error cargando Search Console:', err);
+        showToast('❌ Error de conexión con Search Console', 5000);
+    } finally {
+        if (btn) {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+}
+
+function loadDemoSearchConsoleData() {
+    console.log("Activando Datos Demo de Search Console...");
+    
+    document.getElementById('gsc-clicks').textContent = '142';
+    document.getElementById('gsc-impressions').textContent = '5.8K';
+    document.getElementById('gsc-ctr').textContent = '2.4 %';
+    document.getElementById('gsc-position').textContent = '12.8';
+    
+    const gscBody = document.getElementById('gsc-body');
+    if (gscBody) {
+        gscBody.innerHTML = `
+            <tr style="background: rgba(255,255,255,0.02);">
+                <td style="padding: 12px; font-weight: 600;">ia Menorca</td>
+                <td style="padding: 12px; text-align: right;">45</td>
+                <td style="padding: 12px; text-align: right; color: var(--text-grey);">1.2K</td>
+                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">3.7%</td>
+                <td style="padding: 12px; text-align: right;">3.2</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; font-weight: 600;">consultoría ia estratégica</td>
+                <td style="padding: 12px; text-align: right;">28</td>
+                <td style="padding: 12px; text-align: right; color: var(--text-grey);">850</td>
+                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">3.3%</td>
+                <td style="padding: 12px; text-align: right;">5.1</td>
+            </tr>
+            <tr style="background: rgba(255,255,255,0.02);">
+                <td style="padding: 12px; font-weight: 600;">automatización negocios baleares</td>
+                <td style="padding: 12px; text-align: right;">14</td>
+                <td style="padding: 12px; text-align: right; color: var(--text-grey);">420</td>
+                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">3.3%</td>
+                <td style="padding: 12px; text-align: right;">8.4</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; font-weight: 600;">iadebarrio</td>
+                <td style="padding: 12px; text-align: right;">12</td>
+                <td style="padding: 12px; text-align: right; color: var(--text-grey);">310</td>
+                <td style="padding: 12px; text-align: right; color: var(--accent-blue);">3.8%</td>
+                <td style="padding: 12px; text-align: right;">1.5</td>
+            </tr>
+        `;
     }
 }
