@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inversión en IA | IA de Barrio</title>
+    <meta name="description" content="Tarifas y precios de aplicaciones web, agentes de IA y automatizaciones a medida para negocios.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="landing_apple_unified.css?v=11.1">
+
+    <style>
+        .pricing-toggle {
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 5px;
+            border-radius: 30px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .toggle-btn {
+            position: relative;
+            z-index: 2;
+            padding: 12px 24px;
+            border: none;
+            background: transparent;
+            color: var(--text-grey);
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+        
+        .toggle-btn.active {
+            color: #fff;
+        }
+
+        #toggle-bg {
+            position: absolute;
+            width: calc(33.33% - 3.4px); /* Ajuste del ratio para el padding interno */
+            height: calc(100% - 10px);
+            background: var(--accent-blue);
+            border-radius: 25px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            left: 5px;
+            top: 5px;
+            z-index: 1;
+        }
+
+        .glass-table-container table td {
+            color: rgba(255, 255, 255, 0.85);
+        }
+        
+        @keyframes customFadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in-ani {
+            animation: customFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        /* Ajuste móvil para los botones del switch */
+        @media (max-width: 600px) {
+            .pricing-toggle { flex-direction: column; width: 100%; border-radius: 12px; }
+            .toggle-btn { padding: 15px; width: 100%; }
+            #toggle-bg { width: calc(100% - 10px); height: calc(33.33% - 3.4px); transition: all 0.3s ease; }
+            
+            /* En móvil, el fondo se movería verticalmente. Hacemos un hack fácil ocultando el animado en movil y poniendo botones normales */
+        }
+    </style>
+</head>
+<body data-theme="dark"> <!-- Aseguramos que cargue con fondo oscuro por defecto -->
+    <!-- Nav Bar -->
+    <nav class="apple-nav">
+        <div class="container nav-content">
+            <div class="logo"><a href="index.html" style="color: inherit; text-decoration: none;">IA<span>deBarrio</span></a></div>
+            
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="mobile-menu-toggle" aria-label="Abrir menú">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+
+            <div class="nav-links" id="apple-nav-links">
+                <a href="index.html#problemas" class="nav-link">Problemas</a>
+                <a href="index.html#solucion" class="nav-link">Solución</a>
+                <a href="inversion.html" class="nav-link" style="color: var(--accent-blue);">Inversión</a>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema"></button>
+                    <a href="index.html#contacto" class="btn-apple-buy" style="text-decoration: none;">Contacto</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Hero -->
+    <header class="hero" style="min-height: 35vh; padding-top: 150px; text-align: center;">
+        <div class="container hero-container">
+            <h1 style="margin-bottom: 20px;">Transparencia total.<br><span style="color: var(--accent-blue);">Inversión a medida.</span></h1>
+            <p class="hero-sub" style="max-width: 600px; margin: 0 auto;">Descubre los rangos de precio de nuestros servicios premium de desarrollo e implementación tecnológica.</p>
+        </div>
+    </header>
+
+    <section class="section" style="padding-top: 20px;">
+        <div class="container">
+            
+            <!-- Custom Toggle -->
+            <div style="display: flex; justify-content: center; margin-bottom: 60px;">
+                <div class="pricing-toggle">
+                    <div id="toggle-bg"></div>
+                    <button class="toggle-btn active" data-target="ia" onclick="switchTab('ia', 0)">Agentes de IA</button>
+                    <button class="toggle-btn" data-target="web" onclick="switchTab('web', 1)">Apps Web</button>
+                    <button class="toggle-btn" data-target="auto" onclick="switchTab('auto', 2)">Automatización</button>
+                </div>
+            </div>
+
+            <!-- Cards Grids -->
+            <div id="grid-ia" class="pricing-apple-grid toggle-grid fade-in-ani" style="margin-bottom: 80px;">
+                <div class="price-apple-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="p-tag">Texto (Básico)</div>
+                        <h3>Desde 300€<span>+ IVA</span></h3>
+                        <p style="color: var(--accent-green); margin-bottom: 15px; font-weight: 500; font-size: 0.9rem;">Mantenimiento: 49€/mes</p>
+                        <p style="font-size: 0.85rem; color: var(--text-grey);">Respuestas estructuradas usando modelos como ChatGPT o Claude.</p>
+                    </div>
+                </div>
+                
+                <div class="price-apple-card featured" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="popular-label">Más Solicitado</div>
+                    <div>
+                        <div class="p-tag">Texto (Avanzado)</div>
+                        <h3 style="background: linear-gradient(90deg, #fff, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Desde 1.000€</h3>
+                        <p style="color: #34c759; margin-bottom: 15px; font-weight: 500; font-size: 0.9rem;">Mantenimiento: 99€/mes</p>
+                        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7);">Agentes empoderados que además de contestar con precisión, ejecutan tareas específicas en tu nombre.</p>
+                    </div>
+                </div>
+                
+                <div class="price-apple-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="p-tag">Voz (Avanzado)</div>
+                        <h3>Desde 1.500€<span>+ IVA</span></h3>
+                        <p style="color: var(--accent-green); margin-bottom: 15px; font-weight: 500; font-size: 0.9rem;">Mantenimiento: 59€/mes</p>
+                        <p style="font-size: 0.85rem; color: var(--text-grey);">Agentes telefónicos proactivos. Contestan la línea y realizan llamadas a clientes o proveedores.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WEB APPS GRID -->
+            <div id="grid-web" class="pricing-apple-grid toggle-grid fade-in-ani" style="display: none; margin-bottom: 80px;">
+                <div class="price-apple-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="p-tag" style="background: rgba(255,255,255,0.1); color: white;">Nivel I</div>
+                        <h3>Desde 500€<span>+ IVA</span></h3>
+                        <p style="color: var(--accent-green); margin-bottom: 15px; font-weight: 500; font-size: 0.9rem;">Mantenimiento: 159€/mes</p>
+                        <p style="font-size: 0.85rem; color: var(--text-grey);">Plataformas sólidas con capacidad de realizar respuestas dinámicas e informar a usuarios.</p>
+                    </div>
+                </div>
+                
+                <div class="price-apple-card featured" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="popular-label">Escalable</div>
+                    <div>
+                        <div class="p-tag" style="background: rgba(255,255,255,0.2); color: white;">Nivel II</div>
+                        <h3 style="background: linear-gradient(90deg, #fff, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Desde 1.500€</h3>
+                        <p style="color: #34c759; margin-bottom: 15px; font-weight: 500; font-size: 0.9rem;">Mantenimiento: 259€/mes</p>
+                        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7);">Conectividad total. Enlace directo y bidireccional con tus bases de datos y herramientas internas.</p>
+                    </div>
+                </div>
+                
+                <div class="price-apple-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="p-tag" style="background: rgba(255,255,255,0.1); color: white;">Nivel III</div>
+                        <h3>Desde 3.500€<span>+ IVA</span></h3>
+                        <p style="color: var(--accent-green); margin-bottom: 15px; font-weight: 500; font-size: 0.9rem;">Mantenimiento: 359€/mes</p>
+                        <p style="font-size: 0.85rem; color: var(--text-grey);">Alta complejidad de sistemas. Inicio de sesión, BBDD de clientes segregada e integraciones a medida.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AUTOMATIZACIONES GRID -->
+            <div id="grid-auto" class="pricing-apple-grid toggle-grid fade-in-ani" style="display: none; margin-bottom: 80px;">
+                <div class="price-apple-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="p-tag">Simple</div>
+                        <h3>Desde 500€<span>+ IVA</span></h3>
+                        <p style="color: var(--accent-green); margin-bottom: 15px; font-weight: 500; font-size: 0.9rem;">Mantenimiento: 159€/mes</p>
+                        <p style="font-size: 0.85rem; color: var(--text-grey);">Conexión e integración transparente directo entre dos de tus herramientas existentes.</p>
+                    </div>
+                </div>
+                
+                <div class="price-apple-card featured" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="popular-label">Potente</div>
+                    <div>
+                        <div class="p-tag">Doble</div>
+                        <h3 style="background: linear-gradient(90deg, #fff, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Desde 1.500€</h3>
+                        <p style="color: #34c759; margin-bottom: 15px; font-weight: 500; font-size: 0.9rem;">Mantenimiento: 259€/mes</p>
+                        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7);">Integramos herramientas e incluimos la intervención analítica de Agentes de IA en medio del proceso.</p>
+                    </div>
+                </div>
+                
+                <div class="price-apple-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="p-tag">Compuesta</div>
+                        <h3>Desde 3.000€<span>+ IVA</span></h3>
+                        <p style="color: var(--accent-green); margin-bottom: 15px; font-weight: 500; font-size: 0.9rem;">Mantenimiento: 359€/mes</p>
+                        <p style="font-size: 0.85rem; color: var(--text-grey);">Arquitectura completa multicanal. Múltiples herramientas, lógica condicional pesada cruzando con agentes.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Detailed Table Section -->
+    <section class="section" style="padding-top: 0; margin-bottom: 60px;">
+        <div class="container">
+            <header class="section-intro">
+                <h2>Tabla Comparativa Global</h2>
+                <p>Nuestra inversión es modular. Separamos los costes de programación y la cuota de mantenimiento de los recursos.</p>
+            </header>
+
+            <div class="table-wrapper glass-table-container" style="overflow-x: auto; background: rgba(255,255,255,0.02); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); padding: 30px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 700px;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <th style="padding: 20px 10px; font-weight: 600; font-size: 1.1rem; color: #fff;">Servicio e Implementación</th>
+                            <th style="padding: 20px 10px; font-weight: 600; font-size: 1.1rem; color: #fff;">Alta Inicial <span style="font-size:0.75rem; color: var(--accent-blue); font-weight: normal;">(Creación)</span></th>
+                            <th style="padding: 20px 10px; font-weight: 600; font-size: 1.1rem; color: #fff;">Cuota Mensual <span style="font-size:0.75rem; color: #34c759; font-weight: normal;">(Mnto.)</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Agentes de IA -->
+                        <tr><td colspan="3" style="padding: 40px 10px 15px; font-weight: bold; color: var(--accent-blue); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1.5px;">Agentes de IA</td></tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 15px 10px;">Texto Básico <span style="opacity: 0.6; font-size: 0.8rem;">(Contestan y Asesoran)</span></td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">300€ - 500€</td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">49€ / mes</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 15px 10px;">Texto Avanzado <span style="opacity: 0.6; font-size: 0.8rem;">(Contestan y Ejecutan)</span></td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">1.000€ - 2.000€</td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">99€ / mes</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 15px 10px;">Texto Experto <span style="opacity: 0.6; font-size: 0.8rem;">(Piensan y Ejecutan / Equipo Múltiple)</span></td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">2.500€ - 10.000€+</td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">159€ / mes</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 15px 10px;">Voz Básico <span style="opacity: 0.6; font-size: 0.8rem;">(Contestan Líneas Entrantes)</span></td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">500€ - 1.000€</td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">49€ / mes</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 15px 10px;">Voz Avanzado <span style="opacity: 0.6; font-size: 0.8rem;">(Llaman de Forma Activa)</span></td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">1.500€ - 3.000€</td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">59€ / mes</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 15px 10px;">Análisis de Imagen <span style="opacity: 0.6; font-size: 0.8rem;">(Interactúan con Imágenes o Vídeo)</span></td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">3.000€ - 10.000€</td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">159€ / mes</td>
+                        </tr>
+
+                        <!-- Apps Web -->
+                        <tr><td colspan="3" style="padding: 40px 10px 15px; font-weight: bold; color: var(--accent-blue); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1.5px;">Aplicaciones Web</td></tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 15px 10px;">Nivel I <span style="opacity: 0.6; font-size: 0.8rem;">(Plataforma Informativa Dinámica)</span></td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">500€ - 1.000€</td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">159€ / mes</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 15px 10px;">Nivel II <span style="opacity: 0.6; font-size: 0.8rem;">(Conectividad Limitada de Datos)</span></td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">1.500€ - 3.000€</td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">259€ / mes</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 15px 10px;">Nivel III <span style="opacity: 0.6; font-size: 0.8rem;">(Usuarios y Lógica Avanzada Compleja)</span></td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">3.500€ - 10.000€+</td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">359€ / mes</td>
+                        </tr>
+
+                         <!-- Automatizaciones -->
+                        <tr><td colspan="3" style="padding: 40px 10px 15px; font-weight: bold; color: var(--accent-blue); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1.5px;">Automatizaciones de Sistemas</td></tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 15px 10px;">Simple <span style="opacity: 0.6; font-size: 0.8rem;">(Software a Software 1.0)</span></td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">500€ - 1.000€</td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">159€ / mes</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 15px 10px;">Doble <span style="opacity: 0.6; font-size: 0.8rem;">(Implementa Procesamiento con Modelos)</span></td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">1.500€ - 3.000€</td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">259€ / mes</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 15px 10px;">Compuesta <span style="opacity: 0.6; font-size: 0.8rem;">(Ecosistema de Varias Herramientas y Agentes)</span></td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">3.000€ - 10.000€+</td>
+                            <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">359€ / mes</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 25px; text-align: left;">
+                    * Impuestos (IVA) no incluidos.<br>
+                    * Los costes derivados de consumo y tráfico propio de tu infraestructura (visitas a la web hospedada, volumen de llamadas, tokens de llamadas a LLMs o integradores de terceros) se facturan aparte de la cuota de mantenimiento de los recursos desplegados de IArtesana.
+                </p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 50px;">
+                <a href="index.html#contacto" class="btn-apple-primary">Solicitar una Asesoría de Proyecto</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="apple-footer">
+        <div class="container footer-grid">
+            <p>© 2026 IA de Barrio. Hecho con ❤️ desde Menorca.</p>
+            <div class="f-links">
+                <a href="servicios.html">Servicios</a>
+                <a href="inversion.html">Inversión</a>
+                <a href="login.html">Admin</a>
+                <a href="privacidad.html">Privacidad</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS for the Switch -->
+    <script>
+        // Set mobile adjustments
+        function isMobile() {
+            return window.innerWidth <= 600;
+        }
+
+        function switchTab(target, index) {
+            const btns = document.querySelectorAll('.toggle-btn');
+            const grids = document.querySelectorAll('.toggle-grid');
+            const bg = document.getElementById('toggle-bg');
+
+            // Set active class on buttons
+            btns.forEach(b => b.classList.remove('active'));
+            document.querySelector(`.toggle-btn[data-target="${target}"]`).classList.add('active');
+
+            if (!isMobile()) {
+                // Background slide animation on Desktop
+                bg.style.left = `calc(5px + ${index * 33.33}%)`;
+            } else {
+                // Background drop down on Mobile
+                bg.style.top = `calc(5px + ${index * 33.33}%)`;
+            }
+
+            // Hide all grids
+            grids.forEach(g => {
+                g.style.display = 'none';
+                g.classList.remove('fade-in-ani');
+            });
+            
+            // Show target grid and animate
+            const targetHTML = document.getElementById('grid-' + target);
+            if (targetHTML) {
+                targetHTML.style.display = 'grid';
+                // Trigger reflow to restart animation natively
+                void targetHTML.offsetWidth;
+                targetHTML.classList.add('fade-in-ani');
+            }
+        }
+        
+        window.addEventListener('resize', () => {
+            const bg = document.getElementById('toggle-bg');
+            const activeBtn = document.querySelector('.toggle-btn.active');
+            const valMap = {'ia': 0, 'web': 1, 'auto': 2};
+            const activeIndex = activeBtn ? valMap[activeBtn.dataset.target] : 0;
+            
+            if (isMobile()) {
+                bg.style.left = '5px';
+                bg.style.top = `calc(5px + ${activeIndex * 33.33}%)`;
+            } else {
+                bg.style.top = '5px';
+                bg.style.left = `calc(5px + ${activeIndex * 33.33}%)`;
+            }
+        });
+        
+        // Initializing the background position matching logic to ensure correct setup on load
+        window.dispatchEvent(new Event('resize'));
+    </script>
+    <script src="landing_apple.js?v=11.1"></script>
+</body>
+</html>
