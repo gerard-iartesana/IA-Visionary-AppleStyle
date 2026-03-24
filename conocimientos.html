@@ -72,6 +72,62 @@
             margin-bottom: 30px;
             flex-grow: 1;
         }
+
+        /* --- Estilos Desplegable Temario --- */
+        .course-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+        }
+        .course-card.expanded .course-details {
+            max-height: 800px;
+            opacity: 1;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+        }
+        .details-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .details-list li {
+            padding: 10px 0;
+            font-size: 0.9rem;
+            color: #d1d1d6;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.4;
+        }
+        .details-list li:last-child {
+            border-bottom: none;
+        }
+        .details-list li::before {
+            content: '→';
+            color: var(--accent-blue);
+            font-weight: bold;
+        }
+        .btn-toggle-course {
+            text-align: center;
+            display: block;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.02);
+            transition: background 0.3s ease;
+        }
+        .btn-toggle-course:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .course-card.expanded .btn-toggle-course {
+            background: rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
 <body data-theme="dark">
@@ -116,7 +172,15 @@
                     </div>
                     <h3 class="course-title">El año del Vídeo Generativo con IA</h3>
                     <p class="course-desc">Domina la creación de vídeo impulsado por inteligencia artificial. Aprende el uso avanzado de Replicate, entrenamiento con LoRa e integración de modelos visuales pioneros.</p>
-                    <a href="#" class="btn-apple-secondary" style="text-align: center; display: block; border: 1px solid var(--border-color); padding: 12px; border-radius: 12px; color: white; text-decoration: none;">Ver Temario Interactivo</a>
+                    <button class="btn-toggle-course" onclick="this.closest('.course-card').classList.toggle('expanded'); this.innerText = this.closest('.course-card').classList.contains('expanded') ? 'Ocultar Temario' : 'Ver Temario Completo'">Ver Temario Completo</button>
+                    <div class="course-details">
+                        <ul class="details-list">
+                            <li>Nivel 1: Introducción al vídeo generativo</li>
+                            <li>Nivel 2: Gestión y uso avanzado de Replicate</li>
+                            <li>Nivel 3: Entrenamiento de modelos visuales con LoRa</li>
+                            <li>Nivel 4: Integración completa de modelos en aplicaciones</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="course-card">
@@ -124,9 +188,17 @@
                         <span class="c-tag tag-beginner">Empresas</span>
                         <span class="c-tag tag-time">Progresivo</span>
                     </div>
-                    <h3 class="course-title">Planifica tu ecosistema corporativo</h3>
-                    <p class="course-desc">Implementación estratégica de herramientas nativas empresariales. Desde la Introducción a Microsoft Copilot hasta el dominio total de Gemini Business, conectando agentes con información externa de tu empresa.</p>
-                    <a href="#" class="btn-apple-secondary" style="text-align: center; display: block; border: 1px solid var(--border-color); padding: 12px; border-radius: 12px; color: white; text-decoration: none;">Acceder al Módulo</a>
+                    <h3 class="course-title">Ecosistema y Agentes Corporativos</h3>
+                    <p class="course-desc">Implementación estratégica de herramientas nativas empresariales. Dominio de Microsoft Copilot, Gemini Business y Agentes de IA autónomos de voz (Eleven Labs).</p>
+                    <button class="btn-toggle-course" onclick="this.closest('.course-card').classList.toggle('expanded'); this.innerText = this.closest('.course-card').classList.contains('expanded') ? 'Ocultar Temario' : 'Ver Temario Completo'">Ver Temario Completo</button>
+                    <div class="course-details">
+                        <ul class="details-list">
+                            <li>Agentes de Voz: Configuración con Eleven Labs y MCP</li>
+                            <li>Microsoft Copilot: Introducción a ecosistemas de IA</li>
+                            <li>Gemini Business: Interacción con información interna</li>
+                            <li>Gemini Business Avanzado: Datos externos y flujos complejos</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <!-- IA Labs / Data -->
@@ -135,9 +207,17 @@
                         <span class="c-tag" style="background: rgba(10,132,255,0.15); color: #0a84ff;">Programación</span>
                         <span class="c-tag tag-time">Laboratorio</span>
                     </div>
-                    <h3 class="course-title">Masterclass de Apps Nativas (Same.dev)</h3>
-                    <p class="course-desc">Aprende a crear tus propias aplicaciones web sin saber programar de forma tradicional. Desde los cimientos hasta despliegues complejos de nivel III, con el apoyo constante de agentes generadores de código.</p>
-                    <a href="#" class="btn-apple-secondary" style="text-align: center; display: block; border: 1px solid var(--border-color); padding: 12px; border-radius: 12px; color: white; text-decoration: none;">Empezar a Crear</a>
+                    <h3 class="course-title">Masterclass de Apps Nativas e IA Técnica</h3>
+                    <p class="course-desc">Aprende a crear tus propias webapps con Same.dev sin saber programar y explora Hugging Face, la Wikipedia de los modelos de Inteligencia Artificial.</p>
+                    <button class="btn-toggle-course" onclick="this.closest('.course-card').classList.toggle('expanded'); this.innerText = this.closest('.course-card').classList.contains('expanded') ? 'Ocultar Temario' : 'Ver Temario Completo'">Ver Temario Completo</button>
+                    <div class="course-details">
+                        <ul class="details-list">
+                            <li>Desarrollo en Same.dev: Niveles 1, 2 y 3 (Avanzado)</li>
+                            <li>Hugging Face: Introducción a repositorios de IA y Modelos Abiertos</li>
+                            <li>Hugging Face Avanzado: Visión por Computadora y despliegue</li>
+                            <li>Carrera Exponencial: Prospección técnica para 2026</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="course-card">
@@ -146,10 +226,36 @@
                         <span class="c-tag tag-time">Niveles I, II y III</span>
                     </div>
                     <h3 class="course-title">Datos, Gemini 3.0 y Julius AI</h3>
-                    <p class="course-desc">Eleva tus capacidades de análisis. Domina Google AI Studio y el entorno avanzado de Julius AI para transformar montanas de datos aburridos en dashboards hiper-visuales, comprensibles y accionables en minutos.</p>
-                    <a href="#" class="btn-apple-secondary" style="text-align: center; display: block; border: 1px solid var(--border-color); padding: 12px; border-radius: 12px; color: white; text-decoration: none;">Explorar Niveles</a>
+                    <p class="course-desc">Eleva tus capacidades de análisis. Domina Google AI Studio y transforma datos aburridos en dashboards visuales hiper-accionables.</p>
+                    <button class="btn-toggle-course" onclick="this.closest('.course-card').classList.toggle('expanded'); this.innerText = this.closest('.course-card').classList.contains('expanded') ? 'Ocultar Temario' : 'Ver Temario Completo'">Ver Temario Completo</button>
+                    <div class="course-details">
+                        <ul class="details-list">
+                            <li>Google AI Studio: Análisis de datos Nivel I, II y III</li>
+                            <li>Creación de Dashboards Inteligentes con Julius AI</li>
+                            <li>Interpretación de métricas exponenciales</li>
+                        </ul>
+                    </div>
                 </div>
                 
+                <!-- Seguimiento y Tendencias -->
+                <div class="course-card">
+                    <div class="course-meta">
+                        <span class="c-tag tag-beginner" style="background: rgba(255, 59, 48, 0.15); color: #ff3b30;">Investigación</span>
+                        <span class="c-tag tag-time">Laboratorio Vivo</span>
+                    </div>
+                    <h3 class="course-title">IA Seguimiento: Tendencias y Análisis</h3>
+                    <p class="course-desc">Monitorización experimental de modelos de última generación y herramientas en vivo. Mantente actualizado al ritmo frenético de la IA.</p>
+                    <button class="btn-toggle-course" onclick="this.closest('.course-card').classList.toggle('expanded'); this.innerText = this.closest('.course-card').classList.contains('expanded') ? 'Ocultar Temario' : 'Ver Temario Completo'">Ver Temario Completo</button>
+                    <div class="course-details">
+                        <ul class="details-list">
+                            <li>Modelos Frontier: Gemini 2.0 Flash, Gemini 2.5, Llama 4 y Convergence AI</li>
+                            <li>Herramientas en Vivo: Masterclass de Notebook LM</li>
+                            <li>Video e Imagen: Pruebas con Veo 2 (Google AI Studio)</li>
+                            <li>Noticias de la Industria sin ruido</li>
+                        </ul>
+                    </div>
+                </div>
+
                 <!-- Automatización y Growth -->
                 <div class="course-card">
                     <div class="course-meta">
@@ -157,8 +263,15 @@
                         <span class="c-tag tag-time">Automatización</span>
                     </div>
                     <h3 class="course-title">IA Masters: Vende en LinkedIn sin publicar</h3>
-                    <p class="course-desc">El arma secreta del B2B. Configuración de flujos avanzados para prospección e influencia (Outreach) utilizando Zapier de forma estratégica. Crea una máquina de generación de leads autónoma.</p>
-                    <a href="#" class="btn-apple-secondary" style="text-align: center; display: block; border: 1px solid var(--border-color); padding: 12px; border-radius: 12px; color: white; text-decoration: none;">Ver Estrategia</a>
+                    <p class="course-desc">El arma secreta del B2B. Configuración de flujos avanzados para prospección e influencia utilizando Zapier. Crea una máquina autónoma de leads.</p>
+                    <button class="btn-toggle-course" onclick="this.closest('.course-card').classList.toggle('expanded'); this.innerText = this.closest('.course-card').classList.contains('expanded') ? 'Ocultar Temario' : 'Ver Temario Completo'">Ver Temario Completo</button>
+                    <div class="course-details">
+                        <ul class="details-list">
+                            <li>Automatización avanzada con Zapier y webhooks</li>
+                            <li>Estrategias de LinkedIn Outreach y Automatización B2B</li>
+                            <li>Captación de clientes de alto valor B2B</li>
+                        </ul>
+                    </div>
                 </div>
                 
                 <!-- Divulgación / Hero Con -->
@@ -167,9 +280,17 @@
                         <span class="c-tag tag-beginner">Mentalidad</span>
                         <span class="c-tag tag-time" style="background: rgba(52,199,89,0.15); color: #34c759;">Evento Exclusivo</span>
                     </div>
-                    <h3 class="course-title">HERO CON 2026: La Era Exponencial</h3>
-                    <p class="course-desc">Acceso privilegiado a las grabaciones (Niveles 1 a 4) de nuestras convenciones privadas preparativas. Entiende la velocidad del cambio, qué rol ocupará la Inteligencia Artificial Técnica (Hugging Face) y cómo liderar sin miedo.</p>
-                    <a href="https://www.youtube.com/live/2H68bXZyK1A" target="_blank" class="btn-apple-secondary" style="text-align: center; display: block; border: 1px solid var(--accent-blue); background: rgba(10,132,255,0.1); padding: 12px; border-radius: 12px; color: white; text-decoration: none;">Ver la Grabación Oficial</a>
+                    <h3 class="course-title">HERO CON (2025 y 2026)</h3>
+                    <p class="course-desc">Acceso a las sesiones de nuestras convenciones para entender la mentalidad de la Era Exponencial. Incluye Nexusapp y Contenido Extra.</p>
+                    <button class="btn-toggle-course" onclick="this.closest('.course-card').classList.toggle('expanded'); this.innerText = this.closest('.course-card').classList.contains('expanded') ? 'Ocultar Temario' : 'Ver Temario Completo'">Ver Temario Completo</button>
+                    <div class="course-details">
+                        <ul class="details-list" style="margin-bottom: 20px;">
+                            <li>La conquista de la era exponencial 1, 2, 3 y 4</li>
+                            <li>Grabaciones oficiales de HERO CON 2025 y 2026</li>
+                            <li>Acceso a beneficios Nexusapp y documentos extra</li>
+                        </ul>
+                        <a href="https://www.youtube.com/live/2H68bXZyK1A" target="_blank" class="btn-apple-secondary" style="text-align: center; display: block; border: 1px solid var(--accent-blue); background: rgba(10,132,255,0.1); padding: 12px; border-radius: 12px; color: white; text-decoration: none;">Ver Grabación en YouTube</a>
+                    </div>
                 </div>
             </div>
 
