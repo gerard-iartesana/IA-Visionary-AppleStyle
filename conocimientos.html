@@ -23,8 +23,8 @@
         }
         
         .course-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
             border-radius: 20px;
             padding: 30px;
             transition: all 0.3s ease;
@@ -36,8 +36,8 @@
         
         .course-card:hover {
             transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-color: var(--accent-blue);
         }
         
         .course-meta {
@@ -57,7 +57,7 @@
         
         .tag-beginner { background: rgba(52, 199, 89, 0.2); color: #34c759; }
         .tag-advanced { background: rgba(0, 122, 255, 0.2); color: var(--accent-blue); }
-        .tag-time { background: rgba(255, 255, 255, 0.1); color: #ccc; }
+        .tag-time { background: var(--bg-card); color: var(--text-grey); border: 1px solid var(--border-color); }
         
         .course-title {
             font-size: 1.5rem;
@@ -84,7 +84,7 @@
             max-height: 800px;
             opacity: 1;
             margin-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid var(--border-color);
             padding-top: 20px;
         }
         .details-list {
@@ -95,8 +95,8 @@
         .details-list li {
             padding: 10px 0;
             font-size: 0.9rem;
-            color: #d1d1d6;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-grey);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: flex-start;
             gap: 10px;
@@ -116,17 +116,20 @@
             border: 1px solid var(--border-color);
             padding: 12px;
             border-radius: 12px;
-            color: white;
+            color: var(--text-main);
             text-decoration: none;
             cursor: pointer;
-            background: rgba(255, 255, 255, 0.02);
-            transition: background 0.3s ease;
+            background: transparent;
+            transition: all 0.3s ease;
         }
         .btn-toggle-course:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: var(--bg-card);
+            border-color: var(--text-main);
         }
         .course-card.expanded .btn-toggle-course {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--bg-card);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
         }
     </style>
 </head>
@@ -289,7 +292,7 @@
                             <li>Grabaciones oficiales de HERO CON 2025 y 2026</li>
                             <li>Acceso a beneficios Nexusapp y documentos extra</li>
                         </ul>
-                        <a href="https://www.youtube.com/live/2H68bXZyK1A" target="_blank" class="btn-apple-secondary" style="text-align: center; display: block; border: 1px solid var(--accent-blue); background: rgba(10,132,255,0.1); padding: 12px; border-radius: 12px; color: white; text-decoration: none;">Ver Grabación en YouTube</a>
+                        <a href="https://www.youtube.com/live/2H68bXZyK1A" target="_blank" class="btn-apple-secondary" style="text-align: center; display: block; border: 1px solid var(--accent-blue); background: rgba(10,132,255,0.1); padding: 12px; border-radius: 12px; color: var(--accent-blue); text-decoration: none;">Ver Grabación en YouTube</a>
                     </div>
                 </div>
             </div>
