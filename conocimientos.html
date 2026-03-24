@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conocimientos y Formación | IA de Barrio</title>
+    <meta name="description" content="Aprende sobre Inteligencia Artificial aplicada a negocios. Cursos, talleres y divulgación de IA en Menorca.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="landing_apple_unified.css?v=11.1">
+
+    <style>
+        .knowledge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .course-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .course-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .course-meta {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .c-tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .tag-beginner { background: rgba(52, 199, 89, 0.2); color: #34c759; }
+        .tag-advanced { background: rgba(0, 122, 255, 0.2); color: var(--accent-blue); }
+        .tag-time { background: rgba(255, 255, 255, 0.1); color: #ccc; }
+        
+        .course-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+        
+        .course-desc {
+            color: var(--text-grey);
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <!-- Nav Bar -->
+    <nav class="apple-nav">
+        <div class="container nav-content">
+            <div class="logo"><a href="index.html" style="color: inherit; text-decoration: none;">IA<span>deBarrio</span></a></div>
+            
+            <button id="mobile-menu-btn" class="mobile-menu-toggle" aria-label="Abrir menú">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+
+            <div class="nav-links" id="apple-nav-links">
+                <a href="index.html#solucion" class="nav-link">Solución</a>
+                <a href="demos.html" class="nav-link">Demos</a>
+                <a href="conocimientos.html" class="nav-link active" style="color: var(--accent-blue);">Conocimientos</a>
+                <a href="inversion.html" class="nav-link">Inversión</a>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema"></button>
+                    <a href="index.html#contacto" class="btn-apple-buy" style="text-decoration: none;">Contacto</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Hero -->
+    <header class="hero" style="min-height: 35vh; padding-top: 150px; text-align: center;">
+        <div class="container hero-container">
+            <h1 style="margin-bottom: 20px;">Aprende y <span style="color: var(--accent-blue);">Evoluciona.</span></h1>
+            <p class="hero-sub" style="max-width: 600px; margin: 0 auto;">No solo implementamos herramientas; también te enseñamos a dominarlas. Descubre nuestra Academia de IA.</p>
+        </div>
+    </header>
+
+    <section class="section" style="padding-top: 20px; margin-bottom: 60px;">
+        <div class="container">
+            
+            <div class="knowledge-grid">
+                <!-- Curso 1 -->
+                <div class="course-card">
+                    <div class="course-meta">
+                        <span class="c-tag tag-beginner">Iniciación</span>
+                        <span class="c-tag tag-time">4 Semanas</span>
+                    </div>
+                    <h3 class="course-title">Fundamentos de IA para PYMES</h3>
+                    <p class="course-desc">Aprende a usar ChatGPT y otras herramientas conversacionales en el día a día para redactar emails, crear contenido y optimizar tu administración básica.</p>
+                    <a href="#" class="btn-apple-secondary" style="text-align: center; display: block; border: 1px solid var(--border-color); padding: 12px; border-radius: 12px; color: white; text-decoration: none;">Ver Temario</a>
+                </div>
+
+                <!-- Curso 2 -->
+                <div class="course-card">
+                    <div class="course-meta">
+                        <span class="c-tag tag-advanced">Avanzado</span>
+                        <span class="c-tag tag-time">6 Semanas</span>
+                    </div>
+                    <h3 class="course-title">Automatización Low-Code Integral</h3>
+                    <p class="course-desc">Aprende a conectar herramientas como Make o Zapier con la API de OpenAI para crear ecosistemas donde la información fluye sola mientras tú descansas.</p>
+                    <a href="#" class="btn-apple-secondary" style="text-align: center; display: block; border: 1px solid var(--border-color); padding: 12px; border-radius: 12px; color: white; text-decoration: none;">Ver Temario</a>
+                </div>
+
+                <!-- Curso 3 -->
+                <div class="course-card">
+                    <div class="course-meta">
+                        <span class="c-tag tag-advanced">Masterclass</span>
+                        <span class="c-tag tag-time">Virtual Live</span>
+                    </div>
+                    <h3 class="course-title">Entrenando a tu propio Agente de Ventas</h3>
+                    <p class="course-desc">Sesión práctica donde construiremos paso a paso un bot de atención al cliente entrenado exclusivamente con los datos de tu empresa, listo para operar 24/7.</p>
+                    <a href="#" class="btn-apple-secondary" style="text-align: center; display: block; border: 1px solid var(--border-color); padding: 12px; border-radius: 12px; color: white; text-decoration: none;">Próxima Convocatoria</a>
+                </div>
+                
+                <!-- Curso 4 -->
+                <div class="course-card">
+                    <div class="course-meta">
+                        <span class="c-tag tag-beginner">Píldora Gratuita</span>
+                        <span class="c-tag tag-time">2 Horas</span>
+                    </div>
+                    <h3 class="course-title">AEO vs SEO: El futuro de las búsquedas</h3>
+                    <p class="course-desc">¿Cómo te encuentran los clientes cuando le preguntan a ChatGPT en vez de a Google? Conceptos clave de la Optimización para Motores de Respuesta.</p>
+                    <a href="#" class="btn-apple-secondary" style="text-align: center; display: block; border: 1px solid var(--border-color); padding: 12px; border-radius: 12px; color: white; text-decoration: none;">Inscripción Abierta</a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="apple-footer">
+        <div class="container footer-grid">
+            <p>© 2026 IA de Barrio. Hecho con ❤️ desde Menorca.</p>
+            <div class="f-links">
+                <a href="servicios.html">Servicios</a>
+                <a href="demos.html">Demos</a>
+                <a href="inversion.html">Inversión</a>
+                <a href="login.html">Admin</a>
+                <a href="privacidad.html">Privacidad</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="landing_apple.js?v=11.1"></script>
+</body>
+</html>

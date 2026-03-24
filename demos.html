@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyectos Demo | IA de Barrio</title>
+    <meta name="description" content="Descubre nuestros proyectos demo. Ejemplos reales de Agentes de IA, Automatizaciones y Aplicaciones Web.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="landing_apple_unified.css?v=11.1">
+
+    <style>
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+        
+        .demo-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .demo-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .demo-image {
+            width: 100%;
+            height: 220px;
+            background: #111;
+            /* Placeholder pattern matching Apple's style */
+            background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .demo-icon {
+            font-size: 4rem;
+            opacity: 0.5;
+        }
+        
+        .demo-content {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        
+        .demo-tags {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .d-tag {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.1);
+            color: #ccc;
+            font-weight: 600;
+        }
+        
+        .d-tag.t-agent { color: #0a84ff; background: rgba(10, 132, 255, 0.15); }
+        .d-tag.t-auto { color: #34c759; background: rgba(52, 199, 89, 0.15); }
+        .d-tag.t-web { color: #ff9f0a; background: rgba(255, 159, 10, 0.15); }
+
+        .demo-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .demo-desc {
+            color: var(--text-grey);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 30px;
+            flex-grow: 1;
+        }
+        
+        .btn-play-demo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #fff;
+            color: #000;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-play-demo:hover {
+            background: #e5e5ea;
+        }
+        
+        .btn-play-demo svg {
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <!-- Nav Bar -->
+    <nav class="apple-nav">
+        <div class="container nav-content">
+            <div class="logo"><a href="index.html" style="color: inherit; text-decoration: none;">IA<span>deBarrio</span></a></div>
+            
+            <button id="mobile-menu-btn" class="mobile-menu-toggle" aria-label="Abrir menú">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+
+            <div class="nav-links" id="apple-nav-links">
+                <a href="index.html#solucion" class="nav-link">Solución</a>
+                <a href="demos.html" class="nav-link active" style="color: var(--accent-blue);">Demos</a>
+                <a href="conocimientos.html" class="nav-link">Conocimientos</a>
+                <a href="inversion.html" class="nav-link">Inversión</a>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema"></button>
+                    <a href="index.html#contacto" class="btn-apple-buy" style="text-decoration: none;">Contacto</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Hero -->
+    <header class="hero" style="min-height: 35vh; padding-top: 150px; text-align: center;">
+        <div class="container hero-container">
+            <h1 style="margin-bottom: 20px;">Nuestra tecnología,<br><span style="background: linear-gradient(90deg, #34c759, #30b0c7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">En Acción.</span></h1>
+            <p class="hero-sub" style="max-width: 600px; margin: 0 auto;">Pruébalo tú mismo. Interactúa con nuestros Agentes de IA, descubre flujos de trabajo automatizados y explora plataformas web operativas.</p>
+        </div>
+    </header>
+
+    <section class="section" style="padding-top: 20px; margin-bottom: 80px;">
+        <div class="container">
+            
+            <div class="demo-grid">
+                
+                <!-- Demo 1 -->
+                <div class="demo-card">
+                    <div class="demo-image">
+                        <div class="demo-icon">🧑‍💼</div>
+                    </div>
+                    <div class="demo-content">
+                        <div class="demo-tags">
+                            <span class="d-tag t-agent">Agente IA (Voz)</span>
+                            <span class="d-tag">Recepción</span>
+                        </div>
+                        <h3 class="demo-title">Recepcionista Virtual 24/7</h3>
+                        <p class="demo-desc">Llama a nuestro Agente Demo y pídele agendar una cita o preguntarle sobre horarios y servicios. Gestiona la agenda en tiempo real y rechaza conflictos horarios con naturalidad humana.</p>
+                        <a href="#" class="btn-play-demo">
+                            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            Probar Llamada Demo
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Demo 2 -->
+                <div class="demo-card">
+                    <div class="demo-image">
+                        <div class="demo-icon">🤖</div>
+                    </div>
+                    <div class="demo-content">
+                        <div class="demo-tags">
+                            <span class="d-tag t-agent">Agente IA (Texto)</span>
+                            <span class="d-tag t-auto">Automatización</span>
+                        </div>
+                        <h3 class="demo-title">Asistente de Soporte WhatsApp</h3>
+                        <p class="demo-desc">Un asistente conectado a bases de datos que resuelve incidencias e inicia devoluciones sin que nadie del equipo intervenga. Integración total con Make y Stripe.</p>
+                        <a href="#" class="btn-play-demo">
+                            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            Chatear en WhatsApp
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Demo 3 -->
+                <div class="demo-card">
+                    <div class="demo-image">
+                        <div class="demo-icon">📊</div>
+                    </div>
+                    <div class="demo-content">
+                        <div class="demo-tags">
+                            <span class="d-tag t-web">App Web</span>
+                            <span class="d-tag">Dashboard</span>
+                        </div>
+                        <h3 class="demo-title">Panel de Control Inteligente</h3>
+                        <p class="demo-desc">Plataforma interna para empleados donde consolidamos el estado del inventario, ventas y predicciones generadas por Inteligencia Artificial en un solo vistazo.</p>
+                        <a href="#" class="btn-play-demo" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white;">
+                            Acceder al Sandbox
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Demo 4 -->
+                <div class="demo-card">
+                    <div class="demo-image">
+                        <div class="demo-icon">⚙️</div>
+                    </div>
+                    <div class="demo-content">
+                        <div class="demo-tags">
+                            <span class="d-tag t-auto">Automatización</span>
+                            <span class="d-tag">Email</span>
+                        </div>
+                        <h3 class="demo-title">Generador Automático de Facturas</h3>
+                        <p class="demo-desc">Mira cómo esta automatización detecta un pago recibido en el banco, genera la factura en formato PDF, notifica por email al cliente y lo registra en contabilidad.</p>
+                        <a href="#" class="btn-play-demo" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white;">
+                            Ver Vídeo del Flujo
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="apple-footer">
+        <div class="container footer-grid">
+            <p>© 2026 IA de Barrio. Hecho con ❤️ desde Menorca.</p>
+            <div class="f-links">
+                <a href="servicios.html">Servicios</a>
+                <a href="conocimientos.html">Conocimientos</a>
+                <a href="inversion.html">Inversión</a>
+                <a href="login.html">Admin</a>
+                <a href="privacidad.html">Privacidad</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="landing_apple.js?v=11.1"></script>
+</body>
+</html>
