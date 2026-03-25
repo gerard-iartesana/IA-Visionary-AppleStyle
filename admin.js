@@ -1760,7 +1760,8 @@ async function fetchPayments() {
         const { data, error } = await _supabase
             .from('payments')
             .select('*')
-            .order('created_at', { ascending: false });
+            .order('created_at', { ascending: false })
+            .limit(20);
 
         if (error) throw error;
 
@@ -1821,54 +1822,32 @@ function renderPayments(payments) {
 }
 
 function loadDemoPayments() {
-    console.log('Cargando simulación de pagos...');
+    console.log('Cargando simulación de pagos (20 últimas)...');
+    const H = 1000 * 60 * 60; // 1 hora en ms
+    const D = H * 24; // 1 día en ms
     const demoData = [
-        {
-            created_at: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-            customer_name: 'Ana García',
-            customer_email: 'ana.garcia@gmail.com',
-            plan_name: 'Sesión Puntual',
-            amount: 159,
-            currency: '€',
-            mode: 'live',
-            status: 'succeeded',
-            stripe_id: 'ch_3Nabc123Live'
-        },
-        {
-            created_at: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-            customer_name: 'Roberto Sánchez',
-            customer_email: 'roberto@empresa.es',
-            plan_name: 'Auditoría IA 360',
-            amount: 359,
-            currency: '€',
-            mode: 'live',
-            status: 'succeeded',
-            stripe_id: 'ch_3Nxyz789Live'
-        },
-        {
-            created_at: new Date(Date.now() - 1000 * 60 * 60 * 26).toISOString(),
-            customer_name: 'Carlos Test',
-            customer_email: 'test@example.com',
-            plan_name: 'Acompañamiento Mensual',
-            amount: 250,
-            currency: '€',
-            mode: 'test',
-            status: 'succeeded',
-            stripe_id: 'ch_test_51Mz800'
-        },
-        {
-            created_at: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(),
-            customer_name: 'Marta López',
-            customer_email: 'marta@startup.io',
-            plan_name: 'Sesión Puntual',
-            amount: 159,
-            currency: '€',
-            mode: 'live',
-            status: 'succeeded',
-            stripe_id: 'ch_3Nlmn456Live'
-        }
+        { created_at: new Date(Date.now() - H * 1).toISOString(), customer_name: 'Ana García', customer_email: 'ana.garcia@gmail.com', plan_name: 'Sesión Puntual', amount: 159, currency: '€', mode: 'live', stripe_id: 'ch_3Pabc001Live' },
+        { created_at: new Date(Date.now() - H * 5).toISOString(), customer_name: 'Pedro Martínez', customer_email: 'pedro@test.com', plan_name: 'Auditoría IA 360', amount: 359, currency: '€', mode: 'test', stripe_id: 'ch_test_002Abc' },
+        { created_at: new Date(Date.now() - D * 1).toISOString(), customer_name: 'Roberto Sánchez', customer_email: 'roberto@empresa.es', plan_name: 'Auditoría IA 360', amount: 359, currency: '€', mode: 'live', stripe_id: 'ch_3Pxyz003Live' },
+        { created_at: new Date(Date.now() - D * 1.5).toISOString(), customer_name: 'Laura Fernández', customer_email: 'laura@negocio.com', plan_name: 'Acompañamiento Mensual', amount: 250, currency: '€', mode: 'live', stripe_id: 'ch_3Pdef004Live' },
+        { created_at: new Date(Date.now() - D * 2).toISOString(), customer_name: 'Carlos Test', customer_email: 'carlos@test.dev', plan_name: 'Sesión Puntual', amount: 159, currency: '€', mode: 'test', stripe_id: 'ch_test_005Xyz' },
+        { created_at: new Date(Date.now() - D * 3).toISOString(), customer_name: 'Marta López', customer_email: 'marta@startup.io', plan_name: 'Sesión Puntual', amount: 159, currency: '€', mode: 'live', stripe_id: 'ch_3Pghi006Live' },
+        { created_at: new Date(Date.now() - D * 4).toISOString(), customer_name: 'Jordi Puig', customer_email: 'jordi@arquitectura.cat', plan_name: 'Auditoría IA 360', amount: 359, currency: '€', mode: 'live', stripe_id: 'ch_3Pjkl007Live' },
+        { created_at: new Date(Date.now() - D * 5).toISOString(), customer_name: 'Elena Díaz', customer_email: 'elena@consulta.es', plan_name: 'Acompañamiento Mensual', amount: 250, currency: '€', mode: 'live', stripe_id: 'ch_3Pmno008Live' },
+        { created_at: new Date(Date.now() - D * 6).toISOString(), customer_name: 'Dev Pruebas', customer_email: 'dev@localhost.test', plan_name: 'Acompañamiento Mensual', amount: 250, currency: '€', mode: 'test', stripe_id: 'ch_test_009Qrs' },
+        { created_at: new Date(Date.now() - D * 7).toISOString(), customer_name: 'Sofía Navarro', customer_email: 'sofia@tienda.shop', plan_name: 'Sesión Puntual', amount: 159, currency: '€', mode: 'live', stripe_id: 'ch_3Ptuv010Live' },
+        { created_at: new Date(Date.now() - D * 9).toISOString(), customer_name: 'Miguel Ángel Ruiz', customer_email: 'miguel@despacho.legal', plan_name: 'Auditoría IA 360', amount: 359, currency: '€', mode: 'live', stripe_id: 'ch_3Pwxy011Live' },
+        { created_at: new Date(Date.now() - D * 11).toISOString(), customer_name: 'QA Stripe', customer_email: 'qa@stripe-test.com', plan_name: 'Sesión Puntual', amount: 159, currency: '€', mode: 'test', stripe_id: 'ch_test_012Tuv' },
+        { created_at: new Date(Date.now() - D * 13).toISOString(), customer_name: 'Isabel Torres', customer_email: 'isabel@clínica.com', plan_name: 'Acompañamiento Mensual', amount: 250, currency: '€', mode: 'live', stripe_id: 'ch_3Pabc013Live' },
+        { created_at: new Date(Date.now() - D * 15).toISOString(), customer_name: 'David Moreno', customer_email: 'david@agencia.digital', plan_name: 'Sesión Puntual', amount: 159, currency: '€', mode: 'live', stripe_id: 'ch_3Pdef014Live' },
+        { created_at: new Date(Date.now() - D * 18).toISOString(), customer_name: 'Carmen Vega', customer_email: 'carmen@restaurante.es', plan_name: 'Auditoría IA 360', amount: 359, currency: '€', mode: 'live', stripe_id: 'ch_3Pghi015Live' },
+        { created_at: new Date(Date.now() - D * 21).toISOString(), customer_name: 'Test Webhook', customer_email: 'webhook@test.stripe', plan_name: 'Auditoría IA 360', amount: 359, currency: '€', mode: 'test', stripe_id: 'ch_test_016Wbh' },
+        { created_at: new Date(Date.now() - D * 25).toISOString(), customer_name: 'Pablo Herrera', customer_email: 'pablo@gym.fit', plan_name: 'Acompañamiento Mensual', amount: 250, currency: '€', mode: 'live', stripe_id: 'ch_3Pjkl017Live' },
+        { created_at: new Date(Date.now() - D * 30).toISOString(), customer_name: 'Lucía Martín', customer_email: 'lucia@academia.edu', plan_name: 'Sesión Puntual', amount: 159, currency: '€', mode: 'live', stripe_id: 'ch_3Pmno018Live' },
+        { created_at: new Date(Date.now() - D * 37).toISOString(), customer_name: 'Andrés Molina', customer_email: 'andres@taller.auto', plan_name: 'Auditoría IA 360', amount: 359, currency: '€', mode: 'live', stripe_id: 'ch_3Ppqr019Live' },
+        { created_at: new Date(Date.now() - D * 44).toISOString(), customer_name: 'Sandbox Final', customer_email: 'sandbox@test.stripe', plan_name: 'Sesión Puntual', amount: 159, currency: '€', mode: 'test', stripe_id: 'ch_test_020End' }
     ];
 
     renderPayments(demoData);
-    showToast('👁️ Modo Simulación: Mostrando historial de ejemplo', 4000);
+    showToast('👁️ Simulación: Mostrando las 20 últimas transacciones de ejemplo', 4000);
 }
