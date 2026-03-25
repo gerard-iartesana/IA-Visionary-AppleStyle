@@ -889,7 +889,7 @@
                 </div>
 
                 <!-- REVOLUT SECTION -->
-                <div style="background: var(--bg-card); padding: 30px; border-radius: 20px; border: 1px solid var(--border-color);">
+                <div style="background: var(--bg-card); padding: 30px; border-radius: 20px; border: 1px solid var(--border-color); margin-bottom: 30px;">
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
                         <div style="width: 40px; height: 40px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                             <svg viewBox="0 0 24 24" width="24" height="24" fill="black"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg>
@@ -901,6 +901,47 @@
                         <h3 style="font-size: 1rem; color: var(--text-grey);">Link Universal Revolut (.me)</h3>
                         <input type="url" id="revolut-link" class="admin-select" style="width: 100%; cursor: text; margin-bottom: 12px;" placeholder="https://revolut.me/...">
                         <button class="btn-save-legal" onclick="saveLegalText('revolut_link', 'revolut-link')">Guardar Link Revolut</button>
+                    </div>
+                </div>
+
+                <!-- PAYMENT HISTORY SECTION -->
+                <div style="background: var(--bg-card); padding: 30px; border-radius: 20px; border: 1px solid var(--border-color);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 40px; height: 40px; background: rgba(52, 199, 89, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#34C759" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                            </div>
+                            <h2 style="margin: 0;">Historial de Cobros Recibidos</h2>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-action" onclick="fetchPayments()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px;"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                                Refrescar pagos
+                            </button>
+                            <button id="btn-payments-demo" class="btn-action" style="background: var(--text-grey); border: none;" onclick="loadDemoPayments()">
+                                👁️ Simular Pagos
+                            </button>
+                        </div>
+                    </div>
+
+                    <p style="color: var(--text-grey); margin-bottom: 20px; font-size: 0.9rem;">Consulta las transacciones de Stripe (Live y Test) capturadas por webhooks o integración manual.</p>
+
+                    <div class="table-wrapper">
+                        <table class="leads-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Cliente / Pagador</th>
+                                    <th>Plan / Servicio</th>
+                                    <th>Importe</th>
+                                    <th>Modo</th>
+                                    <th>Estado / ID</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payments-history-body">
+                                <tr><td colspan="6" class="table-loading">Cargando historial de transacciones...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </section>

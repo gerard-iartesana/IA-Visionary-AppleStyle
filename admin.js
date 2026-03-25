@@ -145,6 +145,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else if (target === 'section-payments') {
                 console.log('Triggering Pagos section load...');
                 loadPaymentLinks();
+                fetchPayments();
             }
         });
     });
@@ -1746,4 +1747,128 @@ async function loadSearchConsoleData() {
             btn.disabled = false;
         }
     }
+}
+// --- PAYMENT HISTORY SYSTEM ---
+async function fetchPayments() {
+    const tableBody = document.getElementById('payments-history-body');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = '<tr><td colspan="6" class="table-loading">Buscando transacciones en la base de datos...</td></tr>';
+
+    try {
+        // Intentamos cargar de una tabla "payments". Si no existe, fallará al catch.
+        const { data, error } = await _supabase
+            .from('payments')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        renderPayments(data);
+    } catch (err) {
+        console.warn('La tabla "payments" parece no existir aún o hay error de conexión:', err);
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="6" style="padding: 40px; text-align: center;">
+                    <div style="color: var(--text-grey); margin-bottom: 12px;">No se ha encontrado la tabla de pagos en Supabase.</div>
+                    <button class="btn-action" style="background: var(--accent-blue); color: white; border: none;" onclick="loadDemoPayments()">
+                        Ver Simulación (Demo)
+                    </button>
+                    <div style="font-size: 0.75rem; color: var(--text-grey); margin-top: 16px;">
+                        Para habilitar esto real, crea la tabla "payments" con: id, created_at, customer_name, customer_email, plan_name, amount, currency, mode (test/live), status.
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+}
+
+function renderPayments(payments) {
+    const tableBody = document.getElementById('payments-history-body');
+    if (!tableBody || !payments || payments.length === 0) {
+        if (tableBody) tableBody.innerHTML = '<tr><td colspan="6" class="table-loading">No hay pagos registrados.</td></tr>';
+        return;
+    }
+
+    tableBody.innerHTML = '';
+    payments.forEach(pay => {
+        const date = new Date(pay.created_at).toLocaleDateString('es-ES', { 
+            day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' 
+        });
+        
+        const isTest = pay.mode === 'test' || pay.is_test;
+        const modeBadge = isTest 
+            ? '<span style="background: rgba(255,149,0,0.1); color: #FF9500; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(255,149,0,0.2);">TEST</span>'
+            : '<span style="background: rgba(52,199,89,0.1); color: #34C759; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(52,199,89,0.2);">LIVE</span>';
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td style="color: var(--text-grey); font-size: 0.8rem;">${date}</td>
+            <td>
+                <div style="font-weight: 600; color: var(--text-white);">${pay.customer_name || 'Desconocido'}</div>
+                <div style="font-size: 0.75rem; color: var(--text-grey);">${pay.customer_email || '-'}</div>
+            </td>
+            <td><span style="font-size: 0.8rem; color: var(--text-white);">${pay.plan_name || 'Servicio'}</span></td>
+            <td style="font-weight: 700; color: var(--text-white);">${pay.amount} ${pay.currency || '€'}</td>
+            <td>${modeBadge}</td>
+            <td>
+                <div style="font-size: 0.7rem; color: #34C759; font-weight: 600;">COMPLETADO</div>
+                <div style="font-size: 0.65rem; color: var(--text-grey); font-family: monospace;">${pay.stripe_id || pay.id.substring(0,8)}...</div>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+function loadDemoPayments() {
+    console.log('Cargando simulación de pagos...');
+    const demoData = [
+        {
+            created_at: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+            customer_name: 'Ana García',
+            customer_email: 'ana.garcia@gmail.com',
+            plan_name: 'Sesión Puntual',
+            amount: 159,
+            currency: '€',
+            mode: 'live',
+            status: 'succeeded',
+            stripe_id: 'ch_3Nabc123Live'
+        },
+        {
+            created_at: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+            customer_name: 'Roberto Sánchez',
+            customer_email: 'roberto@empresa.es',
+            plan_name: 'Auditoría IA 360',
+            amount: 359,
+            currency: '€',
+            mode: 'live',
+            status: 'succeeded',
+            stripe_id: 'ch_3Nxyz789Live'
+        },
+        {
+            created_at: new Date(Date.now() - 1000 * 60 * 60 * 26).toISOString(),
+            customer_name: 'Carlos Test',
+            customer_email: 'test@example.com',
+            plan_name: 'Acompañamiento Mensual',
+            amount: 250,
+            currency: '€',
+            mode: 'test',
+            status: 'succeeded',
+            stripe_id: 'ch_test_51Mz800'
+        },
+        {
+            created_at: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(),
+            customer_name: 'Marta López',
+            customer_email: 'marta@startup.io',
+            plan_name: 'Sesión Puntual',
+            amount: 159,
+            currency: '€',
+            mode: 'live',
+            status: 'succeeded',
+            stripe_id: 'ch_3Nlmn456Live'
+        }
+    ];
+
+    renderPayments(demoData);
+    showToast('👁️ Modo Simulación: Mostrando historial de ejemplo', 4000);
 }
