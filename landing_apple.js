@@ -75,11 +75,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Smooth Scroll Refinado ---
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
+            const href = this.getAttribute('href');
+            if (href === '#') return; // Skip empty hash links or those updated to null
+            
+            const targetId = href.substring(1);
             const targetElement = document.getElementById(targetId);
             
             if (targetElement) {
+                e.preventDefault();
                 const navHeight = document.querySelector('.apple-nav').offsetHeight;
                 const targetPosition = targetElement.offsetTop - navHeight;
                 
