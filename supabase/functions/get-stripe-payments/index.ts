@@ -52,8 +52,8 @@ serve(async (req: Request) => {
       );
     }
 
-    // Call Stripe API to get the last 20 charges
-    const stripeResponse = await fetch("https://api.stripe.com/v1/charges?limit=20&expand[]=data.customer", {
+    // Call Stripe API to get the last 20 charges (expand customer + balance_transaction for fees)
+    const stripeResponse = await fetch("https://api.stripe.com/v1/charges?limit=20&expand[]=data.customer&expand[]=data.balance_transaction", {
       headers: {
         Authorization: `Bearer ${stripeKey}`,
       },
@@ -70,18 +70,24 @@ serve(async (req: Request) => {
     const stripeData = await stripeResponse.json();
 
     // Format the charges for frontend
-    const payments = stripeData.data.map((charge: any) => ({
-      created_at: new Date(charge.created * 1000).toISOString(),
-      customer_name: charge.billing_details?.name || charge.customer?.name || charge.metadata?.customer_name || "Sin nombre",
-      customer_email: charge.billing_details?.email || charge.customer?.email || charge.receipt_email || "-",
-      plan_name: charge.description || charge.metadata?.plan_name || "Pago Stripe",
-      amount: (charge.amount / 100).toFixed(2),
-      currency: charge.currency === "eur" ? "€" : charge.currency.toUpperCase(),
-      mode: mode,
-      status: charge.status,
-      stripe_id: charge.id,
-      is_refunded: charge.refunded,
-    }));
+    const payments = stripeData.data.map((charge: any) => {
+      const fee = charge.balance_transaction?.fee ? (charge.balance_transaction.fee / 100).toFixed(2) : null;
+      const net = charge.balance_transaction?.net ? (charge.balance_transaction.net / 100).toFixed(2) : null;
+      return {
+        created_at: new Date(charge.created * 1000).toISOString(),
+        customer_name: charge.billing_details?.name || charge.customer?.name || charge.metadata?.customer_name || "Sin nombre",
+        customer_email: charge.billing_details?.email || charge.customer?.email || charge.receipt_email || "-",
+        plan_name: charge.description || charge.metadata?.plan_name || "Pago Stripe",
+        amount: (charge.amount / 100).toFixed(2),
+        stripe_fee: fee,
+        net_amount: net,
+        currency: charge.currency === "eur" ? "€" : charge.currency.toUpperCase(),
+        mode: mode,
+        status: charge.status,
+        stripe_id: charge.id,
+        is_refunded: charge.refunded,
+      };
+    });
 
     return new Response(JSON.stringify({ payments, mode, total: payments.length }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
