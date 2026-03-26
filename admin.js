@@ -145,7 +145,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else if (target === 'section-payments') {
                 console.log('Triggering Pagos section load...');
                 loadPaymentLinks();
-                fetchPayments();
+                loadStripeKeys();
+                fetchStripePayments();
             }
         });
     });
@@ -1749,35 +1750,97 @@ async function loadSearchConsoleData() {
     }
 }
 // --- PAYMENT HISTORY SYSTEM ---
-async function fetchPayments() {
+
+async function saveStripeKey(mode) {
+    const inputId = mode === 'test' ? 'stripe-sk-test' : 'stripe-sk-live';
+    const value = document.getElementById(inputId).value.trim();
+    const expectedPrefix = mode === 'test' ? 'sk_test_' : 'sk_live_';
+
+    if (!value.startsWith(expectedPrefix)) {
+        showToast(`⚠️ La clave debe empezar por ${expectedPrefix}`, 5000);
+        return;
+    }
+
+    try {
+        const key = mode === 'test' ? 'stripe_sk_test' : 'stripe_sk_live';
+        await _supabase.from('site_settings').upsert({
+            key: key,
+            value: value,
+            updated_at: new Date().toISOString()
+        });
+        showToast(`✓ Clave Stripe (${mode.toUpperCase()}) guardada correctamente.`, 5000);
+        await addLog('Stripe Config', `Se ha actualizado la Secret Key de Stripe (${mode}).`);
+    } catch (e) {
+        showToast('❌ Error al guardar la clave.', 5000);
+    }
+}
+
+async function loadStripeKeys() {
+    try {
+        const { data } = await _supabase.from('site_settings').select('key, value').in('key', ['stripe_sk_test', 'stripe_sk_live']);
+        if (data) {
+            data.forEach(s => {
+                if (s.key === 'stripe_sk_test') {
+                    const el = document.getElementById('stripe-sk-test');
+                    if (el && s.value) el.value = s.value;
+                }
+                if (s.key === 'stripe_sk_live') {
+                    const el = document.getElementById('stripe-sk-live');
+                    if (el && s.value) el.value = s.value;
+                }
+            });
+        }
+    } catch (e) {
+        console.warn('No se pudieron cargar las claves de Stripe:', e);
+    }
+}
+
+async function fetchStripePayments() {
     const tableBody = document.getElementById('payments-history-body');
     if (!tableBody) return;
 
-    tableBody.innerHTML = '<tr><td colspan="6" class="table-loading">Buscando transacciones en la base de datos...</td></tr>';
+    const mode = document.getElementById('stripe-mode-selector')?.value || 'test';
+    const modeLabel = mode === 'test' ? '🟠 TEST' : '🟢 LIVE';
+
+    tableBody.innerHTML = `<tr><td colspan="6" class="table-loading">Consultando Stripe (${modeLabel})...</td></tr>`;
 
     try {
-        // Intentamos cargar de una tabla "payments". Si no existe, fallará al catch.
-        const { data, error } = await _supabase
-            .from('payments')
-            .select('*')
-            .order('created_at', { ascending: false })
-            .limit(20);
+        const { data, error } = await _supabase.functions.invoke('get-stripe-payments', {
+            body: { mode }
+        });
 
         if (error) throw error;
 
-        renderPayments(data);
+        if (data.error) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" style="padding: 30px; text-align: center;">
+                        <div style="color: #FF9500; margin-bottom: 12px;">⚠️ ${data.error}</div>
+                        <button class="btn-action" style="background: var(--text-grey); border: none;" onclick="loadDemoPayments()">
+                            Ver Simulación (Demo)
+                        </button>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        if (data.payments && data.payments.length > 0) {
+            renderPayments(data.payments);
+            showToast(`✓ ${data.total} transacciones cargadas de Stripe (${modeLabel})`, 4000);
+        } else {
+            tableBody.innerHTML = `<tr><td colspan="6" class="table-loading">No se encontraron cobros en Stripe (${modeLabel}).</td></tr>`;
+        }
     } catch (err) {
-        console.warn('La tabla "payments" parece no existir aún o hay error de conexión:', err);
+        console.error('Error fetching Stripe payments:', err);
         tableBody.innerHTML = `
             <tr>
-                <td colspan="6" style="padding: 40px; text-align: center;">
-                    <div style="color: var(--text-grey); margin-bottom: 12px;">No se ha encontrado la tabla de pagos en Supabase.</div>
-                    <button class="btn-action" style="background: var(--accent-blue); color: white; border: none;" onclick="loadDemoPayments()">
+                <td colspan="6" style="padding: 30px; text-align: center;">
+                    <div style="color: var(--text-grey); margin-bottom: 12px;">Error al conectar con la Edge Function.</div>
+                    <div style="font-size: 0.75rem; color: var(--text-grey); margin-bottom: 16px;">Asegúrate de que la función "get-stripe-payments" está desplegada en Supabase.</div>
+                    <button class="btn-action" style="background: var(--text-grey); border: none;" onclick="loadDemoPayments()">
                         Ver Simulación (Demo)
                     </button>
-                    <div style="font-size: 0.75rem; color: var(--text-grey); margin-top: 16px;">
-                        Para habilitar esto real, crea la tabla "payments" con: id, created_at, customer_name, customer_email, plan_name, amount, currency, mode (test/live), status.
-                    </div>
                 </td>
             </tr>
         `;
