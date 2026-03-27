@@ -942,11 +942,56 @@ body {
     .hero-sub { font-size: 1.2rem; }
     .apple-grid, .pricing-apple-grid { grid-template-columns: 1fr; }
     .solution-card { flex-direction: column; padding: 40px 20px; }
+    .solution-text h2 { font-size: 2rem; }
     .section-intro h2 { font-size: 2.5rem; }
     .section { padding: 50px 0; }
     /* Eliminado display:none para permitir el menú móvil */
     .contact-grid { grid-template-columns: 1fr; gap: 60px; }
     .contact-info h2 { font-size: 2.5rem; }
+
+    /* Fix: CSS Video Player en móvil */
+    .solution-visual {
+        width: 100%;
+    }
+
+    .css-video-player {
+        height: 220px;
+        border-radius: 16px;
+    }
+
+    .ia-core {
+        right: auto;
+        left: 50%;
+        margin-left: -15px;
+        width: 30px;
+        height: 30px;
+    }
+
+    .ia-ring {
+        right: auto;
+        left: 50%;
+        margin-left: -35px;
+        width: 70px;
+        height: 70px;
+    }
+
+    .ia-scanner {
+        height: 4px;
+    }
+
+    .video-overlay-text {
+        left: 50%;
+        width: 85%;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .play-button-overlay {
+        bottom: 10px;
+        left: 10px;
+        font-size: 0.7rem;
+        padding: 6px 12px;
+    }
 }
 /* Premium Checkout Prototype */
 .checkout-overlay {
