@@ -161,14 +161,36 @@ body {
 /* Mobile Menu Toggle */
 .mobile-menu-toggle {
     display: none;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 20px;
-    height: 14px;
-    background: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: var(--border-color);
     border: none;
+    border-radius: 12px;
     cursor: pointer;
     z-index: 2001;
+    transition: background 0.3s ease;
+    padding: 0;
+}
+
+.mobile-menu-toggle svg {
+    width: 24px;
+    height: 24px;
+    stroke-width: 2.5;
+    color: var(--text-main);
+}
+
+.mobile-menu-toggle .icon-close {
+    display: none;
+}
+
+.mobile-menu-toggle.active .icon-open {
+    display: none;
+}
+
+.mobile-menu-toggle.active .icon-close {
+    display: block;
 }
 
 .mobile-menu-toggle .bar {
