@@ -614,14 +614,18 @@
         </div>
     </footer>
 
+    <!-- Main JS (theme toggle, mobile menu, etc.) -->
+    <script src="landing_apple.js?v=11.3"></script>
+
     <!-- Academy JS -->
     <script>
+    (function() {
         // ====== ACADEMIA CHECKOUT LOGIC ======
-        let stripe = null;
-        let elements, cardElement, expressCheckoutElement;
-        let currentCheckoutUrl = '';
-        let currentPlanAmount = 0;
-        let currentPlanName = '';
+        var stripe = null;
+        var elements, cardElement, expressCheckoutElement;
+        var currentCheckoutUrl = '';
+        var currentPlanAmount = 0;
+        var currentPlanName = '';
 
         // Supabase client
         const SUPABASE_URL = 'https://oiufrkousvbbwiedmzyj.supabase.co';
@@ -695,7 +699,7 @@
         }
 
         // Process payment
-        async function processAcademiaPayment() {
+        window.processAcademiaPayment = async function() {
             const btn = document.querySelector('.checkout-btn-primary');
             const errorDiv = document.getElementById('card-errors');
             if (errorDiv) errorDiv.textContent = '';
@@ -794,7 +798,7 @@
 
         // Initialize on load
         document.addEventListener('DOMContentLoaded', loadAcademiaSettings);
+    })();
     </script>
-    <script src="landing_apple.js?v=11.3"></script>
 </body>
 </html>
