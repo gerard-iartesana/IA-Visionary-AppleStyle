@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academia IA | IA de Barrio</title>
+    <meta name="description" content="Aprende a dominar la Inteligencia Artificial aplicada a negocios reales. Cursos prácticos de agentes IA, automatización, desarrollo web y más.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="landing_apple_unified.css?v=11.3">
+
+    <!-- Stripe SDK -->
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <style>
+        /* ====== ACADEMIA CUSTOM STYLES ====== */
+
+        /* Course Grid */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 60px;
+        }
+
+        .course-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            border-color: var(--accent-blue);
+        }
+
+        .course-card img {
+            width: 100%;
+            aspect-ratio: 16/10;
+            object-fit: cover;
+            display: block;
+        }
+
+        .course-card-body {
+            padding: 24px;
+        }
+
+        .course-tag {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        .tag-agents { background: rgba(0,113,227,0.15); color: #0071e3; }
+        .tag-auto { background: rgba(52,199,89,0.15); color: #34c759; }
+        .tag-web { background: rgba(175,82,222,0.15); color: #af52de; }
+        .tag-voice { background: rgba(255,149,0,0.15); color: #ff9500; }
+        .tag-data { background: rgba(90,200,250,0.15); color: #5ac8fa; }
+        .tag-prompts { background: rgba(255,204,0,0.15); color: #ffcc00; }
+
+        .course-card h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .course-card p {
+            font-size: 0.85rem;
+            color: var(--text-grey);
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .course-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 0.75rem;
+            color: var(--text-grey);
+        }
+
+        .course-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Benefits Grid */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .benefit-item {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .benefit-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(0,113,227,0.1);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.8rem;
+        }
+
+        .benefit-item h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .benefit-item p {
+            font-size: 0.85rem;
+            color: var(--text-grey);
+            line-height: 1.5;
+        }
+
+        /* Plans special styling */
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0 30px;
+            text-align: left;
+        }
+
+        .plan-features li {
+            padding: 8px 0;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.4;
+        }
+
+        .plan-features li::before {
+            content: "✓";
+            color: #34c759;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .price-apple-card .plan-period {
+            font-size: 0.8rem;
+            color: var(--text-grey);
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+
+        .stripe-fallback {
+            display: block;
+            margin-top: 12px;
+            font-size: 0.7rem;
+            color: var(--accent-blue);
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .stripe-fallback:hover {
+            opacity: 1;
+        }
+
+        /* Academy FAQ */
+        .academy-faq {
+            max-width: 700px;
+            margin: 60px auto 0;
+        }
+
+        .faq-item-academy {
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 0;
+        }
+
+        .faq-item-academy summary {
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-item-academy summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .faq-item-academy summary::after {
+            content: "+";
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: var(--text-grey);
+            transition: transform 0.3s;
+        }
+
+        .faq-item-academy[open] summary::after {
+            content: "−";
+        }
+
+        .faq-item-academy .faq-answer {
+            padding-top: 12px;
+            font-size: 0.9rem;
+            color: var(--text-grey);
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .courses-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .benefits-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .benefit-item {
+                padding: 25px 15px;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .courses-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <!-- Nav Bar -->
+    <nav class="apple-nav">
+        <div class="container nav-content">
+            <div class="logo"><a href="index.html" style="color: inherit; text-decoration: none;">IA<span>deBarrio</span></a></div>
+            
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="mobile-menu-toggle" aria-label="Abrir menú">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-open"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-close"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+
+            <div class="nav-links" id="apple-nav-links">
+                <a href="index.html#problemas" class="nav-link">Problemas</a>
+                <a href="index.html#solucion" class="nav-link">Solución</a>
+                <a href="index.html#precios" class="nav-link">Precios</a>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema"></button>
+                    <a href="#planes" class="btn-apple-buy" style="text-decoration: none;">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero" style="min-height: 50vh; padding-top: 140px; text-align: center;">
+        <div class="container hero-container" style="align-items: center;">
+            <div style="display: inline-block; padding: 6px 16px; border-radius: 20px; background: rgba(0,113,227,0.12); color: var(--accent-blue); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px;">
+                🎓 Nuevo · Academia IA de Barrio
+            </div>
+            <h1 style="margin-bottom: 20px;">Aprende IA.<br><span style="color: var(--accent-blue);">Aplícala a tu negocio.</span></h1>
+            <p class="hero-sub" style="max-width: 650px; margin: 0 auto 40px;">Cursos prácticos diseñados para profesionales que quieren dominar la inteligencia artificial sin necesidad de programar. Desde automatización hasta agentes de voz.</p>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <a href="#cursos" class="btn-apple-primary" style="text-decoration: none;">Ver Cursos</a>
+                <a href="#planes" class="btn-apple-secondary" style="text-decoration: none;">Ver Planes →</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Benefits Section -->
+    <section class="section" style="padding-top: 40px;">
+        <div class="container">
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">🎯</div>
+                    <h4>100% Práctico</h4>
+                    <p>Aprende haciendo. Cada módulo incluye ejercicios y proyectos reales.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">🚀</div>
+                    <h4>Sin Programar</h4>
+                    <p>No necesitas saber código. Todo explicado paso a paso.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">💬</div>
+                    <h4>Comunidad</h4>
+                    <p>Acceso a un grupo exclusivo de alumnos y mentores.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">♾️</div>
+                    <h4>Acceso Ilimitado</h4>
+                    <p>Contenido disponible 24/7. Aprende a tu ritmo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section class="section" id="cursos">
+        <div class="container">
+            <header class="section-intro">
+                <h2>Nuestros cursos.</h2>
+                <p>Contenido actualizado constantemente con las últimas técnicas de IA aplicada a negocios reales.</p>
+            </header>
+
+            <div class="courses-grid">
+                <!-- Course 1 -->
+                <div class="course-card">
+                    <img src="img/academia/agents.png" alt="Construye tu Agente de IA" loading="lazy">
+                    <div class="course-card-body">
+                        <span class="course-tag tag-agents">Agentes IA</span>
+                        <h3>Construye tu Agente de IA</h3>
+                        <p>Diseña, entrena y despliega un agente de texto inteligente para tu negocio usando las mejores plataformas del mercado.</p>
+                        <div class="course-meta">
+                            <span>📚 8 módulos</span>
+                            <span>⏱ 4h contenido</span>
+                            <span>⭐ Nivel Medio</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 2 -->
+                <div class="course-card">
+                    <img src="img/academia/automation.png" alt="Automatización con IA" loading="lazy">
+                    <div class="course-card-body">
+                        <span class="course-tag tag-auto">Automatización</span>
+                        <h3>Automatización Inteligente</h3>
+                        <p>Conecta tus herramientas y crea flujos automáticos que trabajan por ti mientras duermes.</p>
+                        <div class="course-meta">
+                            <span>📚 6 módulos</span>
+                            <span>⏱ 3h contenido</span>
+                            <span>⭐ Principiante</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 3 -->
+                <div class="course-card">
+                    <img src="img/academia/webapps.png" alt="Desarrollo Web con IA" loading="lazy">
+                    <div class="course-card-body">
+                        <span class="course-tag tag-web">Desarrollo Web</span>
+                        <h3>Apps Web con IA</h3>
+                        <p>Crea aplicaciones web profesionales potenciadas con inteligencia artificial desde cero.</p>
+                        <div class="course-meta">
+                            <span>📚 10 módulos</span>
+                            <span>⏱ 6h contenido</span>
+                            <span>⭐ Avanzado</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 4 -->
+                <div class="course-card">
+                    <img src="img/academia/voice.png" alt="Agentes de Voz IA" loading="lazy">
+                    <div class="course-card-body">
+                        <span class="course-tag tag-voice">Voz IA</span>
+                        <h3>Agentes de Voz con IA</h3>
+                        <p>Implementa asistentes telefónicos inteligentes que contestan y realizan llamadas automáticamente.</p>
+                        <div class="course-meta">
+                            <span>📚 7 módulos</span>
+                            <span>⏱ 3.5h contenido</span>
+                            <span>⭐ Medio</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 5 -->
+                <div class="course-card">
+                    <img src="img/academia/analytics.png" alt="Analítica de Datos con IA" loading="lazy">
+                    <div class="course-card-body">
+                        <span class="course-tag tag-data">Analítica</span>
+                        <h3>Analítica de Datos con IA</h3>
+                        <p>Domina la interpretación de datos de tu negocio con herramientas de inteligencia artificial.</p>
+                        <div class="course-meta">
+                            <span>📚 5 módulos</span>
+                            <span>⏱ 2.5h contenido</span>
+                            <span>⭐ Principiante</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course 6 -->
+                <div class="course-card">
+                    <img src="img/academia/prompts.png" alt="Prompt Engineering" loading="lazy">
+                    <div class="course-card-body">
+                        <span class="course-tag tag-prompts">Prompts</span>
+                        <h3>Prompt Engineering</h3>
+                        <p>Domina el arte de comunicarte con la IA. Técnicas avanzadas para obtener resultados profesionales.</p>
+                        <div class="course-meta">
+                            <span>📚 6 módulos</span>
+                            <span>⏱ 2h contenido</span>
+                            <span>⭐ Principiante</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="section" id="planes" style="padding-bottom: 80px;">
+        <div class="container">
+            <header class="section-intro">
+                <h2>Elige tu plan.</h2>
+                <p>Acceso inmediato a todo el contenido. Cancela cuando quieras.</p>
+            </header>
+
+            <div class="pricing-apple-grid" style="margin-top: 50px;">
+                <!-- Plan 1: Explorador -->
+                <div class="price-apple-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="p-tag">Explorador</div>
+                        <h3>29€<span>/ mes + IVA</span></h3>
+                        <p class="plan-period">Facturación mensual</p>
+                        <ul class="plan-features">
+                            <li>Acceso a 2 cursos a elegir</li>
+                            <li>Actualizaciones de contenido</li>
+                            <li>Acceso a la comunidad</li>
+                            <li>Certificado de finalización</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <button id="btn-academia-explorador" class="btn-apple-buy" style="width: 100%;">Empezar ahora</button>
+                        <a href="#" id="fallback-explorador" class="stripe-fallback" target="_blank">Pagar directamente en Stripe →</a>
+                    </div>
+                </div>
+
+                <!-- Plan 2: Profesional (FEATURED) -->
+                <div class="price-apple-card featured" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="popular-label">Más Popular</div>
+                    <div>
+                        <div class="p-tag">Profesional</div>
+                        <h3>49€<span>/ mes + IVA</span></h3>
+                        <p class="plan-period" style="color: rgba(255,255,255,0.6);">Facturación mensual</p>
+                        <ul class="plan-features">
+                            <li>Acceso a TODOS los cursos</li>
+                            <li>Actualizaciones prioritarias</li>
+                            <li>Comunidad + canal privado</li>
+                            <li>Certificados profesionales</li>
+                            <li>Sesión de mentoría mensual (30 min)</li>
+                            <li>Recursos y plantillas descargables</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <button id="btn-academia-profesional" class="btn-apple-buy" style="width: 100%;">Elegir Profesional</button>
+                        <a href="#" id="fallback-profesional" class="stripe-fallback" target="_blank" style="color: rgba(255,255,255,0.5);">Pagar directamente en Stripe →</a>
+                    </div>
+                </div>
+
+                <!-- Plan 3: Empresa -->
+                <div class="price-apple-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="p-tag">Empresa</div>
+                        <h3>99€<span>/ mes + IVA</span></h3>
+                        <p class="plan-period">Facturación mensual · Hasta 5 usuarios</p>
+                        <ul class="plan-features">
+                            <li>Todo del plan Profesional</li>
+                            <li>Hasta 5 cuentas de equipo</li>
+                            <li>Sesiones de mentoría grupales</li>
+                            <li>Onboarding personalizado</li>
+                            <li>Soporte prioritario por WhatsApp</li>
+                            <li>Informes de progreso del equipo</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <button id="btn-academia-empresa" class="btn-apple-buy" style="width: 100%;">Elegir Empresa</button>
+                        <a href="#" id="fallback-empresa" class="stripe-fallback" target="_blank">Pagar directamente en Stripe →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <header class="section-intro">
+                <h2>Preguntas frecuentes.</h2>
+            </header>
+
+            <div class="academy-faq">
+                <details class="faq-item-academy">
+                    <summary>¿Necesito conocimientos previos de IA?</summary>
+                    <div class="faq-answer">No. Nuestros cursos están diseñados para empezar desde cero. Todas las herramientas y conceptos se explican paso a paso, con ejemplos prácticos de negocios reales.</div>
+                </details>
+
+                <details class="faq-item-academy">
+                    <summary>¿Cómo funciona el acceso a los cursos?</summary>
+                    <div class="faq-answer">Una vez realizado el pago, recibirás un email con tus credenciales de acceso. Podrás entrar a la plataforma desde cualquier dispositivo, en cualquier momento. El contenido está disponible 24/7.</div>
+                </details>
+
+                <details class="faq-item-academy">
+                    <summary>¿Puedo cancelar mi suscripción?</summary>
+                    <div class="faq-answer">Sí, puedes cancelar en cualquier momento. Tu acceso continuará activo hasta el final del período ya pagado. Sin contratos ni permanencias.</div>
+                </details>
+
+                <details class="faq-item-academy">
+                    <summary>¿Los cursos se actualizan?</summary>
+                    <div class="faq-answer">Sí. El mundo de la IA evoluciona rápidamente y nuestro contenido también. Actualizamos módulos y añadimos nuevos cursos regularmente. Todos los suscriptores reciben las actualizaciones automáticamente.</div>
+                </details>
+
+                <details class="faq-item-academy">
+                    <summary>¿Qué incluye la mentoría del plan Profesional?</summary>
+                    <div class="faq-answer">Una sesión de 30 minutos al mes (videollamada) con uno de nuestros expertos, donde puedes resolver dudas de los cursos, pedir consejo sobre tu proyecto o implementación de IA en tu negocio.</div>
+                </details>
+
+                <details class="faq-item-academy">
+                    <summary>¿Puedo cambiar de plan?</summary>
+                    <div class="faq-answer">Sí. Puedes upgradear o bajar de plan en cualquier momento. Se aplicará el cambio de forma prorrateada en tu siguiente factura.</div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final -->
+    <section class="section" style="text-align: center; padding-bottom: 100px;">
+        <div class="container">
+            <h2 style="font-size: 2.5rem; margin-bottom: 16px;">¿Listo para empezar?</h2>
+            <p style="color: var(--text-grey); max-width: 500px; margin: 0 auto 40px; font-size: 1.1rem;">Únete a la comunidad de profesionales que están transformando sus negocios con IA.</p>
+            <a href="#planes" class="btn-apple-primary" style="text-decoration: none; font-size: 1rem; padding: 18px 40px;">Ver planes y precios</a>
+        </div>
+    </section>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-premium" class="checkout-overlay">
+        <div class="checkout-box">
+            <button class="btn-close-checkout" onclick="closeCheckout()">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <div class="checkout-header">
+                <h2>Finalizar Suscripción</h2>
+                <p>Academia IA de Barrio x Stripe Secure</p>
+            </div>
+
+            <div class="plan-summary" style="padding: 15px; border-radius: 16px;">
+                <div class="plan-info-title" id="checkout-plan-name" style="font-size: 0.9rem;">Plan Profesional</div>
+                <div class="plan-price-tag" id="checkout-plan-price" style="font-size: 1.1rem; text-align: right; line-height: 1.2;">59.29€ <br><span style="font-size: 0.65rem; font-weight: 400; opacity: 0.8;">(IVA incl.)</span></div>
+            </div>
+
+            <!-- Fast Checkout -->
+            <button class="apple-pay-btn" onclick="processAcademiaPayment()">
+                <svg viewBox="0 0 50 20" width="40" style="vertical-align: middle;"><path fill="currentColor" d="M10.2 3.9c-.6.7-1.5 1.2-2.3 1.1-.1-.8.3-1.8 1-2.5.7-.7 1.7-1.2 2.4-1.2.1.8-.3 1.8-1.1 2.6zM12.4 9.1c-1-.6-1.8-1.4-1.8-2.6 0-1.2.9-2.1 2.1-2.1.3 0 .6 0 .9.2-1-1.3-2.3-1.6-3-1.6-1.7 0-2.4 1-2.9 1-.5 0-1.5-1-3-1-2.1 0-4.2 1.6-4.2 4.6 0 2.2.9 5.8 3.1 8 0 .1.1.1.1.2 0 0 .1.1.2.1.2.1.3.1.5.1h.1c.1 0 .2.1.3.1.5 0 1-.2 1.5-.2s1.1.2 1.6.2h.5c.3 0 .6-.1.8-.1.1 0 .2-.1.3-.1 2.5-3.3 2.9-4.8 2.9-4.8s-.6-.2-1.3-.6z"></path></svg>
+                Pay
+            </button>
+
+            <div class="divider-line"></div>
+
+            <!-- Stripe Elements Container -->
+            <div id="stripe-card-container" class="stripe-element-mock" style="padding: 18px; background: rgba(255,255,255,0.03);">
+                <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 20px;">
+                    <div>
+                        <div style="font-size: 0.6rem; color: var(--text-grey); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;">Nombre Completo</div>
+                        <input type="text" id="checkout-name" placeholder="Tu nombre" style="background: transparent; border: none; color: var(--text-main); width: 100%; outline: none; font-size: 0.95rem;">
+                    </div>
+                    <div>
+                        <div style="font-size: 0.6rem; color: var(--text-grey); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;">Email</div>
+                        <input type="email" id="checkout-email" placeholder="ejemplo@email.com" style="background: transparent; border: none; color: var(--text-main); width: 100%; outline: none; font-size: 0.95rem;">
+                    </div>
+                </div>
+                <div style="margin-bottom: 5px;">
+                    <div style="font-size: 0.6rem; color: var(--text-grey); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Datos de la tarjeta</div>
+                    <div id="card-element" style="min-height: 20px;"></div>
+                </div>
+                <div id="card-errors" role="alert" style="color: #ff3b30; font-size: 0.75rem; margin-top: 10px;"></div>
+            </div>
+
+            <button class="checkout-btn-primary" onclick="processAcademiaPayment()">Suscribirse ahora</button>
+            
+            <p style="text-align: center; margin-top: 20px;">
+                <a href="javascript:void(0)" id="checkout-fallback-link" target="_blank" style="font-size: 0.8rem; color: var(--accent-blue); text-decoration: none;">¿Problemas con el pago? Paga directamente en Stripe →</a>
+            </p>
+            <div id="stripe-link-container" style="display:none; margin-top: 10px;"></div>
+            <p style="font-size: 0.65rem; color: var(--text-grey); text-align: center; margin-top: 15px; opacity: 0.8;">
+                Suscripción procesada de forma segura por Stripe. <br>Puedes cancelar en cualquier momento.
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="apple-footer">
+        <div class="container footer-grid">
+            <p>© 2026 IA de Barrio. Hecho con ❤️ desde Menorca.</p>
+            <div class="f-links">
+                <a href="servicios.html">Servicios</a>
+                <a href="conocimientos.html">Conocimientos</a>
+                <a href="demos.html">Demos</a>
+                <a href="inversion.html">Inversión</a>
+                <a href="academia.html" style="color: var(--accent-blue);">Academia</a>
+                <a href="login.html">Admin</a>
+                <a href="privacidad.html">Privacidad</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Academy JS -->
+    <script>
+        // ====== ACADEMIA CHECKOUT LOGIC ======
+        let stripe = null;
+        let elements, cardElement, expressCheckoutElement;
+        let currentCheckoutUrl = '';
+        let currentPlanAmount = 0;
+        let currentPlanName = '';
+
+        // Supabase client
+        const SUPABASE_URL = 'https://oiufrkousvbbwiedmzyj.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pdWZya291c3ZiYndpZWRtenlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE1NjA0NDQsImV4cCI6MjA1NzEzNjQ0NH0.kCwyjzkqkJfGXbOrRkM2x6MX1FXKP4PPFwVIMC0g09s';
+
+        // Plan definitions
+        const academyPlans = {
+            explorador: { name: 'Academia Explorador', price: '29', settingKey: 'stripe_link_academia_explorador' },
+            profesional: { name: 'Academia Profesional', price: '49', settingKey: 'stripe_link_academia_profesional' },
+            empresa: { name: 'Academia Empresa', price: '99', settingKey: 'stripe_link_academia_empresa' }
+        };
+
+        // Close checkout
+        window.closeCheckout = function() {
+            const modal = document.getElementById('checkout-premium');
+            if (!modal) return;
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        // Initialize Stripe
+        function initStripe() {
+            if (stripe) return true;
+            if (typeof Stripe !== 'undefined') {
+                stripe = Stripe('pk_test_51TCMDoKthauSWpyv2Ngs3LZGkjOvrJYpXGneocuANnmmsog22oJnv1UaKZuHqs1L8jIph3eppRWD0PUJfvct0s4c005lPPk8Ps');
+                elements = stripe.elements({
+                    appearance: {
+                        theme: 'flat',
+                        variables: { colorPrimary: '#0071e3', colorBackground: '#ffffff', colorText: '#1d1d1f' }
+                    }
+                });
+                cardElement = elements.create('card', {
+                    hidePostalCode: true,
+                    style: { base: { fontSize: '16px', color: '#1d1d1f', '::placeholder': { color: '#86868b' } } }
+                });
+                return true;
+            }
+            return false;
+        }
+
+        // Open checkout modal
+        function openAcademiaCheckout(planKey) {
+            const plan = academyPlans[planKey];
+            if (!plan) return;
+
+            const modal = document.getElementById('checkout-premium');
+            if (!modal) return;
+
+            const isReady = initStripe();
+
+            currentPlanName = plan.name;
+            const baseAmount = parseInt(plan.price);
+            const totalAmount = (baseAmount * 1.21).toFixed(2);
+            currentPlanAmount = Math.round(baseAmount * 100);
+
+            document.getElementById('checkout-plan-name').innerText = plan.name;
+            document.getElementById('checkout-plan-price').innerHTML = `${totalAmount}€ <br><span style="font-size: 0.65rem; font-weight: 400; opacity: 0.6;">(IVA incl.) / mes</span>`;
+
+            const fallbackLink = document.getElementById('checkout-fallback-link');
+            if (fallbackLink && currentCheckoutUrl) fallbackLink.href = currentCheckoutUrl;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            setTimeout(() => {
+                if (cardElement) {
+                    document.getElementById('card-element').innerHTML = '';
+                    cardElement.mount('#card-element');
+                }
+            }, 200);
+        }
+
+        // Process payment
+        async function processAcademiaPayment() {
+            const btn = document.querySelector('.checkout-btn-primary');
+            const errorDiv = document.getElementById('card-errors');
+            if (errorDiv) errorDiv.textContent = '';
+            btn.innerText = 'Procesando...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/create-payment-intent`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'apikey': SUPABASE_KEY
+                    },
+                    body: JSON.stringify({ amount: currentPlanAmount, plan: currentPlanName })
+                });
+
+                const data = await response.json();
+                if (!data.clientSecret) throw new Error('No se pudo iniciar el pago.');
+
+                const result = await stripe.confirmCardPayment(data.clientSecret, {
+                    payment_method: {
+                        card: cardElement,
+                        billing_details: {
+                            name: document.getElementById('checkout-name')?.value || 'Academia IA de Barrio',
+                            email: document.getElementById('checkout-email')?.value || ''
+                        }
+                    }
+                });
+
+                if (result.error) {
+                    throw new Error(result.error.message);
+                } else if (result.paymentIntent.status === 'succeeded') {
+                    const box = document.querySelector('.checkout-box');
+                    box.innerHTML = `
+                        <div style="text-align: center; padding: 40px 20px;">
+                            <div style="font-size: 4rem; margin-bottom: 20px;">🎓</div>
+                            <h2 style="color: #34c759; margin-bottom: 10px;">¡Bienvenido a la Academia!</h2>
+                            <p style="color: var(--text-grey); margin-bottom: 30px;">Tu suscripción <strong>${currentPlanName}</strong> está activa.<br>Recibirás un email con tus credenciales en breve.</p>
+                            <button onclick="closeCheckout()" class="btn-apple-primary">Continuar</button>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                if (errorDiv) errorDiv.textContent = err.message;
+                btn.innerText = 'Suscribirse ahora';
+                btn.disabled = false;
+            }
+        }
+
+        // Load Stripe links from Supabase
+        async function loadAcademiaSettings() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/site_settings?key=in.(${Object.values(academyPlans).map(p => `"${p.settingKey}"`).join(',')})&select=key,value`, {
+                    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                });
+                const data = await response.json();
+
+                if (Array.isArray(data)) {
+                    data.forEach(setting => {
+                        Object.entries(academyPlans).forEach(([planKey, plan]) => {
+                            if (setting.key === plan.settingKey && setting.value) {
+                                // Set fallback link
+                                const fallbackEl = document.getElementById(`fallback-${planKey}`);
+                                if (fallbackEl) fallbackEl.href = setting.value;
+
+                                // Set button click
+                                const btn = document.getElementById(`btn-academia-${planKey}`);
+                                if (btn) {
+                                    btn.onclick = (e) => {
+                                        e.preventDefault();
+                                        currentCheckoutUrl = setting.value;
+                                        openAcademiaCheckout(planKey);
+                                    };
+                                }
+                            }
+                        });
+                    });
+                }
+            } catch (e) {
+                console.warn('Academia settings not loaded:', e);
+                // Fallback: buttons open Stripe links directly if configured
+            }
+
+            // Default: if no supabase settings, open checkout anyway
+            ['explorador', 'profesional', 'empresa'].forEach(planKey => {
+                const btn = document.getElementById(`btn-academia-${planKey}`);
+                if (btn && !btn.onclick) {
+                    btn.onclick = (e) => {
+                        e.preventDefault();
+                        openAcademiaCheckout(planKey);
+                    };
+                }
+            });
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', loadAcademiaSettings);
+    </script>
+    <script src="landing_apple.js?v=11.3"></script>
+</body>
+</html>
