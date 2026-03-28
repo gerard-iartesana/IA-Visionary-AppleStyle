@@ -653,6 +653,27 @@ body {
 .price-apple-card h3 span { font-size: 0.85rem; font-weight: 400; color: var(--text-grey); display: block; margin-top: 6px; margin-bottom: 20px; }
 .price-apple-card p { margin-bottom: 30px; }
 
+/* Light mode: improve text contrast on pricing cards & form */
+:root .price-apple-card p,
+:root .price-apple-card h3 span {
+    color: #515154;
+}
+
+:root .price-apple-card.featured p,
+:root .price-apple-card.featured h3 span {
+    color: rgba(255,255,255,0.7);
+}
+
+[data-theme="dark"] .price-apple-card p,
+[data-theme="dark"] .price-apple-card h3 span {
+    color: var(--text-grey);
+}
+
+[data-theme="dark"] .price-apple-card.featured p,
+[data-theme="dark"] .price-apple-card.featured h3 span {
+    color: rgba(255,255,255,0.7);
+}
+
 .revolut-alt-link {
     display: inline-block;
     margin-top: 12px;
@@ -955,34 +976,53 @@ body {
     }
 
     .css-video-player {
-        height: 220px;
+        height: 200px !important;
         border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .ia-core {
-        right: auto;
-        left: 50%;
+        right: auto !important;
+        left: 50% !important;
+        top: 50% !important;
         margin-left: -15px;
+        margin-top: -15px;
+        transform: none !important;
         width: 30px;
         height: 30px;
     }
 
     .ia-ring {
-        right: auto;
-        left: 50%;
+        right: auto !important;
+        left: 50% !important;
+        top: 50% !important;
         margin-left: -35px;
+        margin-top: -35px;
+        transform: none !important;
         width: 70px;
         height: 70px;
+    }
+
+    @keyframes pulse-ring {
+        0% { transform: scale(1); opacity: 0.8; }
+        100% { transform: scale(3); opacity: 0; }
     }
 
     .ia-scanner {
         height: 4px;
     }
 
+    @keyframes scan-line {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(250px); }
+    }
+
     .video-overlay-text {
-        left: 50%;
+        left: 50% !important;
         width: 85%;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         text-align: center;
     }
 
@@ -990,7 +1030,7 @@ body {
         bottom: 10px;
         left: 10px;
         font-size: 0.7rem;
-        padding: 6px 12px;
+        padding: 5px 10px;
     }
 }
 /* Premium Checkout Prototype */
