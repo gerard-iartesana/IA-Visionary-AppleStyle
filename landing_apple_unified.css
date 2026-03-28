@@ -163,20 +163,24 @@ body {
     display: none;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    background: var(--border-color);
+    width: 48px;
+    height: 48px;
+    background: rgba(120, 120, 128, 0.16);
     border: none;
-    border-radius: 12px;
+    border-radius: 14px;
     cursor: pointer;
     z-index: 2001;
     transition: background 0.3s ease;
     padding: 0;
 }
 
+.mobile-menu-toggle:active {
+    background: rgba(120, 120, 128, 0.28);
+}
+
 .mobile-menu-toggle svg {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     stroke-width: 2.5;
     color: var(--text-main);
 }
