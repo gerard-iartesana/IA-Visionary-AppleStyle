@@ -12,12 +12,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Styles -->
-    <link rel="stylesheet" href="landing_apple_unified.css?v=11.1">
+    <link rel="stylesheet" href="landing_apple_unified.css?v=11.3">
 
     <style>
         .pricing-toggle {
             display: inline-flex;
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--border-color);
             padding: 5px;
             border-radius: 30px;
             position: relative;
@@ -44,7 +44,7 @@
 
         #toggle-bg {
             position: absolute;
-            width: calc(33.33% - 3.4px); /* Ajuste del ratio para el padding interno */
+            width: calc(33.33% - 3.4px);
             height: calc(100% - 10px);
             background: var(--accent-blue);
             border-radius: 25px;
@@ -54,8 +54,26 @@
             z-index: 1;
         }
 
+        /* Table styles - theme aware */
+        .glass-table-container {
+            background: var(--bg-secondary) !important;
+            border: 1px solid var(--border-color) !important;
+        }
+
+        .glass-table-container table th {
+            color: var(--text-main) !important;
+        }
+
         .glass-table-container table td {
-            color: rgba(255, 255, 255, 0.85);
+            color: var(--text-main);
+        }
+
+        .glass-table-container table tr {
+            border-bottom-color: var(--border-color) !important;
+        }
+
+        .glass-table-container .table-note {
+            color: var(--text-grey) !important;
         }
         
         @keyframes customFadeIn {
@@ -72,8 +90,6 @@
             .pricing-toggle { flex-direction: column; width: 100%; border-radius: 12px; }
             .toggle-btn { padding: 15px; width: 100%; }
             #toggle-bg { width: calc(100% - 10px); height: calc(33.33% - 3.4px); transition: all 0.3s ease; }
-            
-            /* En móvil, el fondo se movería verticalmente. Hacemos un hack fácil ocultando el animado en movil y poniendo botones normales */
         }
     </style>
 </head>
@@ -225,19 +241,19 @@
                 <p>Nuestra inversión es modular. Separamos los costes de programación y la cuota de mantenimiento de los recursos.</p>
             </header>
 
-            <div class="table-wrapper glass-table-container" style="overflow-x: auto; background: rgba(255,255,255,0.02); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); padding: 30px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+            <div class="table-wrapper glass-table-container" style="overflow-x: auto; border-radius: 20px; padding: 30px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
                 <table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 700px;">
                     <thead>
-                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                            <th style="padding: 20px 10px; font-weight: 600; font-size: 1.1rem; color: #fff;">Servicio e Implementación</th>
-                            <th style="padding: 20px 10px; font-weight: 600; font-size: 1.1rem; color: #fff;">Alta Inicial <span style="font-size:0.75rem; color: var(--accent-blue); font-weight: normal;">(Creación)</span></th>
-                            <th style="padding: 20px 10px; font-weight: 600; font-size: 1.1rem; color: #fff;">Cuota Mensual <span style="font-size:0.75rem; color: #34c759; font-weight: normal;">(Mnto.)</span></th>
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <th style="padding: 20px 10px; font-weight: 600; font-size: 1.1rem;">Servicio e Implementación</th>
+                            <th style="padding: 20px 10px; font-weight: 600; font-size: 1.1rem;">Alta Inicial <span style="font-size:0.75rem; color: var(--accent-blue); font-weight: normal;">(Creación)</span></th>
+                            <th style="padding: 20px 10px; font-weight: 600; font-size: 1.1rem;">Cuota Mensual <span style="font-size:0.75rem; color: #34c759; font-weight: normal;">(Mnto.)</span></th>
                         </tr>
                     </thead>
                     <tbody>
                         <!-- Agentes de IA -->
                         <tr><td colspan="3" style="padding: 40px 10px 15px; font-weight: bold; color: var(--accent-blue); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1.5px;">Agentes de IA</td></tr>
-                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <tr style="border-bottom: 1px solid var(--border-color);">
                             <td style="padding: 15px 10px;">Texto Básico <span style="opacity: 0.6; font-size: 0.8rem;">(Contestan y Asesoran)</span></td>
                             <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">300€ - 500€</td>
                             <td style="padding: 15px 10px; font-variant-numeric: tabular-nums;">49€ / mes</td>
@@ -305,7 +321,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <p style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 25px; text-align: left;">
+                <p class="table-note" style="font-size: 0.75rem; margin-top: 25px; text-align: left;">
                     * Impuestos (IVA) no incluidos.<br>
                     * Los costes derivados de consumo y tráfico propio de tu infraestructura (visitas a la web hospedada, volumen de llamadas, tokens de llamadas a LLMs o integradores de terceros) se facturan aparte de la cuota de mantenimiento de los recursos desplegados de IArtesana.
                 </p>
@@ -391,6 +407,6 @@
         // Initializing the background position matching logic to ensure correct setup on load
         window.dispatchEvent(new Event('resize'));
     </script>
-    <script src="landing_apple.js?v=11.1"></script>
+    <script src="landing_apple.js?v=11.3"></script>
 </body>
 </html>
