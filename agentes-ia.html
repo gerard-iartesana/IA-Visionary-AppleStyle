@@ -11,26 +11,32 @@
     <link rel="stylesheet" href="landing_apple_unified.css?v=11.5">
     <style>
         .agent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:60px}
-        .agent-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:24px;padding:36px 28px;transition:all .5s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+        .agent-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:24px;overflow:hidden;transition:all .5s cubic-bezier(.4,0,.2,1);position:relative}
         .agent-card:hover{transform:translateY(-8px);box-shadow:0 20px 60px rgba(0,0,0,.15);border-color:var(--accent-blue)}
-        .agent-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent-blue),#af52de);opacity:0;transition:opacity .3s}
+        .agent-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent-blue),#af52de);opacity:0;transition:opacity .3s;z-index:2}
         .agent-card:hover::before{opacity:1}
-        .agent-icon{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:20px}
-        .agent-card h3{font-size:1.2rem;font-weight:700;margin-bottom:10px}
-        .agent-card p{font-size:.85rem;color:var(--text-grey);line-height:1.65;margin-bottom:16px}
+        .agent-card-visual{height:200px;position:relative;overflow:hidden}
+        .agent-card-visual img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+        .agent-card:hover .agent-card-visual img{transform:scale(1.05)}
+        .agent-card-visual::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.5))}
+        .agent-card-body{padding:28px}
+        .agent-card-title{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+        .agent-card-title .agent-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .agent-card-title h3{font-size:1.1rem;font-weight:700;margin:0}
+        .agent-card p{font-size:.82rem;color:var(--text-grey);line-height:1.65;margin-bottom:16px}
         .agent-features{list-style:none;padding:0;margin:0}
         .agent-features li{font-size:.78rem;color:var(--text-grey);padding:6px 0;border-top:1px solid var(--border-color);display:flex;align-items:center;gap:8px}
         .agent-features li::before{content:'✓';color:#34c759;font-weight:700}
         .how-agent-works{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;margin-top:60px}
         .how-step{text-align:center;padding:30px 16px;position:relative}
         .how-step:not(:last-child)::after{content:'→';position:absolute;right:-18px;top:50%;transform:translateY(-50%);font-size:1.4rem;color:var(--accent-blue);font-weight:700}
-        .how-number{width:56px;height:56px;border-radius:18px;background:rgba(0,113,227,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.2rem;font-weight:700;color:var(--accent-blue)}
+        .how-number{width:56px;height:56px;border-radius:18px;background:rgba(0,113,227,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-weight:700;color:var(--accent-blue)}
         .how-step h4{font-size:.95rem;font-weight:600;margin-bottom:6px}
         .how-step p{font-size:.78rem;color:var(--text-grey);line-height:1.5}
         .use-cases-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:50px}
         .use-case{background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;padding:32px;display:flex;gap:20px;align-items:flex-start;transition:all .3s}
         .use-case:hover{border-color:var(--accent-blue);transform:translateY(-4px)}
-        .use-case-icon{font-size:2rem;flex-shrink:0}
+        .use-case-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
         .use-case h4{font-size:1rem;font-weight:600;margin-bottom:6px}
         .use-case p{font-size:.82rem;color:var(--text-grey);line-height:1.6;margin:0}
         .use-case .metric{display:inline-block;margin-top:8px;font-size:.7rem;font-weight:600;color:#34c759;background:rgba(52,199,89,.1);padding:3px 10px;border-radius:10px}
@@ -78,7 +84,10 @@
         <div class="container">
             <div class="hero-split" style="display:flex;align-items:center;gap:60px;justify-content:space-between">
                 <div style="flex:1;max-width:560px">
-                    <div style="display:inline-block;padding:6px 16px;border-radius:20px;background:rgba(175,82,222,.12);color:#af52de;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px">🤖 Agentes de IA</div>
+                    <div style="display:inline-block;padding:6px 16px;border-radius:20px;background:rgba(175,82,222,.12);color:#af52de;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                        Agentes de IA
+                    </div>
                     <h1 style="margin-bottom:20px">Empleados digitales.<br><span style="color:var(--accent-blue)">Que nunca duermen.</span></h1>
                     <p class="hero-sub" style="margin-bottom:30px">Los agentes de IA planifican, razonan y ejecutan tareas completas de forma autónoma. Desde vender hasta investigar — trabajan por ti 24/7.</p>
                     <div style="display:flex;gap:16px;flex-wrap:wrap">
@@ -113,77 +122,131 @@
                 <p class="hero-sub" style="font-size:.95rem">Cada agente está especializado en un dominio y puede operar de forma autónoma o coordinada con otros agentes.</p>
             </div>
             <div class="agent-grid">
-                <!-- Agent 1 -->
+                <!-- Agent 1: Ventas -->
                 <div class="agent-card">
-                    <div class="agent-icon" style="background:rgba(0,113,227,.1)">💼</div>
-                    <h3>Agente de Ventas</h3>
-                    <p>Investiga prospectos, personaliza emails de contacto, programa llamadas y actualiza tu CRM automáticamente.</p>
-                    <ul class="agent-features">
-                        <li>Prospección automática en LinkedIn</li>
-                        <li>Cold emails personalizados con IA</li>
-                        <li>Seguimiento inteligente de leads</li>
-                        <li>Scoring predictivo de conversión</li>
-                    </ul>
+                    <div class="agent-card-visual">
+                        <img src="img/agents/sales.png" alt="CRM con pipeline de ventas y lead scoring IA" loading="lazy">
+                    </div>
+                    <div class="agent-card-body">
+                        <div class="agent-card-title">
+                            <div class="agent-icon" style="background:linear-gradient(135deg,#0071e3,#5ac8fa)">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.87"/></svg>
+                            </div>
+                            <h3>Agente de Ventas</h3>
+                        </div>
+                        <p>Investiga prospectos, personaliza emails de contacto, programa llamadas y actualiza tu CRM automáticamente.</p>
+                        <ul class="agent-features">
+                            <li>Prospección automática en LinkedIn</li>
+                            <li>Cold emails personalizados con IA</li>
+                            <li>Seguimiento inteligente de leads</li>
+                            <li>Scoring predictivo de conversión</li>
+                        </ul>
+                    </div>
                 </div>
-                <!-- Agent 2 -->
+                <!-- Agent 2: Soporte -->
                 <div class="agent-card">
-                    <div class="agent-icon" style="background:rgba(52,199,89,.1)">🎧</div>
-                    <h3>Agente de Soporte</h3>
-                    <p>Analiza tickets, busca en tu base de conocimiento y redacta respuestas que resuelven el 80% de consultas.</p>
-                    <ul class="agent-features">
-                        <li>Resolución autónoma de consultas</li>
-                        <li>Escalado inteligente a humanos</li>
-                        <li>Aprendizaje continuo de interacciones</li>
-                        <li>Soporte multiidioma automático</li>
-                    </ul>
+                    <div class="agent-card-visual">
+                        <img src="img/agents/support.png" alt="Dashboard de soporte con tickets y chat IA" loading="lazy">
+                    </div>
+                    <div class="agent-card-body">
+                        <div class="agent-card-title">
+                            <div class="agent-icon" style="background:linear-gradient(135deg,#34c759,#30d158)">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                            </div>
+                            <h3>Agente de Soporte</h3>
+                        </div>
+                        <p>Analiza tickets, busca en tu base de conocimiento y redacta respuestas que resuelven el 80% de consultas.</p>
+                        <ul class="agent-features">
+                            <li>Resolución autónoma de consultas</li>
+                            <li>Escalado inteligente a humanos</li>
+                            <li>Aprendizaje continuo de interacciones</li>
+                            <li>Soporte multiidioma automático</li>
+                        </ul>
+                    </div>
                 </div>
-                <!-- Agent 3 -->
+                <!-- Agent 3: Investigación -->
                 <div class="agent-card">
-                    <div class="agent-icon" style="background:rgba(175,82,222,.1)">🔍</div>
-                    <h3>Agente de Investigación</h3>
-                    <p>Monitoriza competidores, analiza tendencias del mercado y genera informes semanales con insights accionables.</p>
-                    <ul class="agent-features">
-                        <li>Monitorización 24/7 de competidores</li>
-                        <li>Análisis de tendencias en tiempo real</li>
-                        <li>Informes automáticos semanales</li>
-                        <li>Alertas de oportunidades de mercado</li>
-                    </ul>
+                    <div class="agent-card-visual">
+                        <img src="img/agents/research.png" alt="Dashboard de análisis competitivo e investigación de mercado" loading="lazy">
+                    </div>
+                    <div class="agent-card-body">
+                        <div class="agent-card-title">
+                            <div class="agent-icon" style="background:linear-gradient(135deg,#af52de,#bf5af2)">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><path d="M11 8v6M8 11h6"/></svg>
+                            </div>
+                            <h3>Agente de Investigación</h3>
+                        </div>
+                        <p>Monitoriza competidores, analiza tendencias del mercado y genera informes semanales con insights accionables.</p>
+                        <ul class="agent-features">
+                            <li>Monitorización 24/7 de competidores</li>
+                            <li>Análisis de tendencias en tiempo real</li>
+                            <li>Informes automáticos semanales</li>
+                            <li>Alertas de oportunidades de mercado</li>
+                        </ul>
+                    </div>
                 </div>
-                <!-- Agent 4 -->
+                <!-- Agent 4: Marketing -->
                 <div class="agent-card">
-                    <div class="agent-icon" style="background:rgba(255,149,0,.1)">📊</div>
-                    <h3>Agente de Marketing</h3>
-                    <p>Crea contenido, programa publicaciones, analiza rendimiento y optimiza campañas con datos en tiempo real.</p>
-                    <ul class="agent-features">
-                        <li>Generación de contenido multi-canal</li>
-                        <li>Programación automática de posts</li>
-                        <li>A/B testing inteligente</li>
-                        <li>Optimización de presupuesto publicitario</li>
-                    </ul>
+                    <div class="agent-card-visual">
+                        <img src="img/agents/marketing.png" alt="Dashboard de marketing con campañas y analytics" loading="lazy">
+                    </div>
+                    <div class="agent-card-body">
+                        <div class="agent-card-title">
+                            <div class="agent-icon" style="background:linear-gradient(135deg,#ff9500,#ff6b00)">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                            </div>
+                            <h3>Agente de Marketing</h3>
+                        </div>
+                        <p>Crea contenido, programa publicaciones, analiza rendimiento y optimiza campañas con datos en tiempo real.</p>
+                        <ul class="agent-features">
+                            <li>Generación de contenido multi-canal</li>
+                            <li>Programación automática de posts</li>
+                            <li>A/B testing inteligente</li>
+                            <li>Optimización de presupuesto publicitario</li>
+                        </ul>
+                    </div>
                 </div>
-                <!-- Agent 5 -->
+                <!-- Agent 5: Operaciones -->
                 <div class="agent-card">
-                    <div class="agent-icon" style="background:rgba(90,200,250,.1)">📋</div>
-                    <h3>Agente de Operaciones</h3>
-                    <p>Gestiona inventarios, coordina logística, genera facturas y optimiza procesos operativos complejos.</p>
-                    <ul class="agent-features">
-                        <li>Gestión automática de inventario</li>
-                        <li>Facturación y cobros autónomos</li>
-                        <li>Coordinación de equipos</li>
-                        <li>Reporting operativo automático</li>
-                    </ul>
+                    <div class="agent-card-visual">
+                        <img src="img/agents/operations.png" alt="Dashboard operativo con inventario y logística" loading="lazy">
+                    </div>
+                    <div class="agent-card-body">
+                        <div class="agent-card-title">
+                            <div class="agent-icon" style="background:linear-gradient(135deg,#5ac8fa,#0071e3)">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                            </div>
+                            <h3>Agente de Operaciones</h3>
+                        </div>
+                        <p>Gestiona inventarios, coordina logística, genera facturas y optimiza procesos operativos complejos.</p>
+                        <ul class="agent-features">
+                            <li>Gestión automática de inventario</li>
+                            <li>Facturación y cobros autónomos</li>
+                            <li>Coordinación de equipos</li>
+                            <li>Reporting operativo automático</li>
+                        </ul>
+                    </div>
                 </div>
-                <!-- Agent 6 -->
+                <!-- Agent 6: Voz -->
                 <div class="agent-card">
-                    <div class="agent-icon" style="background:rgba(255,69,58,.1)">📞</div>
-                    <h3>Agente de Voz</h3>
-                    <p>Atiende llamadas telefónicas, gestiona reservas, confirma citas y califica leads por teléfono de forma natural.</p>
-                    <ul class="agent-features">
-                        <li>Atención telefónica 24/7</li>
-                        <li>Voz natural con IA</li>
-                        <li>Gestión de reservas y citas</li>
-                        <li>Cualificación de leads por voz</li>
-                    </ul>
+                    <div class="agent-card-visual">
+                        <img src="img/agents/voice.png" alt="Agente de voz IA con análisis de llamadas en tiempo real" loading="lazy">
+                    </div>
+                    <div class="agent-card-body">
+                        <div class="agent-card-title">
+                            <div class="agent-icon" style="background:linear-gradient(135deg,#ff453a,#ff6961)">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            </div>
+                            <h3>Agente de Voz</h3>
+                        </div>
+                        <p>Atiende llamadas telefónicas, gestiona reservas, confirma citas y califica leads por teléfono de forma natural.</p>
+                        <ul class="agent-features">
+                            <li>Atención telefónica 24/7</li>
+                            <li>Voz natural con IA</li>
+                            <li>Gestión de reservas y citas</li>
+                            <li>Cualificación de leads por voz</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -198,22 +261,30 @@
             </div>
             <div class="how-agent-works">
                 <div class="how-step">
-                    <div class="how-number">🧠</div>
+                    <div class="how-number">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0071e3" stroke-width="2" stroke-linecap="round"><path d="M12 2a4 4 0 0 0-4 4c0 2 2 3 2 6h4c0-3 2-4 2-6a4 4 0 0 0-4-4z"/><rect x="9" y="14" width="6" height="4" rx="1"/><path d="M10 18v1a2 2 0 0 0 4 0v-1"/></svg>
+                    </div>
                     <h4>1. Recibe instrucciones</h4>
                     <p>Le indicas qué debe hacer: "Encuentra leads en el sector hostelería de Barcelona".</p>
                 </div>
                 <div class="how-step">
-                    <div class="how-number">📋</div>
+                    <div class="how-number">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0071e3" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    </div>
                     <h4>2. Planifica</h4>
                     <p>Descompone la tarea en subtareas: buscar empresas, obtener contactos, verificar emails...</p>
                 </div>
                 <div class="how-step">
-                    <div class="how-number">🔧</div>
+                    <div class="how-number">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0071e3" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                    </div>
                     <h4>3. Ejecuta</h4>
                     <p>Usa sus herramientas (APIs, navegador, bases de datos) para completar cada subtarea.</p>
                 </div>
                 <div class="how-step">
-                    <div class="how-number">📊</div>
+                    <div class="how-number">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0071e3" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="4" rx="1"/><rect x="14" y="10" width="7" height="11" rx="1"/><rect x="3" y="13" width="7" height="8" rx="1"/></svg>
+                    </div>
                     <h4>4. Reporta</h4>
                     <p>Te entrega los resultados: una lista de 50 leads cualificados con emails y datos de contacto.</p>
                 </div>
@@ -229,7 +300,9 @@
             </div>
             <div class="use-cases-grid">
                 <div class="use-case">
-                    <div class="use-case-icon">🏨</div>
+                    <div class="use-case-icon" style="background:rgba(0,113,227,.1)">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0071e3" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    </div>
                     <div>
                         <h4>Hotel en Menorca</h4>
                         <p>Agente de reservas que gestiona llamadas, confirma disponibilidad y envía confirmaciones. Atiende en 3 idiomas.</p>
@@ -237,7 +310,9 @@
                     </div>
                 </div>
                 <div class="use-case">
-                    <div class="use-case-icon">🛒</div>
+                    <div class="use-case-icon" style="background:rgba(52,199,89,.1)">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    </div>
                     <div>
                         <h4>eCommerce Barcelona</h4>
                         <p>Agente de soporte que resuelve dudas sobre pedidos, gestiona devoluciones y sugiere productos complementarios.</p>
@@ -245,7 +320,9 @@
                     </div>
                 </div>
                 <div class="use-case">
-                    <div class="use-case-icon">⚖️</div>
+                    <div class="use-case-icon" style="background:rgba(175,82,222,.1)">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#af52de" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    </div>
                     <div>
                         <h4>Despacho de abogados</h4>
                         <p>Agente de investigación que analiza jurisprudencia, resume sentencias y prepara documentación legal.</p>
@@ -253,7 +330,9 @@
                     </div>
                 </div>
                 <div class="use-case">
-                    <div class="use-case-icon">🏗️</div>
+                    <div class="use-case-icon" style="background:rgba(255,149,0,.1)">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff9500" stroke-width="2" stroke-linecap="round"><rect x="1" y="6" width="22" height="12" rx="2" ry="2"/><path d="M1 10h22"/></svg>
+                    </div>
                     <div>
                         <h4>Constructora Madrid</h4>
                         <p>Agente de operaciones que gestiona pedidos de material, coordina proveedores y controla presupuestos de obra.</p>
