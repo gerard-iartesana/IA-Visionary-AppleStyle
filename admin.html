@@ -1044,7 +1044,7 @@
                 <div class="stats-grid" style="margin-bottom: 24px;">
                     <div class="stat-card">
                         <span class="stat-label">Total Artículos</span>
-                        <h2 id="nl-total-articles" style="color: #af52de;">6</h2>
+                        <h2 id="nl-total-articles" style="color: #af52de;">10</h2>
                     </div>
                     <div class="stat-card">
                         <span class="stat-label">Suscriptores</span>
@@ -1076,8 +1076,14 @@
                     </div>
                 </div>
 
+                <!-- View Switcher -->
+                <div style="display: flex; gap: 0; margin-bottom: 20px; background: rgba(255,255,255,0.04); border-radius: 12px; padding: 3px; width: fit-content;">
+                    <button id="view-list-btn" class="nl-view-btn active" onclick="switchNLView('list')">📋 Lista</button>
+                    <button id="view-calendar-btn" class="nl-view-btn" onclick="switchNLView('calendar')">📅 Calendario</button>
+                </div>
+
                 <!-- Search & Filters -->
-                <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+                <div id="nl-filters-bar" style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
                     <div class="search-box" style="flex: 1; min-width: 250px;">
                         <svg style="width: 18px; color: var(--text-grey);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                         <input type="text" id="nl-search" placeholder="Buscar por título o contenido..." oninput="filterNewsletterArticles()" style="flex: 1;">
@@ -1091,125 +1097,231 @@
                     </select>
                     <select id="nl-filter-status" class="admin-select" onchange="filterNewsletterArticles()">
                         <option value="all">Todos los estados</option>
-                        <option value="publicado">Publicado</option>
-                        <option value="borrador">Borrador</option>
-                        <option value="enviado">Enviado</option>
+                        <option value="publicado">📋 Publicado</option>
+                        <option value="borrador">📝 Borrador</option>
+                        <option value="programado">⏰ Programado</option>
+                        <option value="enviado">✅ Enviado</option>
                     </select>
                 </div>
 
-                <!-- Articles Table -->
-                <div class="leads-container">
-                    <div class="table-wrapper">
-                        <table class="leads-table" id="nl-articles-table">
-                            <thead>
-                                <tr>
-                                    <th style="padding: 12px;">Título</th>
-                                    <th style="padding: 12px;">Categoría</th>
-                                    <th style="padding: 12px;">Estado</th>
-                                    <th style="padding: 12px;">Fecha</th>
-                                    <th style="padding: 12px;">Suscriptores</th>
-                                    <th style="padding: 12px;">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="nl-articles-body">
-                                <tr data-cat="ia" data-status="enviado">
-                                    <td style="padding: 12px;">
-                                        <div style="font-weight: 600; color: var(--text-white);">GPT-5: Lo que sabemos y cómo afectará a tu negocio</div>
-                                        <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">OpenAI prepara su modelo más avanzado...</div>
-                                    </td>
-                                    <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(0,113,227,0.1); color: var(--accent-blue);">🤖 IA</span></td>
-                                    <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">✅ Enviado</span></td>
-                                    <td style="font-size: 0.8rem; color: var(--text-grey);">28 Mar</td>
-                                    <td style="font-size: 0.8rem;">312 / 320</td>
-                                    <td>
-                                        <div style="display: flex; gap: 6px;">
-                                            <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(0)">✏️ Editar</button>
-                                            <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr data-cat="negocio" data-status="enviado">
-                                    <td style="padding: 12px;">
-                                        <div style="font-weight: 600; color: var(--text-white);">5 automatizaciones que toda PYME debería tener en 2026</div>
-                                        <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">Las empresas que automatizan crecen un 40% más rápido...</div>
-                                    </td>
-                                    <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">💼 Negocio</span></td>
-                                    <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">✅ Enviado</span></td>
-                                    <td style="font-size: 0.8rem; color: var(--text-grey);">25 Mar</td>
-                                    <td style="font-size: 0.8rem;">305 / 318</td>
-                                    <td>
-                                        <div style="display: flex; gap: 6px;">
-                                            <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(1)">✏️ Editar</button>
-                                            <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr data-cat="tutorial" data-status="publicado">
-                                    <td style="padding: 12px;">
-                                        <div style="font-weight: 600; color: var(--text-white);">Cómo crear tu primer flujo de trabajo en n8n paso a paso</div>
-                                        <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">Guía completa para principiantes: conecta Gmail, OpenAI y Slack...</div>
-                                    </td>
-                                    <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,149,0,0.1); color: #ff9500;">📚 Tutorial</span></td>
-                                    <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(0,113,227,0.1); color: var(--accent-blue);">📋 Publicado</span></td>
-                                    <td style="font-size: 0.8rem; color: var(--text-grey);">22 Mar</td>
-                                    <td style="font-size: 0.8rem;">—</td>
-                                    <td>
-                                        <div style="display: flex; gap: 6px;">
-                                            <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(2)">✏️ Editar</button>
-                                            <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr data-cat="noticia" data-status="publicado">
-                                    <td style="padding: 12px;">
-                                        <div style="font-weight: 600; color: var(--text-white);">La UE aprueba nuevas normas de IA: qué implica para tu empresa</div>
-                                        <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">El AI Act europeo entra en vigor...</div>
-                                    </td>
-                                    <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(175,82,222,0.1); color: #af52de;">📰 Noticia</span></td>
-                                    <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(0,113,227,0.1); color: var(--accent-blue);">📋 Publicado</span></td>
-                                    <td style="font-size: 0.8rem; color: var(--text-grey);">20 Mar</td>
-                                    <td style="font-size: 0.8rem;">—</td>
-                                    <td>
-                                        <div style="display: flex; gap: 6px;">
-                                            <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(3)">✏️ Editar</button>
-                                            <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr data-cat="ia" data-status="borrador">
-                                    <td style="padding: 12px;">
-                                        <div style="font-weight: 600; color: var(--text-white);">Agentes autónomos: la próxima revolución en productividad</div>
-                                        <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">Los agentes de IA ya no solo responden preguntas...</div>
-                                    </td>
-                                    <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(0,113,227,0.1); color: var(--accent-blue);">🤖 IA</span></td>
-                                    <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,149,0,0.1); color: #ff9500;">📝 Borrador</span></td>
-                                    <td style="font-size: 0.8rem; color: var(--text-grey);">18 Mar</td>
-                                    <td style="font-size: 0.8rem;">—</td>
-                                    <td>
-                                        <div style="display: flex; gap: 6px;">
-                                            <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(4)">✏️ Editar</button>
-                                            <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr data-cat="negocio" data-status="borrador">
-                                    <td style="padding: 12px;">
-                                        <div style="font-weight: 600; color: var(--text-white);">Cómo medir el ROI de la IA en tu negocio: métricas que importan</div>
-                                        <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">No basta con implementar IA — hay que medir su impacto...</div>
-                                    </td>
-                                    <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">💼 Negocio</span></td>
-                                    <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,149,0,0.1); color: #ff9500;">📝 Borrador</span></td>
-                                    <td style="font-size: 0.8rem; color: var(--text-grey);">15 Mar</td>
-                                    <td style="font-size: 0.8rem;">—</td>
-                                    <td>
-                                        <div style="display: flex; gap: 6px;">
-                                            <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(5)">✏️ Editar</button>
-                                            <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <!-- ═══ LIST VIEW ═══ -->
+                <div id="nl-list-view">
+                    <!-- Articles Table -->
+                    <div class="leads-container">
+                        <div class="table-wrapper">
+                            <table class="leads-table" id="nl-articles-table">
+                                <thead>
+                                    <tr>
+                                        <th style="padding: 12px;">Título</th>
+                                        <th style="padding: 12px;">Categoría</th>
+                                        <th style="padding: 12px;">Estado</th>
+                                        <th style="padding: 12px;">Fecha</th>
+                                        <th style="padding: 12px;">Suscriptores</th>
+                                        <th style="padding: 12px;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="nl-articles-body">
+                                    <tr data-cat="ia" data-status="enviado">
+                                        <td style="padding: 12px;">
+                                            <div style="font-weight: 600; color: var(--text-white);">GPT-5: Lo que sabemos y cómo afectará a tu negocio</div>
+                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">OpenAI prepara su modelo más avanzado...</div>
+                                        </td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(0,113,227,0.1); color: var(--accent-blue);">🤖 IA</span></td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">✅ Enviado</span></td>
+                                        <td style="font-size: 0.8rem; color: var(--text-grey);">28 Mar</td>
+                                        <td style="font-size: 0.8rem;">312 / 320</td>
+                                        <td>
+                                            <div style="display: flex; gap: 6px;">
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(0)">✏️ Editar</button>
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-cat="negocio" data-status="enviado">
+                                        <td style="padding: 12px;">
+                                            <div style="font-weight: 600; color: var(--text-white);">5 automatizaciones que toda PYME debería tener en 2026</div>
+                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">Las empresas que automatizan crecen un 40% más rápido...</div>
+                                        </td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">💼 Negocio</span></td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">✅ Enviado</span></td>
+                                        <td style="font-size: 0.8rem; color: var(--text-grey);">25 Mar</td>
+                                        <td style="font-size: 0.8rem;">305 / 318</td>
+                                        <td>
+                                            <div style="display: flex; gap: 6px;">
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(1)">✏️ Editar</button>
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-cat="tutorial" data-status="publicado">
+                                        <td style="padding: 12px;">
+                                            <div style="font-weight: 600; color: var(--text-white);">Cómo crear tu primer flujo de trabajo en n8n paso a paso</div>
+                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">Guía completa para principiantes: conecta Gmail, OpenAI y Slack...</div>
+                                        </td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,149,0,0.1); color: #ff9500;">📚 Tutorial</span></td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(0,113,227,0.1); color: var(--accent-blue);">📋 Publicado</span></td>
+                                        <td style="font-size: 0.8rem; color: var(--text-grey);">22 Mar</td>
+                                        <td style="font-size: 0.8rem;">—</td>
+                                        <td>
+                                            <div style="display: flex; gap: 6px;">
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(2)">✏️ Editar</button>
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-cat="noticia" data-status="publicado">
+                                        <td style="padding: 12px;">
+                                            <div style="font-weight: 600; color: var(--text-white);">La UE aprueba nuevas normas de IA: qué implica para tu empresa</div>
+                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">El AI Act europeo entra en vigor...</div>
+                                        </td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(175,82,222,0.1); color: #af52de;">📰 Noticia</span></td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(0,113,227,0.1); color: var(--accent-blue);">📋 Publicado</span></td>
+                                        <td style="font-size: 0.8rem; color: var(--text-grey);">20 Mar</td>
+                                        <td style="font-size: 0.8rem;">—</td>
+                                        <td>
+                                            <div style="display: flex; gap: 6px;">
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(3)">✏️ Editar</button>
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-cat="ia" data-status="borrador">
+                                        <td style="padding: 12px;">
+                                            <div style="font-weight: 600; color: var(--text-white);">Agentes autónomos: la próxima revolución en productividad</div>
+                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">Los agentes de IA ya no solo responden preguntas...</div>
+                                        </td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(0,113,227,0.1); color: var(--accent-blue);">🤖 IA</span></td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,149,0,0.1); color: #ff9500;">📝 Borrador</span></td>
+                                        <td style="font-size: 0.8rem; color: var(--text-grey);">18 Mar</td>
+                                        <td style="font-size: 0.8rem;">—</td>
+                                        <td>
+                                            <div style="display: flex; gap: 6px;">
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(4)">✏️ Editar</button>
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-cat="negocio" data-status="borrador">
+                                        <td style="padding: 12px;">
+                                            <div style="font-weight: 600; color: var(--text-white);">Cómo medir el ROI de la IA en tu negocio: métricas que importan</div>
+                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">No basta con implementar IA — hay que medir su impacto...</div>
+                                        </td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">💼 Negocio</span></td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,149,0,0.1); color: #ff9500;">📝 Borrador</span></td>
+                                        <td style="font-size: 0.8rem; color: var(--text-grey);">15 Mar</td>
+                                        <td style="font-size: 0.8rem;">—</td>
+                                        <td>
+                                            <div style="display: flex; gap: 6px;">
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(5)">✏️ Editar</button>
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-cat="tutorial" data-status="programado">
+                                        <td style="padding: 12px;">
+                                            <div style="font-weight: 600; color: var(--text-white);">Tutorial: Conecta WhatsApp Business con IA en 20 minutos</div>
+                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">Aprende a crear un chatbot inteligente para tu WhatsApp...</div>
+                                        </td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,149,0,0.1); color: #ff9500;">📚 Tutorial</span></td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(90,200,250,0.1); color: #5ac8fa;">⏰ Programado</span></td>
+                                        <td style="font-size: 0.8rem; color: var(--text-grey);">1 Abr</td>
+                                        <td style="font-size: 0.8rem;">—</td>
+                                        <td>
+                                            <div style="display: flex; gap: 6px;">
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(6)">✏️ Editar</button>
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-cat="ia" data-status="programado">
+                                        <td style="padding: 12px;">
+                                            <div style="font-weight: 600; color: var(--text-white);">Multimodal AI: texto + imagen + voz lo cambia todo</div>
+                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">Los modelos multimodales están redefiniendo la IA empresarial...</div>
+                                        </td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(0,113,227,0.1); color: var(--accent-blue);">🤖 IA</span></td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(90,200,250,0.1); color: #5ac8fa;">⏰ Programado</span></td>
+                                        <td style="font-size: 0.8rem; color: var(--text-grey);">5 Abr</td>
+                                        <td style="font-size: 0.8rem;">—</td>
+                                        <td>
+                                            <div style="display: flex; gap: 6px;">
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(7)">✏️ Editar</button>
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-cat="negocio" data-status="programado">
+                                        <td style="padding: 12px;">
+                                            <div style="font-weight: 600; color: var(--text-white);">De freelance a agencia IA: escalando tu negocio</div>
+                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">Cómo pasar de hacer proyectos sueltos a montar una agencia...</div>
+                                        </td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">💼 Negocio</span></td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(90,200,250,0.1); color: #5ac8fa;">⏰ Programado</span></td>
+                                        <td style="font-size: 0.8rem; color: var(--text-grey);">10 Abr</td>
+                                        <td style="font-size: 0.8rem;">—</td>
+                                        <td>
+                                            <div style="display: flex; gap: 6px;">
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(8)">✏️ Editar</button>
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr data-cat="ia" data-status="borrador">
+                                        <td style="padding: 12px;">
+                                            <div style="font-weight: 600; color: var(--text-white);">RAG vs Fine-tuning: cuál elegir para tu proyecto</div>
+                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">Las dos técnicas más populares para personalizar modelos de IA...</div>
+                                        </td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(0,113,227,0.1); color: var(--accent-blue);">🤖 IA</span></td>
+                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,149,0,0.1); color: #ff9500;">📝 Borrador</span></td>
+                                        <td style="font-size: 0.8rem; color: var(--text-grey);">12 Mar</td>
+                                        <td style="font-size: 0.8rem;">—</td>
+                                        <td>
+                                            <div style="display: flex; gap: 6px;">
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(9)">✏️ Editar</button>
+                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ CALENDAR VIEW ═══ -->
+                <div id="nl-calendar-view" style="display: none;">
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden;">
+                        <!-- Calendar Header -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border-color);">
+                            <button class="btn-action" onclick="changeCalendarMonth(-1)" style="padding: 6px 12px;">◀ Anterior</button>
+                            <h3 id="cal-month-title" style="margin: 0; font-size: 1.1rem; font-weight: 700;"></h3>
+                            <button class="btn-action" onclick="changeCalendarMonth(1)" style="padding: 6px 12px;">Siguiente ▶</button>
+                        </div>
+                        <!-- Calendar Legend -->
+                        <div style="display: flex; gap: 16px; padding: 12px 24px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap;">
+                            <span style="display: flex; align-items: center; gap: 5px; font-size: 0.7rem; color: var(--text-grey);"><span style="width: 8px; height: 8px; border-radius: 50%; background: #34c759; display: inline-block;"></span> Enviado</span>
+                            <span style="display: flex; align-items: center; gap: 5px; font-size: 0.7rem; color: var(--text-grey);"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-blue); display: inline-block;"></span> Publicado</span>
+                            <span style="display: flex; align-items: center; gap: 5px; font-size: 0.7rem; color: var(--text-grey);"><span style="width: 8px; height: 8px; border-radius: 50%; background: #5ac8fa; display: inline-block;"></span> Programado</span>
+                            <span style="display: flex; align-items: center; gap: 5px; font-size: 0.7rem; color: var(--text-grey);"><span style="width: 8px; height: 8px; border-radius: 50%; background: #ff9500; display: inline-block;"></span> Borrador</span>
+                        </div>
+                        <!-- Calendar Grid -->
+                        <div style="padding: 16px;">
+                            <div class="cal-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px;">
+                                <div class="cal-header-cell">Lun</div>
+                                <div class="cal-header-cell">Mar</div>
+                                <div class="cal-header-cell">Mié</div>
+                                <div class="cal-header-cell">Jue</div>
+                                <div class="cal-header-cell">Vie</div>
+                                <div class="cal-header-cell" style="color: #ff9500;">Sáb</div>
+                                <div class="cal-header-cell" style="color: #ff3b30;">Dom</div>
+                            </div>
+                            <div id="cal-days-grid" class="cal-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming / Day Detail -->
+                    <div id="cal-day-detail" style="margin-top: 20px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px 24px; display: none;">
+                        <h4 id="cal-detail-title" style="margin: 0 0 12px; font-size: 0.9rem;"></h4>
+                        <div id="cal-detail-items"></div>
                     </div>
                 </div>
 
@@ -2106,6 +2218,73 @@
     </div>
 
     <style>
+        /* View Switcher */
+        .nl-view-btn {
+            background: transparent;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 10px;
+            color: var(--text-grey);
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .nl-view-btn.active {
+            background: var(--accent-blue);
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,113,227,0.3);
+        }
+        .nl-view-btn:not(.active):hover { background: rgba(255,255,255,0.08); color: var(--text-white, #fff); }
+        /* Calendar Cells */
+        .cal-header-cell {
+            text-align: center;
+            padding: 10px 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-grey);
+        }
+        .cal-day-cell {
+            min-height: 80px;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.02);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .cal-day-cell:hover { background: rgba(0,113,227,0.06); border-color: rgba(0,113,227,0.2); }
+        .cal-day-cell.today { border-color: var(--accent-blue); background: rgba(0,113,227,0.05); }
+        .cal-day-cell.other-month { opacity: 0.3; }
+        .cal-day-num {
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text-white, #fff);
+        }
+        .cal-day-cell.today .cal-day-num { color: var(--accent-blue); }
+        .cal-event {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 0.55rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .cal-event.status-enviado { background: rgba(52,199,89,0.12); color: #34c759; }
+        .cal-event.status-publicado { background: rgba(0,113,227,0.12); color: var(--accent-blue); }
+        .cal-event.status-programado { background: rgba(90,200,250,0.12); color: #5ac8fa; }
+        .cal-event.status-borrador { background: rgba(255,149,0,0.12); color: #ff9500; }
+        .cal-event-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
         /* Idea Tags */
         .idea-tag {
             display: inline-block;
@@ -2333,6 +2512,129 @@
             }, 3000);
         }, 2000);
     }
+
+    // ═══ VIEW SWITCHER & CALENDAR ═══
+    let calCurrentMonth = 2; // March = 2 (0-indexed)
+    let calCurrentYear = 2026;
+
+    function switchNLView(view) {
+        document.getElementById('nl-list-view').style.display = view === 'list' ? 'block' : 'none';
+        document.getElementById('nl-calendar-view').style.display = view === 'calendar' ? 'block' : 'none';
+        document.getElementById('nl-filters-bar').style.display = view === 'list' ? 'flex' : 'none';
+        document.getElementById('view-list-btn').classList.toggle('active', view === 'list');
+        document.getElementById('view-calendar-btn').classList.toggle('active', view === 'calendar');
+        if (view === 'calendar') renderCalendar();
+    }
+
+    const calendarArticles = [
+        { day: 12, month: 2, year: 2026, title: 'RAG vs Fine-tuning: cuál elegir', status: 'borrador', cat: '🤖 IA' },
+        { day: 15, month: 2, year: 2026, title: 'Cómo medir el ROI de la IA', status: 'borrador', cat: '💼 Negocio' },
+        { day: 18, month: 2, year: 2026, title: 'Agentes autónomos: la próxima revolución', status: 'borrador', cat: '🤖 IA' },
+        { day: 20, month: 2, year: 2026, title: 'La UE aprueba nuevas normas de IA', status: 'publicado', cat: '📰 Noticia' },
+        { day: 22, month: 2, year: 2026, title: 'Primer flujo de trabajo en n8n', status: 'publicado', cat: '📚 Tutorial' },
+        { day: 25, month: 2, year: 2026, title: '5 automatizaciones para PYME', status: 'enviado', cat: '💼 Negocio' },
+        { day: 28, month: 2, year: 2026, title: 'GPT-5: impacto en tu negocio', status: 'enviado', cat: '🤖 IA' },
+        { day: 1, month: 3, year: 2026, title: 'Tutorial: WhatsApp + IA', status: 'programado', cat: '📚 Tutorial' },
+        { day: 5, month: 3, year: 2026, title: 'Multimodal AI: todo cambia', status: 'programado', cat: '🤖 IA' },
+        { day: 10, month: 3, year: 2026, title: 'De freelance a agencia IA', status: 'programado', cat: '💼 Negocio' },
+        { day: 15, month: 3, year: 2026, title: 'IA en email marketing', status: 'programado', cat: '💼 Negocio' },
+        { day: 20, month: 3, year: 2026, title: 'Prompt Engineering avanzado', status: 'programado', cat: '🤖 IA' },
+        { day: 28, month: 3, year: 2026, title: 'Automatización CRM con n8n', status: 'programado', cat: '📚 Tutorial' },
+    ];
+
+    const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    
+    function renderCalendar() {
+        const title = document.getElementById('cal-month-title');
+        title.textContent = monthNames[calCurrentMonth] + ' ' + calCurrentYear;
+        
+        const firstDay = new Date(calCurrentYear, calCurrentMonth, 1);
+        const lastDay = new Date(calCurrentYear, calCurrentMonth + 1, 0);
+        const startDay = (firstDay.getDay() + 6) % 7; // Monday = 0
+        const daysInMonth = lastDay.getDate();
+        const prevMonthLast = new Date(calCurrentYear, calCurrentMonth, 0).getDate();
+        
+        const today = new Date();
+        const isCurrentMonth = today.getMonth() === calCurrentMonth && today.getFullYear() === calCurrentYear;
+        
+        let html = '';
+        
+        // Previous month trailing days
+        for (let i = startDay - 1; i >= 0; i--) {
+            const d = prevMonthLast - i;
+            html += '<div class="cal-day-cell other-month"><div class="cal-day-num">' + d + '</div></div>';
+        }
+        
+        // Current month days
+        for (let d = 1; d <= daysInMonth; d++) {
+            const isToday = isCurrentMonth && today.getDate() === d;
+            const dayArticles = calendarArticles.filter(a => a.day === d && a.month === calCurrentMonth && a.year === calCurrentYear);
+            
+            let eventsHTML = '';
+            dayArticles.forEach(a => {
+                const dotColors = { enviado: '#34c759', publicado: '#0071e3', programado: '#5ac8fa', borrador: '#ff9500' };
+                eventsHTML += '<div class="cal-event status-' + a.status + '">' +
+                    '<span class="cal-event-dot" style="background: ' + (dotColors[a.status] || '#888') + '"></span>' +
+                    a.title.substring(0, 25) + (a.title.length > 25 ? '...' : '') + '</div>';
+            });
+            
+            html += '<div class="cal-day-cell' + (isToday ? ' today' : '') + '" onclick="showDayDetail(' + d + ')">' +
+                '<div class="cal-day-num">' + d + '</div>' + eventsHTML + '</div>';
+        }
+        
+        // Next month leading days
+        const remaining = 42 - (startDay + daysInMonth);
+        for (let d = 1; d <= remaining; d++) {
+            html += '<div class="cal-day-cell other-month"><div class="cal-day-num">' + d + '</div></div>';
+        }
+        
+        document.getElementById('cal-days-grid').innerHTML = html;
+        document.getElementById('cal-day-detail').style.display = 'none';
+    }
+
+    function changeCalendarMonth(delta) {
+        calCurrentMonth += delta;
+        if (calCurrentMonth > 11) { calCurrentMonth = 0; calCurrentYear++; }
+        if (calCurrentMonth < 0) { calCurrentMonth = 11; calCurrentYear--; }
+        renderCalendar();
+    }
+
+    function showDayDetail(day) {
+        const articles = calendarArticles.filter(a => a.day === day && a.month === calCurrentMonth && a.year === calCurrentYear);
+        const detail = document.getElementById('cal-day-detail');
+        const title = document.getElementById('cal-detail-title');
+        const items = document.getElementById('cal-detail-items');
+        
+        if (articles.length === 0) {
+            title.textContent = '📅 ' + day + ' de ' + monthNames[calCurrentMonth] + ' — Sin contenido programado';
+            items.innerHTML = '<div style="display: flex; align-items: center; gap: 12px; padding: 16px; background: rgba(175,82,222,0.04); border-radius: 12px; border: 1px dashed rgba(175,82,222,0.2);">' +
+                '<span style="font-size: 1.5rem;">✍️</span>' +
+                '<div><div style="font-size: 0.8rem; font-weight: 600;">Día libre — ¡Buen momento para programar!</div>' +
+                '<div style="font-size: 0.7rem; color: var(--text-grey);">Haz clic en "+ Nueva Noticia" para programar contenido este día</div></div>' +
+                '<button class="btn-action" style="margin-left: auto; font-size: 0.7rem; background: #af52de; border: none; color: white;" onclick="openNewsEditor()">+ Crear</button></div>';
+        } else {
+            title.textContent = '📅 ' + day + ' de ' + monthNames[calCurrentMonth] + ' — ' + articles.length + ' publicación' + (articles.length > 1 ? 'es' : '');
+            const statusLabels = { enviado: '✅ Enviado', publicado: '📋 Publicado', programado: '⏰ Programado', borrador: '📝 Borrador' };
+            const statusColors = { enviado: '#34c759', publicado: '#0071e3', programado: '#5ac8fa', borrador: '#ff9500' };
+            items.innerHTML = articles.map(a => 
+                '<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid var(--border-color); margin-bottom: 8px;">' +
+                '<div><span style="font-size: 0.65rem; padding: 2px 8px; border-radius: 6px; background: rgba(' + 
+                (a.status === 'enviado' ? '52,199,89' : a.status === 'publicado' ? '0,113,227' : a.status === 'programado' ? '90,200,250' : '255,149,0') +
+                ',0.1); color: ' + statusColors[a.status] + '; font-weight: 600; margin-right: 8px;">' + statusLabels[a.status] + '</span>' +
+                '<span style="font-weight: 600; font-size: 0.85rem;">' + a.title + '</span>' +
+                '<span style="font-size: 0.65rem; color: var(--text-grey); margin-left: 8px;">' + a.cat + '</span></div>' +
+                '<button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="openNewsEditor()">✏️ Editar</button></div>'
+            ).join('');
+        }
+        detail.style.display = 'block';
+    }
+
+    function updateArticleCount() {
+        const total = document.querySelectorAll('#nl-articles-body tr').length;
+        const el = document.getElementById('nl-total-articles');
+        if (el) el.textContent = total;
+    }
+    updateArticleCount();
 
     // ═══ IDEAS PANEL FUNCTIONS ═══
     function toggleIdeasPanel() {
