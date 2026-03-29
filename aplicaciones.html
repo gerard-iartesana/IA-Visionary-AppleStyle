@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicaciones IA | IA de Barrio</title>
+    <meta name="description" content="Aplicaciones personalizadas con Inteligencia Artificial. Dashboards, chatbots, procesadores de documentos y herramientas a medida para tu negocio.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="landing_apple_unified.css?v=11.5">
+    <style>
+        .app-showcase{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:60px}
+        .app-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:24px;overflow:hidden;transition:all .5s cubic-bezier(.4,0,.2,1)}
+        .app-card:hover{transform:translateY(-8px);box-shadow:0 20px 60px rgba(0,0,0,.15);border-color:var(--accent-blue)}
+        .app-card-visual{height:180px;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative;overflow:hidden}
+        .app-card-visual::before{content:'';position:absolute;inset:0;opacity:.15}
+        .app-card-body{padding:28px}
+        .app-card h3{font-size:1.15rem;font-weight:700;margin-bottom:8px}
+        .app-card p{font-size:.82rem;color:var(--text-grey);line-height:1.6;margin-bottom:16px}
+        .app-tag{display:inline-block;padding:3px 10px;border-radius:10px;font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-right:6px;margin-bottom:6px}
+        .tag-web{background:rgba(0,113,227,.12);color:#5ac8fa}
+        .tag-mobile{background:rgba(52,199,89,.12);color:#34c759}
+        .tag-api{background:rgba(255,149,0,.12);color:#ff9500}
+        .tag-ia{background:rgba(175,82,222,.12);color:#af52de}
+        .tech-stack{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;padding-top:16px;border-top:1px solid var(--border-color)}
+        .tech-pill{font-size:.62rem;font-weight:500;padding:3px 10px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--border-color);color:var(--text-grey)}
+        [data-theme="light"] .tech-pill{background:rgba(0,0,0,.03)}
+        .process-timeline{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;margin-top:60px;position:relative}
+        .process-timeline::before{content:'';position:absolute;top:28px;left:10%;right:10%;height:2px;background:linear-gradient(90deg,var(--accent-blue),#af52de);opacity:.3}
+        .process-step{text-align:center;position:relative;z-index:1}
+        .process-dot{width:56px;height:56px;border-radius:50%;background:var(--bg-card);border:2px solid var(--accent-blue);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:1.3rem;transition:all .3s}
+        .process-step:hover .process-dot{background:rgba(0,113,227,.1);transform:scale(1.1)}
+        .process-step h4{font-size:.82rem;font-weight:600;margin-bottom:4px}
+        .process-step p{font-size:.7rem;color:var(--text-grey);line-height:1.4}
+        .benefits-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:50px}
+        .benefit-item{display:flex;gap:16px;padding:28px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;transition:all .3s}
+        .benefit-item:hover{border-color:var(--accent-blue);transform:translateY(-4px)}
+        .benefit-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+        .benefit-item h4{font-size:.95rem;font-weight:600;margin-bottom:4px}
+        .benefit-item p{font-size:.78rem;color:var(--text-grey);line-height:1.5;margin:0}
+        .hero-img-float{max-width:450px;border-radius:24px;box-shadow:0 30px 80px rgba(0,0,0,.3);animation:float-slow 6s ease-in-out infinite}
+        @keyframes float-slow{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+        @media(max-width:768px){
+            .app-showcase,.benefits-grid{grid-template-columns:1fr}
+            .process-timeline{grid-template-columns:1fr;gap:16px}
+            .process-timeline::before{display:none}
+            .hero-split{flex-direction:column;text-align:center}
+            .hero-img-float{max-width:300px;margin:0 auto}
+        }
+        @media(min-width:769px) and (max-width:1024px){
+            .app-showcase{grid-template-columns:repeat(2,1fr)}
+            .process-timeline{grid-template-columns:repeat(3,1fr)}
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <nav class="apple-nav">
+        <div class="container nav-content">
+            <div class="logo"><a href="index.html" style="color:inherit;text-decoration:none">IA<span>deBarrio</span></a></div>
+            <button id="mobile-menu-btn" class="mobile-menu-toggle" aria-label="Abrir menú">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-open"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-close"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <div class="nav-links" id="apple-nav-links">
+                <a href="index.html#problemas" class="nav-link">Problemas</a>
+                <a href="index.html#solucion" class="nav-link">Solución</a>
+                <a href="index.html#precios" class="nav-link">Precios</a>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema"></button>
+                    <a href="index.html#contacto" class="btn-apple-buy" style="text-decoration:none">Contactar</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero" style="min-height:65vh;padding-top:140px">
+        <div class="container">
+            <div class="hero-split" style="display:flex;align-items:center;gap:60px;justify-content:space-between">
+                <div style="flex:1;max-width:560px">
+                    <div style="display:inline-block;padding:6px 16px;border-radius:20px;background:rgba(0,113,227,.12);color:#5ac8fa;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px">🚀 Aplicaciones IA</div>
+                    <h1 style="margin-bottom:20px">Software a medida.<br><span style="color:var(--accent-blue)">Con superpoderes de IA.</span></h1>
+                    <p class="hero-sub" style="margin-bottom:30px">Creamos aplicaciones web personalizadas que integran IA para automatizar, analizar y potenciar cada aspecto de tu negocio.</p>
+                    <div style="display:flex;gap:16px;flex-wrap:wrap">
+                        <a href="#aplicaciones" class="btn-apple-primary" style="text-decoration:none">Ver Aplicaciones</a>
+                        <a href="index.html#contacto" class="btn-apple-secondary" style="text-decoration:none">Solicitar Presupuesto →</a>
+                    </div>
+                </div>
+                <div style="flex:0 0 auto">
+                    <img src="img/hero-aplicaciones-ia.png" alt="Aplicaciones de IA flotantes" class="hero-img-float" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Applications Showcase -->
+    <section id="aplicaciones" class="section">
+        <div class="container">
+            <div style="text-align:center;max-width:680px;margin:0 auto 20px">
+                <h2>Aplicaciones que<br><span style="color:var(--accent-blue)">transforman tu negocio.</span></h2>
+                <p style="color:var(--text-grey);font-size:.95rem">Desde dashboards inteligentes hasta chatbots personalizados — todo diseñado a medida para tus necesidades.</p>
+            </div>
+            <div class="app-showcase">
+                <!-- App 1 -->
+                <div class="app-card">
+                    <div class="app-card-visual" style="background:linear-gradient(135deg,rgba(0,113,227,.15),rgba(90,200,250,.1))">📊</div>
+                    <div class="app-card-body">
+                        <h3>Dashboards Inteligentes</h3>
+                        <p>Paneles de control con datos en tiempo real y análisis predictivo. Visualiza tu negocio a un vistazo y toma decisiones basadas en datos.</p>
+                        <div><span class="app-tag tag-web">Web App</span><span class="app-tag tag-ia">IA Integrada</span></div>
+                        <div class="tech-stack">
+                            <span class="tech-pill">React</span><span class="tech-pill">Python</span><span class="tech-pill">Supabase</span><span class="tech-pill">OpenAI</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- App 2 -->
+                <div class="app-card">
+                    <div class="app-card-visual" style="background:linear-gradient(135deg,rgba(52,199,89,.15),rgba(0,113,227,.1))">💬</div>
+                    <div class="app-card-body">
+                        <h3>Chatbots Personalizados</h3>
+                        <p>Asistentes conversacionales entrenados con los datos de tu empresa. Para web, WhatsApp, Instagram y Telegram.</p>
+                        <div><span class="app-tag tag-web">Web</span><span class="app-tag tag-mobile">WhatsApp</span><span class="app-tag tag-ia">IA Integrada</span></div>
+                        <div class="tech-stack">
+                            <span class="tech-pill">Node.js</span><span class="tech-pill">OpenAI</span><span class="tech-pill">WhatsApp API</span><span class="tech-pill">RAG</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- App 3 -->
+                <div class="app-card">
+                    <div class="app-card-visual" style="background:linear-gradient(135deg,rgba(175,82,222,.15),rgba(255,69,58,.1))">📄</div>
+                    <div class="app-card-body">
+                        <h3>Procesador de Documentos</h3>
+                        <p>Extrae información de facturas, contratos y formularios automáticamente. OCR + IA para digitalizar tu papeleo.</p>
+                        <div><span class="app-tag tag-web">Web App</span><span class="app-tag tag-api">API</span><span class="app-tag tag-ia">IA Integrada</span></div>
+                        <div class="tech-stack">
+                            <span class="tech-pill">Python</span><span class="tech-pill">Tesseract OCR</span><span class="tech-pill">GPT-4</span><span class="tech-pill">FastAPI</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- App 4 -->
+                <div class="app-card">
+                    <div class="app-card-visual" style="background:linear-gradient(135deg,rgba(255,149,0,.15),rgba(255,69,58,.1))">🎨</div>
+                    <div class="app-card-body">
+                        <h3>Generador de Contenido</h3>
+                        <p>Crea textos, imágenes y vídeos para tus redes sociales, blog y marketing. Todo adaptado a tu marca y audiencia.</p>
+                        <div><span class="app-tag tag-web">Web App</span><span class="app-tag tag-ia">IA Integrada</span></div>
+                        <div class="tech-stack">
+                            <span class="tech-pill">Next.js</span><span class="tech-pill">DALL·E</span><span class="tech-pill">GPT-4</span><span class="tech-pill">Vercel</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- App 5 -->
+                <div class="app-card">
+                    <div class="app-card-visual" style="background:linear-gradient(135deg,rgba(90,200,250,.15),rgba(0,113,227,.1))">🗓️</div>
+                    <div class="app-card-body">
+                        <h3>Sistema de Reservas IA</h3>
+                        <p>Gestión de citas, reservas y calendario con confirmaciones automáticas, recordatorios y asistente de voz integrado.</p>
+                        <div><span class="app-tag tag-web">Web App</span><span class="app-tag tag-mobile">Móvil</span><span class="app-tag tag-ia">IA Integrada</span></div>
+                        <div class="tech-stack">
+                            <span class="tech-pill">React</span><span class="tech-pill">Node.js</span><span class="tech-pill">Twilio</span><span class="tech-pill">OpenAI</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- App 6 -->
+                <div class="app-card">
+                    <div class="app-card-visual" style="background:linear-gradient(135deg,rgba(255,69,58,.15),rgba(175,82,222,.1))">🔐</div>
+                    <div class="app-card-body">
+                        <h3>Portal de Clientes</h3>
+                        <p>Área privada para tus clientes con acceso a documentos, seguimiento de proyectos, facturación y soporte automatizado.</p>
+                        <div><span class="app-tag tag-web">Web App</span><span class="app-tag tag-api">API</span></div>
+                        <div class="tech-stack">
+                            <span class="tech-pill">Next.js</span><span class="tech-pill">Supabase</span><span class="tech-pill">Stripe</span><span class="tech-pill">Auth</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process -->
+    <section class="section" style="background:var(--bg-card)">
+        <div class="container">
+            <div style="text-align:center;max-width:600px;margin:0 auto">
+                <h2>Nuestro proceso<br><span style="color:var(--accent-blue)">de desarrollo.</span></h2>
+                <p style="color:var(--text-grey);font-size:.9rem">De la idea al producto en semanas, no meses.</p>
+            </div>
+            <div class="process-timeline">
+                <div class="process-step">
+                    <div class="process-dot">💡</div>
+                    <h4>Descubrimiento</h4>
+                    <p>Entendemos tu negocio y definimos requisitos</p>
+                </div>
+                <div class="process-step">
+                    <div class="process-dot">🎨</div>
+                    <h4>Diseño</h4>
+                    <p>Prototipos interactivos que validas antes de desarrollar</p>
+                </div>
+                <div class="process-step">
+                    <div class="process-dot">⚡</div>
+                    <h4>Desarrollo</h4>
+                    <p>Construcción ágil con entregas cada 2 semanas</p>
+                </div>
+                <div class="process-step">
+                    <div class="process-dot">🤖</div>
+                    <h4>Integración IA</h4>
+                    <p>Conectamos modelos de IA y entrenamos con tus datos</p>
+                </div>
+                <div class="process-step">
+                    <div class="process-dot">🚀</div>
+                    <h4>Lanzamiento</h4>
+                    <p>Despliegue, formación y soporte continuo</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits -->
+    <section class="section">
+        <div class="container">
+            <div style="text-align:center;max-width:600px;margin:0 auto">
+                <h2>¿Por qué elegir<br><span style="color:var(--accent-blue)">nuestras aplicaciones?</span></h2>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon" style="background:rgba(0,113,227,.1)">🎯</div>
+                    <div>
+                        <h4>100% a medida</h4>
+                        <p>Cada aplicación se diseña específicamente para tu negocio. Nada de plantillas genéricas.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon" style="background:rgba(52,199,89,.1)">🧠</div>
+                    <div>
+                        <h4>IA nativa</h4>
+                        <p>La inteligencia artificial no es un añadido — está integrada desde el diseño.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon" style="background:rgba(175,82,222,.1)">📱</div>
+                    <div>
+                        <h4>Responsive & rápida</h4>
+                        <p>Funciona perfecto en móvil, tablet y desktop. Optimizada para velocidad.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon" style="background:rgba(255,149,0,.1)">🔒</div>
+                    <div>
+                        <h4>Segura & escalable</h4>
+                        <p>Infraestructura profesional con autenticación, backups y escalado automático.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section" style="padding:80px 0">
+        <div class="container" style="text-align:center">
+            <div style="max-width:680px;margin:0 auto;padding:60px 40px;background:linear-gradient(135deg,rgba(0,113,227,.06),rgba(175,82,222,.06));border-radius:30px;border:1px solid rgba(0,113,227,.15)">
+                <h2 style="margin-bottom:16px">¿Tienes una idea<br><span style="color:var(--accent-blue)">para tu aplicación?</span></h2>
+                <p style="color:var(--text-grey);font-size:.95rem;margin-bottom:30px">Cuéntanos qué necesitas y te proponemos una solución a medida con presupuesto cerrado.</p>
+                <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+                    <a href="index.html#contacto" class="btn-apple-primary" style="text-decoration:none">Solicitar Presupuesto</a>
+                    <a href="agentes-ia.html" class="btn-apple-secondary" style="text-decoration:none">Ver Agentes IA →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="apple-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">IA<span>deBarrio</span></div>
+                    <p class="footer-desc">Inteligencia Artificial para negocios reales.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Servicios</h4>
+                    <a href="servicios.html">Consultoría IA</a>
+                    <a href="automatizaciones.html">Automatizaciones</a>
+                    <a href="agentes-ia.html">Agentes de IA</a>
+                    <a href="aplicaciones.html">Aplicaciones</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Aprender</h4>
+                    <a href="academia.html">Academia IA</a>
+                    <a href="conocimientos.html">Conocimientos</a>
+                    <a href="newsletter.html">Newsletter</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Empresa</h4>
+                    <a href="login.html">Admin</a>
+                    <a href="inversion.html">Inversión</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>IA de Barrio — Inteligencia Artificial para negocios reales</span>
+                <div>
+                    <a href="privacidad.html">Privacidad</a>
+                    <a href="cookies.html">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="landing_apple.js?v=11.4"></script>
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentes de IA | IA de Barrio</title>
+    <meta name="description" content="Agentes autónomos de IA que trabajan por ti 24/7. Ventas, soporte, investigación y operaciones automatizadas con inteligencia artificial.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="landing_apple_unified.css?v=11.5">
+    <style>
+        .agent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:60px}
+        .agent-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:24px;padding:36px 28px;transition:all .5s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+        .agent-card:hover{transform:translateY(-8px);box-shadow:0 20px 60px rgba(0,0,0,.15);border-color:var(--accent-blue)}
+        .agent-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent-blue),#af52de);opacity:0;transition:opacity .3s}
+        .agent-card:hover::before{opacity:1}
+        .agent-icon{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:20px}
+        .agent-card h3{font-size:1.2rem;font-weight:700;margin-bottom:10px}
+        .agent-card p{font-size:.85rem;color:var(--text-grey);line-height:1.65;margin-bottom:16px}
+        .agent-features{list-style:none;padding:0;margin:0}
+        .agent-features li{font-size:.78rem;color:var(--text-grey);padding:6px 0;border-top:1px solid var(--border-color);display:flex;align-items:center;gap:8px}
+        .agent-features li::before{content:'✓';color:#34c759;font-weight:700}
+        .how-agent-works{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;margin-top:60px}
+        .how-step{text-align:center;padding:30px 16px;position:relative}
+        .how-step:not(:last-child)::after{content:'→';position:absolute;right:-18px;top:50%;transform:translateY(-50%);font-size:1.4rem;color:var(--accent-blue);font-weight:700}
+        .how-number{width:56px;height:56px;border-radius:18px;background:rgba(0,113,227,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.2rem;font-weight:700;color:var(--accent-blue)}
+        .how-step h4{font-size:.95rem;font-weight:600;margin-bottom:6px}
+        .how-step p{font-size:.78rem;color:var(--text-grey);line-height:1.5}
+        .use-cases-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:50px}
+        .use-case{background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;padding:32px;display:flex;gap:20px;align-items:flex-start;transition:all .3s}
+        .use-case:hover{border-color:var(--accent-blue);transform:translateY(-4px)}
+        .use-case-icon{font-size:2rem;flex-shrink:0}
+        .use-case h4{font-size:1rem;font-weight:600;margin-bottom:6px}
+        .use-case p{font-size:.82rem;color:var(--text-grey);line-height:1.6;margin:0}
+        .use-case .metric{display:inline-block;margin-top:8px;font-size:.7rem;font-weight:600;color:#34c759;background:rgba(52,199,89,.1);padding:3px 10px;border-radius:10px}
+        .hero-img-float{max-width:420px;border-radius:24px;box-shadow:0 30px 80px rgba(0,0,0,.3);animation:float-slow 6s ease-in-out infinite}
+        @keyframes float-slow{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+        .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;margin-top:60px}
+        .stat-box{text-align:center;padding:30px 20px}
+        .stat-box .num{font-size:2.5rem;font-weight:700;background:linear-gradient(135deg,var(--accent-blue),#af52de);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:6px}
+        .stat-box .lbl{font-size:.8rem;color:var(--text-grey)}
+        @media(max-width:768px){
+            .agent-grid,.how-agent-works{grid-template-columns:1fr}
+            .use-cases-grid,.stats-row{grid-template-columns:1fr}
+            .hero-split{flex-direction:column;text-align:center}
+            .hero-img-float{max-width:300px;margin:0 auto}
+            .how-step:not(:last-child)::after{display:none}
+        }
+        @media(min-width:769px) and (max-width:1024px){
+            .agent-grid{grid-template-columns:repeat(2,1fr)}
+            .how-agent-works{grid-template-columns:repeat(2,1fr)}
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <nav class="apple-nav">
+        <div class="container nav-content">
+            <div class="logo"><a href="index.html" style="color:inherit;text-decoration:none">IA<span>deBarrio</span></a></div>
+            <button id="mobile-menu-btn" class="mobile-menu-toggle" aria-label="Abrir menú">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-open"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-close"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <div class="nav-links" id="apple-nav-links">
+                <a href="index.html#problemas" class="nav-link">Problemas</a>
+                <a href="index.html#solucion" class="nav-link">Solución</a>
+                <a href="index.html#precios" class="nav-link">Precios</a>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema"></button>
+                    <a href="index.html#contacto" class="btn-apple-buy" style="text-decoration:none">Contactar</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero" style="min-height:65vh;padding-top:140px">
+        <div class="container">
+            <div class="hero-split" style="display:flex;align-items:center;gap:60px;justify-content:space-between">
+                <div style="flex:1;max-width:560px">
+                    <div style="display:inline-block;padding:6px 16px;border-radius:20px;background:rgba(175,82,222,.12);color:#af52de;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px">🤖 Agentes de IA</div>
+                    <h1 style="margin-bottom:20px">Empleados digitales.<br><span style="color:var(--accent-blue)">Que nunca duermen.</span></h1>
+                    <p class="hero-sub" style="margin-bottom:30px">Los agentes de IA planifican, razonan y ejecutan tareas completas de forma autónoma. Desde vender hasta investigar — trabajan por ti 24/7.</p>
+                    <div style="display:flex;gap:16px;flex-wrap:wrap">
+                        <a href="#agentes" class="btn-apple-primary" style="text-decoration:none">Ver Agentes</a>
+                        <a href="index.html#contacto" class="btn-apple-secondary" style="text-decoration:none">Solicitar Demo →</a>
+                    </div>
+                </div>
+                <div style="flex:0 0 auto">
+                    <img src="img/hero-agentes-ia.png" alt="Agentes de IA conectados a herramientas" class="hero-img-float" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats -->
+    <section class="section" style="padding-top:40px">
+        <div class="container">
+            <div class="stats-row">
+                <div class="stat-box"><div class="num">85%</div><div class="lbl">Tareas resueltas sin intervención</div></div>
+                <div class="stat-box"><div class="num">24/7</div><div class="lbl">Disponibilidad total</div></div>
+                <div class="stat-box"><div class="num">+60%</div><div class="lbl">Aumento de productividad</div></div>
+                <div class="stat-box"><div class="num">3x</div><div class="lbl">ROI en 6 meses</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Types of Agents -->
+    <section id="agentes" class="section">
+        <div class="container">
+            <div class="section-header" style="text-align:center;max-width:680px;margin:0 auto 20px">
+                <h2>Agentes inteligentes<br><span style="color:var(--accent-blue)">para cada área de tu negocio.</span></h2>
+                <p class="hero-sub" style="font-size:.95rem">Cada agente está especializado en un dominio y puede operar de forma autónoma o coordinada con otros agentes.</p>
+            </div>
+            <div class="agent-grid">
+                <!-- Agent 1 -->
+                <div class="agent-card">
+                    <div class="agent-icon" style="background:rgba(0,113,227,.1)">💼</div>
+                    <h3>Agente de Ventas</h3>
+                    <p>Investiga prospectos, personaliza emails de contacto, programa llamadas y actualiza tu CRM automáticamente.</p>
+                    <ul class="agent-features">
+                        <li>Prospección automática en LinkedIn</li>
+                        <li>Cold emails personalizados con IA</li>
+                        <li>Seguimiento inteligente de leads</li>
+                        <li>Scoring predictivo de conversión</li>
+                    </ul>
+                </div>
+                <!-- Agent 2 -->
+                <div class="agent-card">
+                    <div class="agent-icon" style="background:rgba(52,199,89,.1)">🎧</div>
+                    <h3>Agente de Soporte</h3>
+                    <p>Analiza tickets, busca en tu base de conocimiento y redacta respuestas que resuelven el 80% de consultas.</p>
+                    <ul class="agent-features">
+                        <li>Resolución autónoma de consultas</li>
+                        <li>Escalado inteligente a humanos</li>
+                        <li>Aprendizaje continuo de interacciones</li>
+                        <li>Soporte multiidioma automático</li>
+                    </ul>
+                </div>
+                <!-- Agent 3 -->
+                <div class="agent-card">
+                    <div class="agent-icon" style="background:rgba(175,82,222,.1)">🔍</div>
+                    <h3>Agente de Investigación</h3>
+                    <p>Monitoriza competidores, analiza tendencias del mercado y genera informes semanales con insights accionables.</p>
+                    <ul class="agent-features">
+                        <li>Monitorización 24/7 de competidores</li>
+                        <li>Análisis de tendencias en tiempo real</li>
+                        <li>Informes automáticos semanales</li>
+                        <li>Alertas de oportunidades de mercado</li>
+                    </ul>
+                </div>
+                <!-- Agent 4 -->
+                <div class="agent-card">
+                    <div class="agent-icon" style="background:rgba(255,149,0,.1)">📊</div>
+                    <h3>Agente de Marketing</h3>
+                    <p>Crea contenido, programa publicaciones, analiza rendimiento y optimiza campañas con datos en tiempo real.</p>
+                    <ul class="agent-features">
+                        <li>Generación de contenido multi-canal</li>
+                        <li>Programación automática de posts</li>
+                        <li>A/B testing inteligente</li>
+                        <li>Optimización de presupuesto publicitario</li>
+                    </ul>
+                </div>
+                <!-- Agent 5 -->
+                <div class="agent-card">
+                    <div class="agent-icon" style="background:rgba(90,200,250,.1)">📋</div>
+                    <h3>Agente de Operaciones</h3>
+                    <p>Gestiona inventarios, coordina logística, genera facturas y optimiza procesos operativos complejos.</p>
+                    <ul class="agent-features">
+                        <li>Gestión automática de inventario</li>
+                        <li>Facturación y cobros autónomos</li>
+                        <li>Coordinación de equipos</li>
+                        <li>Reporting operativo automático</li>
+                    </ul>
+                </div>
+                <!-- Agent 6 -->
+                <div class="agent-card">
+                    <div class="agent-icon" style="background:rgba(255,69,58,.1)">📞</div>
+                    <h3>Agente de Voz</h3>
+                    <p>Atiende llamadas telefónicas, gestiona reservas, confirma citas y califica leads por teléfono de forma natural.</p>
+                    <ul class="agent-features">
+                        <li>Atención telefónica 24/7</li>
+                        <li>Voz natural con IA</li>
+                        <li>Gestión de reservas y citas</li>
+                        <li>Cualificación de leads por voz</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section" style="background:var(--bg-card)">
+        <div class="container">
+            <div style="text-align:center;max-width:600px;margin:0 auto">
+                <h2>¿Cómo funciona<br><span style="color:var(--accent-blue)">un agente de IA?</span></h2>
+                <p style="color:var(--text-grey);font-size:.9rem">Cada agente combina un modelo de lenguaje con herramientas y memoria para ejecutar tareas de forma autónoma.</p>
+            </div>
+            <div class="how-agent-works">
+                <div class="how-step">
+                    <div class="how-number">🧠</div>
+                    <h4>1. Recibe instrucciones</h4>
+                    <p>Le indicas qué debe hacer: "Encuentra leads en el sector hostelería de Barcelona".</p>
+                </div>
+                <div class="how-step">
+                    <div class="how-number">📋</div>
+                    <h4>2. Planifica</h4>
+                    <p>Descompone la tarea en subtareas: buscar empresas, obtener contactos, verificar emails...</p>
+                </div>
+                <div class="how-step">
+                    <div class="how-number">🔧</div>
+                    <h4>3. Ejecuta</h4>
+                    <p>Usa sus herramientas (APIs, navegador, bases de datos) para completar cada subtarea.</p>
+                </div>
+                <div class="how-step">
+                    <div class="how-number">📊</div>
+                    <h4>4. Reporta</h4>
+                    <p>Te entrega los resultados: una lista de 50 leads cualificados con emails y datos de contacto.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section class="section">
+        <div class="container">
+            <div style="text-align:center;max-width:600px;margin:0 auto">
+                <h2>Casos de uso<br><span style="color:var(--accent-blue)">con resultados reales.</span></h2>
+            </div>
+            <div class="use-cases-grid">
+                <div class="use-case">
+                    <div class="use-case-icon">🏨</div>
+                    <div>
+                        <h4>Hotel en Menorca</h4>
+                        <p>Agente de reservas que gestiona llamadas, confirma disponibilidad y envía confirmaciones. Atiende en 3 idiomas.</p>
+                        <span class="metric">-70% llamadas no atendidas</span>
+                    </div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-icon">🛒</div>
+                    <div>
+                        <h4>eCommerce Barcelona</h4>
+                        <p>Agente de soporte que resuelve dudas sobre pedidos, gestiona devoluciones y sugiere productos complementarios.</p>
+                        <span class="metric">+35% satisfacción cliente</span>
+                    </div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-icon">⚖️</div>
+                    <div>
+                        <h4>Despacho de abogados</h4>
+                        <p>Agente de investigación que analiza jurisprudencia, resume sentencias y prepara documentación legal.</p>
+                        <span class="metric">-60% tiempo de investigación</span>
+                    </div>
+                </div>
+                <div class="use-case">
+                    <div class="use-case-icon">🏗️</div>
+                    <div>
+                        <h4>Constructora Madrid</h4>
+                        <p>Agente de operaciones que gestiona pedidos de material, coordina proveedores y controla presupuestos de obra.</p>
+                        <span class="metric">+200% eficiencia operativa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section" style="padding:80px 0">
+        <div class="container" style="text-align:center">
+            <div style="max-width:680px;margin:0 auto;padding:60px 40px;background:linear-gradient(135deg,rgba(0,113,227,.06),rgba(175,82,222,.06));border-radius:30px;border:1px solid rgba(0,113,227,.15)">
+                <h2 style="margin-bottom:16px">¿Listo para tener<br><span style="color:var(--accent-blue)">tu equipo de agentes IA?</span></h2>
+                <p style="color:var(--text-grey);font-size:.95rem;margin-bottom:30px">Te ayudamos a identificar qué agentes necesita tu negocio y los ponemos a trabajar en semanas.</p>
+                <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+                    <a href="index.html#contacto" class="btn-apple-primary" style="text-decoration:none">Solicitar Demo Gratuita</a>
+                    <a href="automatizaciones.html" class="btn-apple-secondary" style="text-decoration:none">Ver Automatizaciones →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="apple-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">IA<span>deBarrio</span></div>
+                    <p class="footer-desc">Inteligencia Artificial para negocios reales.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Servicios</h4>
+                    <a href="servicios.html">Consultoría IA</a>
+                    <a href="automatizaciones.html">Automatizaciones</a>
+                    <a href="agentes-ia.html">Agentes de IA</a>
+                    <a href="aplicaciones.html">Aplicaciones</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Aprender</h4>
+                    <a href="academia.html">Academia IA</a>
+                    <a href="conocimientos.html">Conocimientos</a>
+                    <a href="newsletter.html">Newsletter</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Empresa</h4>
+                    <a href="login.html">Admin</a>
+                    <a href="inversion.html">Inversión</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>IA de Barrio — Inteligencia Artificial para negocios reales</span>
+                <div>
+                    <a href="privacidad.html">Privacidad</a>
+                    <a href="cookies.html">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="landing_apple.js?v=11.4"></script>
+</body>
+</html>
