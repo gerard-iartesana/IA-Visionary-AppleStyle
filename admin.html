@@ -72,6 +72,21 @@
             transition: 0.2s;
         }
         .btn-save-legal:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* Toggle Switch (iOS-style) */
+        .toggle-switch input:checked + span { background: #34c759 !important; }
+        .toggle-switch span::before {
+            content: "";
+            position: absolute;
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: .3s;
+        }
+        .toggle-switch input:checked + span::before { transform: translateX(22px); }
     </style>
 </head>
 <body class="admin-body">
@@ -115,6 +130,10 @@
             <div class="sidebar-item" data-target="section-payments">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                 Pagos
+            </div>
+            <div class="sidebar-item" data-target="section-automations">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+                Automatizaciones
             </div>
             <div class="sidebar-item" data-target="section-logs" style="margin-top: auto; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
@@ -769,6 +788,233 @@
                 </div>
             </section>
 
+            <!-- Section: AUTOMATIONS -->
+            <section id="section-automations" class="admin-content-area">
+                <header class="admin-header" style="padding-top: 0; display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h1 style="display: flex; align-items: center; gap: 12px;">⚡ Automatizaciones
+                            <span style="font-size: 0.6rem; background: rgba(52,199,89,0.15); color: #34c759; padding: 4px 10px; border-radius: 12px; font-weight: 600;">n8n + IA</span>
+                        </h1>
+                        <p style="color: var(--text-grey);">Activa, desactiva y monitoriza tus flujos de trabajo automatizados.</p>
+                    </div>
+                    <a href="automatizaciones.html" class="btn-action" style="text-decoration: none; display: flex; align-items: center; gap: 8px; white-space: nowrap;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        Ver Página Pública
+                    </a>
+                </header>
+
+                <!-- Stats Overview -->
+                <div class="stats-grid" style="margin-bottom: 30px;">
+                    <div class="stat-card">
+                        <span class="stat-label">Flujos Totales</span>
+                        <h2 id="auto-total" style="color: var(--accent-blue);">6</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Activos</span>
+                        <h2 id="auto-active" class="text-green">5</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Ejecuciones (24h)</span>
+                        <h2 id="auto-runs">127</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Errores</span>
+                        <h2 id="auto-errors" style="color: #34c759;">0</h2>
+                    </div>
+                </div>
+
+                <!-- Automation Cards -->
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+
+                    <!-- Automation 1: Email Agent -->
+                    <div class="stat-card" style="padding: 24px; border: 1px solid var(--border-color);" id="auto-card-email">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(52,199,89,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">📧</div>
+                                <div>
+                                    <h3 style="margin: 0; font-size: 1rem;">Agente de Email IA</h3>
+                                    <span style="font-size: 0.7rem; color: var(--text-grey);">Gmail → OpenAI → Sheets → WhatsApp</span>
+                                </div>
+                            </div>
+                            <label class="toggle-switch" style="position: relative; display: inline-block; width: 48px; height: 26px;">
+                                <input type="checkbox" checked onchange="toggleAutomation('email', this.checked)" style="opacity:0;width:0;height:0;">
+                                <span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#444;border-radius:26px;transition:.3s;"></span>
+                            </label>
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+                            <span style="font-size: 0.65rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">● ACTIVO</span>
+                            <span style="font-size: 0.65rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,255,255,0.05); color: var(--text-grey);">42 ejecuciones hoy</span>
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-grey);">Última ejecución: hace 3 minutos</div>
+                    </div>
+
+                    <!-- Automation 2: Scraper -->
+                    <div class="stat-card" style="padding: 24px; border: 1px solid var(--border-color);" id="auto-card-scraper">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(255,149,0,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">🕷️</div>
+                                <div>
+                                    <h3 style="margin: 0; font-size: 1rem;">Scraper + IA Contenido</h3>
+                                    <span style="font-size: 0.7rem; color: var(--text-grey);">Schedule → Scraper → OpenAI → Slack/CRM</span>
+                                </div>
+                            </div>
+                            <label class="toggle-switch" style="position: relative; display: inline-block; width: 48px; height: 26px;">
+                                <input type="checkbox" checked onchange="toggleAutomation('scraper', this.checked)" style="opacity:0;width:0;height:0;">
+                                <span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#444;border-radius:26px;transition:.3s;"></span>
+                            </label>
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+                            <span style="font-size: 0.65rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">● ACTIVO</span>
+                            <span style="font-size: 0.65rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,255,255,0.05); color: var(--text-grey);">2 ejecuciones hoy</span>
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-grey);">Última ejecución: hace 6 horas</div>
+                    </div>
+
+                    <!-- Automation 3: Payments -->
+                    <div class="stat-card" style="padding: 24px; border: 1px solid var(--border-color);" id="auto-card-payments">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(99,91,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">💳</div>
+                                <div>
+                                    <h3 style="margin: 0; font-size: 1rem;">Gestión de Pagos</h3>
+                                    <span style="font-size: 0.7rem; color: var(--text-grey);">Webhook → Stripe → IF → Factura/Alerta</span>
+                                </div>
+                            </div>
+                            <label class="toggle-switch" style="position: relative; display: inline-block; width: 48px; height: 26px;">
+                                <input type="checkbox" checked onchange="toggleAutomation('payments', this.checked)" style="opacity:0;width:0;height:0;">
+                                <span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#444;border-radius:26px;transition:.3s;"></span>
+                            </label>
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+                            <span style="font-size: 0.65rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">● ACTIVO</span>
+                            <span style="font-size: 0.65rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,255,255,0.05); color: var(--text-grey);">18 ejecuciones hoy</span>
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-grey);">Última ejecución: hace 12 minutos</div>
+                    </div>
+
+                    <!-- Automation 4: Leads -->
+                    <div class="stat-card" style="padding: 24px; border: 1px solid var(--border-color);" id="auto-card-leads">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(0,113,227,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">📋</div>
+                                <div>
+                                    <h3 style="margin: 0; font-size: 1rem;">Cualificación de Leads</h3>
+                                    <span style="font-size: 0.7rem; color: var(--text-grey);">Lead → IA Score → Calendar/Email</span>
+                                </div>
+                            </div>
+                            <label class="toggle-switch" style="position: relative; display: inline-block; width: 48px; height: 26px;">
+                                <input type="checkbox" checked onchange="toggleAutomation('leads', this.checked)" style="opacity:0;width:0;height:0;">
+                                <span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#444;border-radius:26px;transition:.3s;"></span>
+                            </label>
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+                            <span style="font-size: 0.65rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">● ACTIVO</span>
+                            <span style="font-size: 0.65rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,255,255,0.05); color: var(--text-grey);">35 ejecuciones hoy</span>
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-grey);">Última ejecución: hace 8 minutos</div>
+                    </div>
+
+                    <!-- Automation 5: Voice -->
+                    <div class="stat-card" style="padding: 24px; border: 1px solid var(--border-color);" id="auto-card-voice">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(52,199,89,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">📞</div>
+                                <div>
+                                    <h3 style="margin: 0; font-size: 1rem;">Llamadas → Resumen IA</h3>
+                                    <span style="font-size: 0.7rem; color: var(--text-grey);">Voz → Transcribe → IA → CRM/Report</span>
+                                </div>
+                            </div>
+                            <label class="toggle-switch" style="position: relative; display: inline-block; width: 48px; height: 26px;">
+                                <input type="checkbox" checked onchange="toggleAutomation('voice', this.checked)" style="opacity:0;width:0;height:0;">
+                                <span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#444;border-radius:26px;transition:.3s;"></span>
+                            </label>
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+                            <span style="font-size: 0.65rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">● ACTIVO</span>
+                            <span style="font-size: 0.65rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,255,255,0.05); color: var(--text-grey);">30 ejecuciones hoy</span>
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-grey);">Última ejecución: hace 1 hora</div>
+                    </div>
+
+                    <!-- Automation 6: Social (Coming Soon) -->
+                    <div class="stat-card" style="padding: 24px; border: 1px solid var(--border-color); opacity: 0.6;" id="auto-card-social">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(255,149,0,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">👁️</div>
+                                <div>
+                                    <h3 style="margin: 0; font-size: 1rem;">Monitor Social IA</h3>
+                                    <span style="font-size: 0.7rem; color: var(--text-grey);">Monitor → Sentimiento → Alerta/Repost</span>
+                                </div>
+                            </div>
+                            <label class="toggle-switch" style="position: relative; display: inline-block; width: 48px; height: 26px;">
+                                <input type="checkbox" disabled style="opacity:0;width:0;height:0;">
+                                <span style="position:absolute;cursor:not-allowed;top:0;left:0;right:0;bottom:0;background:#333;border-radius:26px;transition:.3s;"></span>
+                            </label>
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+                            <span style="font-size: 0.65rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,149,0,0.1); color: #FF9500;">🔜 PRÓXIMAMENTE</span>
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-grey);">En desarrollo — disponible pronto</div>
+                    </div>
+
+                </div>
+
+                <!-- Execution Log -->
+                <div style="background: var(--bg-card); padding: 24px; border-radius: 20px; border: 1px solid var(--border-color); margin-top: 30px;">
+                    <h3 style="margin: 0 0 16px 0; font-size: 1.1rem;">📋 Últimas Ejecuciones</h3>
+                    <div class="table-wrapper" style="max-height: 300px; overflow-y: auto;">
+                        <table class="leads-table" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th style="padding: 10px;">Hora</th>
+                                    <th style="padding: 10px;">Flujo</th>
+                                    <th style="padding: 10px;">Estado</th>
+                                    <th style="padding: 10px;">Duración</th>
+                                    <th style="padding: 10px;">Detalles</th>
+                                </tr>
+                            </thead>
+                            <tbody id="auto-logs-body">
+                                <tr>
+                                    <td style="font-size: 0.8rem;">29/03 11:52</td>
+                                    <td style="font-size: 0.8rem;">📧 Email Agent</td>
+                                    <td><span style="color: #34c759; font-size: 0.75rem;">✅ OK</span></td>
+                                    <td style="font-size: 0.8rem;">1.2s</td>
+                                    <td style="font-size: 0.8rem; color: var(--text-grey);">3 emails procesados</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 0.8rem;">29/03 11:48</td>
+                                    <td style="font-size: 0.8rem;">📋 Leads IA</td>
+                                    <td><span style="color: #34c759; font-size: 0.75rem;">✅ OK</span></td>
+                                    <td style="font-size: 0.8rem;">0.8s</td>
+                                    <td style="font-size: 0.8rem; color: var(--text-grey);">1 lead cualificado → Calendar</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 0.8rem;">29/03 11:40</td>
+                                    <td style="font-size: 0.8rem;">💳 Pagos</td>
+                                    <td><span style="color: #34c759; font-size: 0.75rem;">✅ OK</span></td>
+                                    <td style="font-size: 0.8rem;">2.1s</td>
+                                    <td style="font-size: 0.8rem; color: var(--text-grey);">Factura enviada a juan@empresa.com</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 0.8rem;">29/03 11:30</td>
+                                    <td style="font-size: 0.8rem;">📞 Voz IA</td>
+                                    <td><span style="color: #34c759; font-size: 0.75rem;">✅ OK</span></td>
+                                    <td style="font-size: 0.8rem;">4.5s</td>
+                                    <td style="font-size: 0.8rem; color: var(--text-grey);">Llamada transcrita, CRM actualizado</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size: 0.8rem;">29/03 06:00</td>
+                                    <td style="font-size: 0.8rem;">🕷️ Scraper</td>
+                                    <td><span style="color: #34c759; font-size: 0.75rem;">✅ OK</span></td>
+                                    <td style="font-size: 0.8rem;">12.3s</td>
+                                    <td style="font-size: 0.8rem; color: var(--text-grey);">15 artículos procesados → Slack</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
             <!-- Section: LOGS -->
             <section id="section-logs" class="admin-content-area">
                 <header class="admin-header" style="padding-top: 0;">
@@ -1268,5 +1514,38 @@
     <script src="https://apis.google.com/js/api.js" onload="console.log('Google API core loaded')"></script>
     <script src="supabase-client.js"></script>
     <script src="admin.js"></script>
+    <script>
+    // Automations toggle handler
+    function toggleAutomation(name, isActive) {
+        const card = document.getElementById('auto-card-' + name);
+        if (!card) return;
+        const statusBadge = card.querySelector('[style*="ACTIVO"], [style*="PAUSADO"]') || card.querySelectorAll('span')[0];
+        
+        if (isActive) {
+            card.style.opacity = '1';
+            // Find and update badges
+            const badges = card.querySelectorAll('div > span');
+            if (badges.length > 0) {
+                badges[0].style.background = 'rgba(52,199,89,0.1)';
+                badges[0].style.color = '#34c759';
+                badges[0].textContent = '● ACTIVO';
+            }
+        } else {
+            card.style.opacity = '0.5';
+            const badges = card.querySelectorAll('div > span');
+            if (badges.length > 0) {
+                badges[0].style.background = 'rgba(255,59,48,0.1)';
+                badges[0].style.color = '#ff3b30';
+                badges[0].textContent = '● PAUSADO';
+            }
+        }
+        // Update counters
+        const toggles = document.querySelectorAll('#section-automations .toggle-switch input[type="checkbox"]:not([disabled])');
+        let active = 0;
+        toggles.forEach(t => { if (t.checked) active++; });
+        const activeEl = document.getElementById('auto-active');
+        if (activeEl) activeEl.textContent = active;
+    }
+    </script>
 </body>
 </html>
