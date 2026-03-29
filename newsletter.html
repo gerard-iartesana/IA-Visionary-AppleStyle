@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter IA | IA de Barrio</title>
+    <meta name="description" content="Noticias de Inteligencia Artificial y negocio digital. Suscríbete y recibe las últimas tendencias en IA directamente en tu email o WhatsApp.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="landing_apple_unified.css?v=11.5">
+
+    <style>
+        /* ====== NEWSLETTER CUSTOM STYLES ====== */
+
+        /* Subscribe Card */
+        .subscribe-card {
+            background: linear-gradient(135deg, rgba(0,113,227,0.08), rgba(175,82,222,0.08));
+            border: 1px solid rgba(0,113,227,0.2);
+            border-radius: 24px;
+            padding: 50px 40px;
+            max-width: 640px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .subscribe-card h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .subscribe-card p {
+            color: var(--text-grey);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 28px;
+        }
+        .subscribe-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+        .subscribe-form input,
+        .subscribe-form select {
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .subscribe-form input:focus,
+        .subscribe-form select:focus {
+            border-color: var(--accent-blue);
+        }
+        .subscribe-form input::placeholder { color: var(--text-grey); }
+        .subscribe-channels {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+        .channel-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-grey);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+        }
+        .channel-toggle.selected {
+            border-color: var(--accent-blue);
+            background: rgba(0,113,227,0.1);
+            color: var(--accent-blue);
+        }
+        .channel-toggle input { display: none; }
+        .subscribe-btn {
+            padding: 16px;
+            border-radius: 14px;
+            border: none;
+            background: var(--accent-blue);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+        .subscribe-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,113,227,0.3);
+        }
+
+        /* News Grid */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 50px;
+        }
+        .news-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .news-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 50px rgba(0,0,0,0.12);
+            border-color: var(--accent-blue);
+        }
+        .news-card-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+        }
+        .news-card-body {
+            padding: 22px;
+        }
+        .news-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        .tag-ia { background: rgba(0,113,227,0.12); color: var(--accent-blue); }
+        .tag-negocio { background: rgba(52,199,89,0.12); color: #34c759; }
+        .tag-tutorial { background: rgba(255,149,0,0.12); color: #ff9500; }
+        .tag-noticia { background: rgba(175,82,222,0.12); color: #af52de; }
+
+        .news-card h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            line-height: 1.35;
+            margin-bottom: 8px;
+        }
+        .news-card p {
+            font-size: 0.8rem;
+            color: var(--text-grey);
+            line-height: 1.5;
+            margin-bottom: 14px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.7rem;
+            color: var(--text-grey);
+        }
+        .read-more {
+            color: var(--accent-blue);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-decoration: none;
+        }
+        .read-more:hover { text-decoration: underline; }
+
+        /* Filters */
+        .news-filters {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        .filter-btn {
+            padding: 8px 18px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-grey);
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        /* Stats */
+        .newsletter-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 60px;
+            text-align: center;
+        }
+        .ns-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), #af52de);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+        .ns-label {
+            font-size: 0.8rem;
+            color: var(--text-grey);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .news-grid { grid-template-columns: 1fr; gap: 20px; }
+            .newsletter-stats { grid-template-columns: 1fr; gap: 20px; }
+            .subscribe-card { padding: 35px 24px; }
+            .subscribe-channels { flex-direction: column; align-items: center; }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .news-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <!-- Nav Bar -->
+    <nav class="apple-nav">
+        <div class="container nav-content">
+            <div class="logo"><a href="index.html" style="color: inherit; text-decoration: none;">IA<span>deBarrio</span></a></div>
+            
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="mobile-menu-toggle" aria-label="Abrir menú">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-open"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-close"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+
+            <div class="nav-links" id="apple-nav-links">
+                <a href="index.html#problemas" class="nav-link">Problemas</a>
+                <a href="index.html#solucion" class="nav-link">Solución</a>
+                <a href="index.html#precios" class="nav-link">Precios</a>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema"></button>
+                    <a href="index.html#contacto" class="btn-apple-buy" style="text-decoration: none;">Contactar</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero" style="min-height: 45vh; padding-top: 140px; text-align: center;">
+        <div class="container hero-container" style="align-items: center;">
+            <div style="display: inline-block; padding: 6px 16px; border-radius: 20px; background: rgba(175,82,222,0.12); color: #af52de; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px;">
+                📰 Newsletter IA
+            </div>
+            <h1 style="margin-bottom: 20px;">Noticias que<br><span style="color: var(--accent-blue);">impulsan tu negocio.</span></h1>
+            <p class="hero-sub" style="max-width: 620px; margin: 0 auto 30px;">Tendencias de IA, casos reales, tutoriales y oportunidades de negocio. Todo curado por nuestro equipo, sin ruido.</p>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <a href="#suscripcion" class="btn-apple-primary" style="text-decoration: none;">Suscribirme Gratis</a>
+                <a href="#noticias" class="btn-apple-secondary" style="text-decoration: none;">Ver Noticias →</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats -->
+    <section class="section" style="padding-top: 30px;">
+        <div class="container">
+            <div class="newsletter-stats">
+                <div>
+                    <div class="ns-number">+320</div>
+                    <div class="ns-label">Suscriptores activos</div>
+                </div>
+                <div>
+                    <div class="ns-number">24</div>
+                    <div class="ns-label">Newsletters enviadas</div>
+                </div>
+                <div>
+                    <div class="ns-number">92%</div>
+                    <div class="ns-label">Tasa de apertura</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Subscribe Section -->
+    <section class="section" id="suscripcion">
+        <div class="container">
+            <div class="subscribe-card">
+                <div style="font-size: 2.5rem; margin-bottom: 16px;">📬</div>
+                <h3>Suscríbete a nuestra Newsletter</h3>
+                <p>Recibe cada semana las noticias más importantes de IA y negocio digital. Sin spam, solo contenido de valor.</p>
+                
+                <form class="subscribe-form" id="newsletter-form" onsubmit="return handleNewsletterSubscribe(event)">
+                    <input type="text" name="name" placeholder="Tu nombre" required>
+                    <input type="email" name="email" placeholder="tu@email.com" required>
+                    <input type="tel" name="phone" placeholder="+34 600 000 000 (WhatsApp, opcional)">
+                    
+                    <div class="subscribe-channels">
+                        <label class="channel-toggle selected" onclick="this.classList.toggle('selected')">
+                            <input type="checkbox" name="channel_email" checked>
+                            📧 Email
+                        </label>
+                        <label class="channel-toggle" onclick="this.classList.toggle('selected')">
+                            <input type="checkbox" name="channel_whatsapp">
+                            💬 WhatsApp
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="subscribe-btn">Suscribirme Gratis →</button>
+                    <p style="font-size: 0.65rem; color: var(--text-grey); margin: 0;">Sin spam. Puedes darte de baja en cualquier momento.</p>
+                </form>
+                
+                <div id="subscribe-success" style="display: none; margin-top: 20px; padding: 16px; border-radius: 14px; background: rgba(52,199,89,0.1); border: 1px solid rgba(52,199,89,0.3);">
+                    <p style="color: #34c759; font-weight: 600; margin: 0;">✅ ¡Te has suscrito con éxito!</p>
+                    <p style="color: var(--text-grey); font-size: 0.8rem; margin: 8px 0 0 0;">Recibirás nuestra próxima newsletter muy pronto.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section class="section" id="noticias">
+        <div class="container">
+            <header class="section-intro">
+                <h2>Últimas noticias.</h2>
+                <p>Contenido curado sobre IA, automatización y oportunidades de negocio digital.</p>
+            </header>
+
+            <!-- Filters -->
+            <div class="news-filters">
+                <button class="filter-btn active" onclick="filterNews('all', this)">Todas</button>
+                <button class="filter-btn" onclick="filterNews('ia', this)">🤖 Inteligencia Artificial</button>
+                <button class="filter-btn" onclick="filterNews('negocio', this)">💼 Negocio</button>
+                <button class="filter-btn" onclick="filterNews('tutorial', this)">📚 Tutoriales</button>
+                <button class="filter-btn" onclick="filterNews('noticia', this)">📰 Noticias</button>
+            </div>
+
+            <!-- News Grid -->
+            <div class="news-grid" id="news-grid">
+                <!-- Article 1 -->
+                <article class="news-card" data-category="ia">
+                    <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=360&fit=crop" alt="GPT-5 y el futuro de la IA" class="news-card-img" loading="lazy">
+                    <div class="news-card-body">
+                        <span class="news-tag tag-ia">IA</span>
+                        <h3>GPT-5: Lo que sabemos y cómo afectará a tu negocio</h3>
+                        <p>OpenAI prepara su modelo más avanzado. Analizamos qué cambiará para las empresas que ya usan IA y las que aún no han empezado.</p>
+                        <div class="news-meta">
+                            <span>28 Mar 2026 · 5 min</span>
+                            <a href="#" class="read-more">Leer más →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Article 2 -->
+                <article class="news-card" data-category="negocio">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=360&fit=crop" alt="Automatización para PYMEs" class="news-card-img" loading="lazy">
+                    <div class="news-card-body">
+                        <span class="news-tag tag-negocio">Negocio</span>
+                        <h3>5 automatizaciones que toda PYME debería tener en 2026</h3>
+                        <p>Las empresas que automatizan procesos crecen un 40% más rápido. Descubre las 5 automatizaciones esenciales para cualquier negocio.</p>
+                        <div class="news-meta">
+                            <span>25 Mar 2026 · 7 min</span>
+                            <a href="#" class="read-more">Leer más →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Article 3 -->
+                <article class="news-card" data-category="tutorial">
+                    <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&h=360&fit=crop" alt="n8n Tutorial" class="news-card-img" loading="lazy">
+                    <div class="news-card-body">
+                        <span class="news-tag tag-tutorial">Tutorial</span>
+                        <h3>Cómo crear tu primer flujo de trabajo en n8n paso a paso</h3>
+                        <p>Una guía completa para principiantes: conecta Gmail, OpenAI y Slack en menos de 30 minutos con n8n.</p>
+                        <div class="news-meta">
+                            <span>22 Mar 2026 · 10 min</span>
+                            <a href="#" class="read-more">Leer más →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Article 4 -->
+                <article class="news-card" data-category="noticia">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=360&fit=crop" alt="IA regulación Europa" class="news-card-img" loading="lazy">
+                    <div class="news-card-body">
+                        <span class="news-tag tag-noticia">Noticia</span>
+                        <h3>La UE aprueba nuevas normas de IA: qué implica para tu empresa</h3>
+                        <p>El AI Act europeo entra en vigor. Te explicamos qué requisitos deberás cumplir y cómo prepararte antes de la fecha límite.</p>
+                        <div class="news-meta">
+                            <span>20 Mar 2026 · 6 min</span>
+                            <a href="#" class="read-more">Leer más →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Article 5 -->
+                <article class="news-card" data-category="ia">
+                    <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=360&fit=crop" alt="Agentes autónomos" class="news-card-img" loading="lazy">
+                    <div class="news-card-body">
+                        <span class="news-tag tag-ia">IA</span>
+                        <h3>Agentes autónomos: la próxima revolución en productividad empresarial</h3>
+                        <p>Los agentes de IA ya no solo responden preguntas — ejecutan tareas complejas de forma autónoma. Así los estamos implementando.</p>
+                        <div class="news-meta">
+                            <span>18 Mar 2026 · 8 min</span>
+                            <a href="#" class="read-more">Leer más →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Article 6 -->
+                <article class="news-card" data-category="negocio">
+                    <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=360&fit=crop" alt="ROI de la IA" class="news-card-img" loading="lazy">
+                    <div class="news-card-body">
+                        <span class="news-tag tag-negocio">Negocio</span>
+                        <h3>Cómo medir el ROI de la IA en tu negocio: métricas que importan</h3>
+                        <p>No basta con implementar IA — hay que medir su impacto. Te mostramos las 7 métricas clave que usamos con nuestros clientes.</p>
+                        <div class="news-meta">
+                            <span>15 Mar 2026 · 6 min</span>
+                            <a href="#" class="read-more">Leer más →</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final -->
+    <section class="section" style="padding-bottom: 100px;">
+        <div class="container" style="text-align: center;">
+            <header class="section-intro">
+                <h2>No te pierdas nada.</h2>
+                <p>Suscríbete y recibe las mejores noticias de IA cada semana.</p>
+            </header>
+            <a href="#suscripcion" class="btn-apple-primary" style="text-decoration: none; font-size: 1rem; padding: 18px 40px;">Suscribirme Gratis →</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="apple-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">IA<span>deBarrio</span></div>
+                    <p class="footer-desc">Inteligencia Artificial para negocios reales. Automatización, formación y consultoría desde Menorca.</p>
+                    <p style="font-size: 0.75rem;">© 2026 IA de Barrio. Hecho con ❤️ desde Menorca.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Servicios</h4>
+                    <a href="servicios.html">Consultoría IA</a>
+                    <a href="automatizaciones.html">Automatizaciones</a>
+                    <a href="demos.html">Proyectos Demo</a>
+                    <a href="inversion.html">Inversión</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Aprender</h4>
+                    <a href="academia.html">Academia IA</a>
+                    <a href="conocimientos.html">Conocimientos</a>
+                    <a href="newsletter.html">Newsletter</a>
+                    <a href="index.html#solucion">Solución</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Empresa</h4>
+                    <a href="login.html">Admin</a>
+                    <a href="privacidad.html">Privacidad</a>
+                    <a href="cookies.html">Cookies</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>IA de Barrio — Inteligencia Artificial para negocios reales</span>
+                <div>
+                    <a href="privacidad.html">Privacidad</a>
+                    <a href="cookies.html">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS -->
+    <script src="landing_apple.js?v=11.4"></script>
+    <script>
+    // Newsletter subscribe handler
+    function handleNewsletterSubscribe(e) {
+        e.preventDefault();
+        const form = document.getElementById('newsletter-form');
+        const success = document.getElementById('subscribe-success');
+        // Here you would send to Supabase / n8n webhook
+        form.style.display = 'none';
+        success.style.display = 'block';
+        return false;
+    }
+
+    // Filter news
+    function filterNews(category, btn) {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        document.querySelectorAll('.news-card').forEach(card => {
+            if (category === 'all' || card.dataset.category === category) {
+                card.style.display = 'block';
+                card.style.animation = 'fadeIn 0.4s ease';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    // Fade in animation
+    const style = document.createElement('style');
+    style.textContent = '@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }';
+    document.head.appendChild(style);
+    </script>
+</body>
+</html>
