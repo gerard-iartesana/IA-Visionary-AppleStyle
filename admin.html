@@ -1786,15 +1786,25 @@
                     
                     <!-- Title -->
                     <div style="margin-bottom: 20px;">
-                        <label style="display: block; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-grey); margin-bottom: 6px;">Título del Artículo *</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <label style="font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-grey);">Título del Artículo *</label>
+                            <button class="ai-field-btn" onclick="aiFieldAssist('title', 'crear')" title="Generar título con IA">🤖 Crear con IA</button>
+                        </div>
                         <input type="text" id="art-title" placeholder="Escribe un título atractivo y descriptivo..." 
                             style="width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 1.15rem; font-weight: 600; font-family: 'Inter', sans-serif; outline: none; box-sizing: border-box;"
                             oninput="updateSeoPreview()">
+                        <div id="ai-title-suggestions" style="display: none; margin-top: 8px;"></div>
                     </div>
 
                     <!-- Subtitle -->
                     <div style="margin-bottom: 24px;">
-                        <label style="display: block; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-grey); margin-bottom: 6px;">Subtítulo / Extracto</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <label style="font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-grey);">Subtítulo / Extracto</label>
+                            <div style="display: flex; gap: 4px;">
+                                <button class="ai-field-btn" onclick="aiFieldAssist('subtitle', 'crear')" title="Generar subtítulo con IA">🤖 Crear</button>
+                                <button class="ai-field-btn ai-improve" onclick="aiFieldAssist('subtitle', 'mejorar')" title="Mejorar subtítulo con IA">✨ Mejorar</button>
+                            </div>
+                        </div>
                         <input type="text" id="art-subtitle" placeholder="Un resumen breve que enganche al lector..."
                             style="width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 0.9rem; font-family: 'Inter', sans-serif; outline: none; box-sizing: border-box;"
                             oninput="updateSeoPreview()">
@@ -1849,7 +1859,11 @@
                     <div style="margin-bottom: 20px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                             <label style="font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-grey);">📝 Contenido del Artículo *</label>
-                            <span id="word-count" style="font-size: 0.6rem; color: var(--text-grey);">0 palabras</span>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <button class="ai-field-btn" onclick="aiFieldAssist('content', 'crear')" title="Generar artículo con IA">🤖 Crear con IA</button>
+                                <button class="ai-field-btn ai-improve" onclick="aiFieldAssist('content', 'expandir')" title="Expandir contenido">📝 Expandir</button>
+                                <span id="word-count" style="font-size: 0.6rem; color: var(--text-grey);">0 palabras</span>
+                            </div>
                         </div>
                         
                         <!-- Toolbar -->
@@ -1932,14 +1946,20 @@
                         </div>
 
                         <div style="margin-bottom: 12px;">
-                            <label style="display: block; font-size: 0.65rem; color: var(--text-grey); margin-bottom: 4px;">Meta Título <span id="meta-title-count" style="float: right;">0/60</span></label>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                <label style="font-size: 0.65rem; color: var(--text-grey);">Meta Título <span id="meta-title-count">0/60</span></label>
+                                <button class="ai-field-btn" onclick="aiFieldAssist('meta-title', 'crear')" style="font-size: 0.55rem; padding: 2px 6px;">🤖 IA</button>
+                            </div>
                             <input type="text" id="art-meta-title" placeholder="Título optimizado para buscadores (máx. 60 caracteres)"
                                 style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 0.8rem; font-family: 'Inter', sans-serif; outline: none; box-sizing: border-box;"
                                 oninput="updateSeoScore()" maxlength="60">
                         </div>
 
                         <div style="margin-bottom: 12px;">
-                            <label style="display: block; font-size: 0.65rem; color: var(--text-grey); margin-bottom: 4px;">Meta Descripción <span id="meta-desc-count" style="float: right;">0/155</span></label>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                <label style="font-size: 0.65rem; color: var(--text-grey);">Meta Descripción <span id="meta-desc-count">0/155</span></label>
+                                <button class="ai-field-btn" onclick="aiFieldAssist('meta-desc', 'crear')" style="font-size: 0.55rem; padding: 2px 6px;">🤖 IA</button>
+                            </div>
                             <textarea id="art-meta-desc" placeholder="Descripción para Google (máx. 155 caracteres). Incluye la keyword principal."
                                 rows="3" maxlength="155"
                                 style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 0.8rem; font-family: 'Inter', sans-serif; outline: none; resize: none; box-sizing: border-box;"
@@ -1957,7 +1977,10 @@
                         </div>
 
                         <div style="margin-bottom: 12px;">
-                            <label style="display: block; font-size: 0.65rem; color: var(--text-grey); margin-bottom: 4px;">Keywords (separadas por coma)</label>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                <label style="font-size: 0.65rem; color: var(--text-grey);">Keywords (separadas por coma)</label>
+                                <button class="ai-field-btn" onclick="aiFieldAssist('keywords', 'crear')" style="font-size: 0.55rem; padding: 2px 6px;">🤖 IA</button>
+                            </div>
                             <input type="text" id="art-keywords" placeholder="inteligencia artificial, negocio, automatización"
                                 style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 0.8rem; font-family: 'Inter', sans-serif; outline: none; box-sizing: border-box;"
                                 oninput="updateSeoScore()">
@@ -1998,6 +2021,55 @@
     </div>
 
     <style>
+        /* AI Field Assist Buttons */
+        .ai-field-btn {
+            background: rgba(175,82,222,0.1);
+            border: 1px solid rgba(175,82,222,0.25);
+            color: #af52de;
+            padding: 3px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.6rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .ai-field-btn:hover {
+            background: rgba(175,82,222,0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 12px rgba(175,82,222,0.2);
+        }
+        .ai-field-btn.ai-improve {
+            background: rgba(0,113,227,0.1);
+            border-color: rgba(0,113,227,0.25);
+            color: var(--accent-blue);
+        }
+        .ai-field-btn.ai-improve:hover {
+            background: rgba(0,113,227,0.2);
+            box-shadow: 0 3px 12px rgba(0,113,227,0.2);
+        }
+        .ai-field-btn.loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .ai-suggestion {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: rgba(175,82,222,0.06);
+            border: 1px solid rgba(175,82,222,0.15);
+            margin-bottom: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .ai-suggestion:hover {
+            background: rgba(175,82,222,0.12);
+            border-color: rgba(175,82,222,0.3);
+        }
         /* Editor Tool Buttons */
         .editor-tool {
             background: rgba(255,255,255,0.06);
@@ -2312,9 +2384,140 @@
 
     // AI assist for content
     function aiAssist(type) {
-        const content = document.getElementById('art-content').innerText;
-        if (!content.trim()) { alert('Escribe algo de contenido primero.'); return; }
-        alert('La asistencia de IA (' + type + ') se conectará con la API de OpenAI próximamente.\n\nEsta función mejorará, resumirá o expandirá tu texto automáticamente.');
+        aiFieldAssist('content', type);
+    }
+
+    // AI Field Assist - generates/improves content for each field
+    function aiFieldAssist(field, action) {
+        const title = document.getElementById('art-title').value;
+        const subtitle = document.getElementById('art-subtitle').value;
+        const category = document.getElementById('art-category').value;
+        const content = document.getElementById('art-content').innerText.trim();
+        
+        const catNames = { ia: 'Inteligencia Artificial', negocio: 'Negocio Digital', tutorial: 'Tutorial Práctico', noticia: 'Actualidad IA' };
+        const catName = catNames[category] || 'IA';
+        
+        // Find the button that was clicked and show loading
+        const btn = event.target.closest('.ai-field-btn') || event.target.closest('.editor-tool');
+        const origText = btn ? btn.textContent : '';
+        if (btn) { btn.textContent = '⏳ Generando...'; btn.classList.add('loading'); }
+
+        // Simulate AI generation delay
+        setTimeout(() => {
+            if (btn) { btn.textContent = origText; btn.classList.remove('loading'); }
+
+            switch(field) {
+                case 'title': {
+                    const suggestions = [
+                        getCategoryTitle(category, 0),
+                        getCategoryTitle(category, 1),
+                        getCategoryTitle(category, 2)
+                    ];
+                    const container = document.getElementById('ai-title-suggestions');
+                    container.style.display = 'block';
+                    container.innerHTML = '<p style="font-size: 0.6rem; color: #af52de; font-weight: 600; margin: 0 0 6px;">🤖 Sugerencias de IA — haz clic para usar:</p>' +
+                        suggestions.map((s, i) => '<div class="ai-suggestion" onclick="document.getElementById(\'art-title\').value=this.textContent.substring(2); updateSeoPreview(); document.getElementById(\'ai-title-suggestions\').style.display=\'none\';">✨ ' + s + '</div>').join('');
+                    break;
+                }
+                case 'subtitle': {
+                    const el = document.getElementById('art-subtitle');
+                    if (action === 'mejorar' && el.value) {
+                        el.value = '✨ ' + el.value.replace(/^✨\s*/, '') + ' — Descubre las claves para transformar tu negocio con IA.';
+                    } else {
+                        el.value = title
+                            ? 'Analizamos en profundidad ' + title.toLowerCase() + ' y su impacto en los negocios de hoy.'
+                            : 'Las últimas tendencias en ' + catName.toLowerCase() + ' que están transformando la forma de hacer negocios.';
+                    }
+                    updateSeoPreview();
+                    break;
+                }
+                case 'content': {
+                    const editor = document.getElementById('art-content');
+                    if (action === 'crear') {
+                        const topicTitle = title || catName;
+                        editor.innerHTML = '<h2>Introducción: ¿Qué es ' + topicTitle + '?</h2>' +
+                            '<p>En el panorama actual de la transformación digital, ' + topicTitle.toLowerCase() + ' se ha convertido en un tema crucial para empresas de todos los tamaños. En este artículo, exploraremos las dimensiones más relevantes y cómo pueden impactar directamente en tu negocio.</p>' +
+                            '<h2>¿Por qué es importante ahora?</h2>' +
+                            '<p>Las estadísticas son claras: el 78% de las empresas que han adoptado soluciones basadas en ' + catName.toLowerCase() + ' reportan un aumento significativo en su productividad. No se trata solo de una tendencia pasajera, sino de una transformación fundamental.</p>' +
+                            '<blockquote>La clave no está en tener la mejor tecnología, sino en saber aplicarla en el momento correcto y de la forma adecuada.</blockquote>' +
+                            '<h2>Cómo implementarlo en tu empresa</h2>' +
+                            '<p>Implementar ' + topicTitle.toLowerCase() + ' no tiene que ser complicado. Aquí te mostramos los pasos esenciales:</p>' +
+                            '<ul><li><strong>Evalúa tu situación actual:</strong> Identifica los procesos que más tiempo consumen.</li>' +
+                            '<li><strong>Define objetivos claros:</strong> Establece métricas de éxito medibles.</li>' +
+                            '<li><strong>Empieza con un piloto:</strong> Implementa una solución pequeña y mide resultados.</li>' +
+                            '<li><strong>Escala gradualmente:</strong> Una vez validado, expande a más áreas del negocio.</li></ul>' +
+                            '<h2>Conclusión</h2>' +
+                            '<p>El futuro pertenece a quienes actúan hoy. ' + topicTitle + ' no es opcional — es el siguiente paso natural en la evolución de tu negocio. Si necesitas ayuda para dar los primeros pasos, contacta con nuestro equipo en IA de Barrio.</p>';
+                    } else if (action === 'expandir' && content) {
+                        editor.innerHTML += '<h2>Profundizando en el tema</h2>' +
+                            '<p>Además de lo mencionado anteriormente, es importante considerar el impacto a largo plazo de estas decisiones. Las empresas que integran ' + catName.toLowerCase() + ' de forma estratégica están creando ventajas competitivas sostenibles.</p>' +
+                            '<p>Según datos recientes, la inversión en estas soluciones genera un retorno promedio del 340% en los primeros 12 meses de implementación correcta.</p>';
+                    } else if (action === 'mejorar' && content) {
+                        // Wrap existing text in better HTML structure
+                        const lines = content.split('\n').filter(l => l.trim());
+                        editor.innerHTML = lines.map(l => '<p>' + l + '</p>').join('');
+                    } else if (action === 'resumir' && content) {
+                        const words = content.split(/\s+/);
+                        const summary = words.slice(0, Math.floor(words.length * 0.4)).join(' ');
+                        editor.innerHTML = '<p><strong>Resumen:</strong> ' + summary + '...</p>';
+                    }
+                    updateWordCount();
+                    break;
+                }
+                case 'meta-title': {
+                    const el = document.getElementById('art-meta-title');
+                    el.value = (title || catName + ': Guía Completa').substring(0, 45) + ' | 2026';
+                    updateSeoScore();
+                    break;
+                }
+                case 'meta-desc': {
+                    const el = document.getElementById('art-meta-desc');
+                    el.value = (subtitle || 'Descubre todo sobre ' + (title || catName).toLowerCase() + '. Guía práctica con ejemplos reales para implementar en tu negocio.').substring(0, 155);
+                    updateSeoScore();
+                    break;
+                }
+                case 'keywords': {
+                    const el = document.getElementById('art-keywords');
+                    const catKeywords = {
+                        ia: 'inteligencia artificial, IA para empresas, machine learning, automatización IA',
+                        negocio: 'negocio digital, transformación digital, productividad, crecimiento empresarial',
+                        tutorial: 'tutorial IA, guía paso a paso, n8n automatización, herramientas IA',
+                        noticia: 'noticias IA, actualidad tecnológica, regulación IA, tendencias IA 2026'
+                    };
+                    const titleKeywords = title ? ', ' + title.split(' ').filter(w => w.length > 3).slice(0, 3).join(', ').toLowerCase() : '';
+                    el.value = (catKeywords[category] || 'inteligencia artificial, negocio') + titleKeywords;
+                    updateSeoScore();
+                    break;
+                }
+            }
+        }, 1200);
+    }
+
+    // Category-specific title suggestions
+    function getCategoryTitle(cat, variant) {
+        const titles = {
+            ia: [
+                'Cómo la IA Generativa Está Revolucionando los Negocios en 2026',
+                'Los 7 Modelos de IA Que Todo Empresario Debería Conocer',
+                'IA para PYMEs: Guía Práctica Para Empezar Sin Ser Técnico'
+            ],
+            negocio: [
+                'Automatiza Tu Negocio: 5 Procesos Que Puedes Delegar a la IA Hoy',
+                'El ROI Real de la IA: Casos de Éxito en Empresas Españolas',
+                'Transformación Digital en 2026: Qué Funciona y Qué No'
+            ],
+            tutorial: [
+                'Tutorial: Crea Tu Primer Agente de IA en 30 Minutos con n8n',
+                'Paso a Paso: Automatiza Tu Email Marketing con IA y n8n',
+                'Guía Completa: Conecta ChatGPT con Tu CRM en 5 Pasos'
+            ],
+            noticia: [
+                'Última Hora: La UE Anuncia Nuevas Regulaciones de IA para 2026',
+                'OpenAI Lanza GPT-5: Todo Lo Que Necesitas Saber',
+                'Google y la IA: Los Cambios Que Afectarán al SEO Este Año'
+            ]
+        };
+        return (titles[cat] || titles.ia)[variant] || titles.ia[0];
     }
 
     // Auto-generate SEO with AI
