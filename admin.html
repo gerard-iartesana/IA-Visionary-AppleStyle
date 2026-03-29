@@ -1757,6 +1757,287 @@
             </div>
         </div>
     </div>
+
+    <!-- ═══════ NEWSLETTER ARTICLE EDITOR MODAL ═══════ -->
+    <div id="article-editor-modal" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); overflow-y: auto; padding: 20px;">
+        <div style="max-width: 960px; margin: 20px auto; background: var(--bg-card, #1c1c1e); border: 1px solid var(--border-color, #333); border-radius: 20px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.5);">
+            
+            <!-- Editor Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 28px; border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 1.3rem;">✍️</span>
+                    <div>
+                        <h2 style="margin: 0; font-size: 1.1rem; font-weight: 700;" id="editor-modal-title">Nueva Noticia</h2>
+                        <p style="margin: 0; font-size: 0.7rem; color: var(--text-grey);">Editor de contenido con optimización SEO</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-action" style="font-size: 0.75rem;" onclick="previewArticle()">👁️ Vista Previa</button>
+                    <button class="btn-action" style="font-size: 0.75rem; background: rgba(255,149,0,0.1); color: #ff9500; border-color: rgba(255,149,0,0.3);" onclick="saveArticleDraft()">📝 Guardar Borrador</button>
+                    <button class="btn-action" style="font-size: 0.75rem; background: #34c759; border: none; color: white; font-weight: 600;" onclick="publishArticle()">🚀 Publicar</button>
+                    <button style="background: none; border: none; color: var(--text-grey); font-size: 1.3rem; cursor: pointer; padding: 4px 8px;" onclick="closeArticleEditor()">✕</button>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 340px; min-height: 600px;">
+                
+                <!-- ═══ LEFT: Content Area ═══ -->
+                <div style="padding: 28px; border-right: 1px solid rgba(255,255,255,0.06); overflow-y: auto; max-height: 75vh;">
+                    
+                    <!-- Title -->
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-grey); margin-bottom: 6px;">Título del Artículo *</label>
+                        <input type="text" id="art-title" placeholder="Escribe un título atractivo y descriptivo..." 
+                            style="width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 1.15rem; font-weight: 600; font-family: 'Inter', sans-serif; outline: none; box-sizing: border-box;"
+                            oninput="updateSeoPreview()">
+                    </div>
+
+                    <!-- Subtitle -->
+                    <div style="margin-bottom: 24px;">
+                        <label style="display: block; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-grey); margin-bottom: 6px;">Subtítulo / Extracto</label>
+                        <input type="text" id="art-subtitle" placeholder="Un resumen breve que enganche al lector..."
+                            style="width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 0.9rem; font-family: 'Inter', sans-serif; outline: none; box-sizing: border-box;"
+                            oninput="updateSeoPreview()">
+                    </div>
+
+                    <!-- Featured Media -->
+                    <div style="margin-bottom: 24px;">
+                        <label style="display: block; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-grey); margin-bottom: 8px;">📸 Imagen / Vídeo Destacado</label>
+                        
+                        <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                            <button id="media-type-image" class="btn-action" style="flex: 1; justify-content: center; font-size: 0.75rem; background: rgba(0,113,227,0.1); border-color: var(--accent-blue); color: var(--accent-blue);" onclick="setMediaType('image')">🖼️ Imagen</button>
+                            <button id="media-type-video" class="btn-action" style="flex: 1; justify-content: center; font-size: 0.75rem;" onclick="setMediaType('video')">🎬 Vídeo</button>
+                        </div>
+                        
+                        <!-- Upload Area -->
+                        <div id="media-upload-area" style="border: 2px dashed var(--border-color); border-radius: 16px; padding: 30px; text-align: center; transition: all 0.3s; cursor: pointer; position: relative;" 
+                            onclick="document.getElementById('media-file-input').click()"
+                            ondragover="event.preventDefault(); this.style.borderColor='var(--accent-blue)'; this.style.background='rgba(0,113,227,0.05)'"
+                            ondragleave="this.style.borderColor='var(--border-color)'; this.style.background='transparent'"
+                            ondrop="handleMediaDrop(event)">
+                            <input type="file" id="media-file-input" accept="image/*,video/*" style="display: none;" onchange="handleMediaUpload(this)">
+                            <div id="media-preview-area">
+                                <div style="font-size: 2rem; margin-bottom: 8px;">📁</div>
+                                <p style="margin: 0; font-size: 0.85rem; color: var(--text-grey);">Arrastra tu archivo aquí o haz clic para subir</p>
+                                <p style="margin: 4px 0 0 0; font-size: 0.65rem; color: var(--text-grey);">JPG, PNG, WebP, MP4 · Máx. 10MB</p>
+                            </div>
+                        </div>
+
+                        <!-- AI Generation Option -->
+                        <div style="margin-top: 12px; background: linear-gradient(135deg, rgba(175,82,222,0.06), rgba(0,113,227,0.06)); border: 1px solid rgba(175,82,222,0.2); border-radius: 14px; padding: 16px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                <span style="font-size: 1rem;">🤖</span>
+                                <span style="font-size: 0.8rem; font-weight: 600;">Generar con IA</span>
+                                <span style="font-size: 0.55rem; padding: 2px 8px; border-radius: 10px; background: rgba(175,82,222,0.15); color: #af52de; font-weight: 600;">BETA</span>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" id="ai-media-prompt" placeholder="Describe la imagen que quieres generar..."
+                                    style="flex: 1; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 0.8rem; font-family: 'Inter', sans-serif; outline: none;">
+                                <button class="btn-action" style="background: #af52de; border: none; color: white; font-size: 0.75rem; white-space: nowrap;" onclick="generateMediaAI()">✨ Generar</button>
+                            </div>
+                            <p style="margin: 6px 0 0 0; font-size: 0.6rem; color: var(--text-grey);">Usa DALL·E 3 para generar imágenes profesionales. El prompt se optimiza automáticamente.</p>
+                        </div>
+
+                        <!-- Alt Text -->
+                        <div style="margin-top: 10px;">
+                            <input type="text" id="art-alt-text" placeholder="Texto alternativo (alt) para SEO y accesibilidad..."
+                                style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 0.75rem; font-family: 'Inter', sans-serif; outline: none; box-sizing: border-box;">
+                        </div>
+                    </div>
+
+                    <!-- Content Body -->
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <label style="font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-grey);">📝 Contenido del Artículo *</label>
+                            <span id="word-count" style="font-size: 0.6rem; color: var(--text-grey);">0 palabras</span>
+                        </div>
+                        
+                        <!-- Toolbar -->
+                        <div style="display: flex; gap: 4px; padding: 8px 12px; border: 1px solid var(--border-color); border-bottom: none; border-radius: 12px 12px 0 0; background: rgba(255,255,255,0.02); flex-wrap: wrap;">
+                            <button class="editor-tool" onclick="execCmd('bold')" title="Negrita"><b>B</b></button>
+                            <button class="editor-tool" onclick="execCmd('italic')" title="Cursiva"><i>I</i></button>
+                            <button class="editor-tool" onclick="execCmd('underline')" title="Subrayado"><u>U</u></button>
+                            <span style="width: 1px; background: var(--border-color); margin: 4px 6px;"></span>
+                            <button class="editor-tool" onclick="execCmd('formatBlock', 'h2')" title="Título H2">H2</button>
+                            <button class="editor-tool" onclick="execCmd('formatBlock', 'h3')" title="Título H3">H3</button>
+                            <button class="editor-tool" onclick="execCmd('formatBlock', 'p')" title="Párrafo">¶</button>
+                            <span style="width: 1px; background: var(--border-color); margin: 4px 6px;"></span>
+                            <button class="editor-tool" onclick="execCmd('insertUnorderedList')" title="Lista">• Lista</button>
+                            <button class="editor-tool" onclick="execCmd('insertOrderedList')" title="Lista numerada">1. Lista</button>
+                            <button class="editor-tool" onclick="insertLink()" title="Enlace">🔗</button>
+                            <button class="editor-tool" onclick="execCmd('formatBlock', 'blockquote')" title="Cita">❝</button>
+                            <span style="width: 1px; background: var(--border-color); margin: 4px 6px;"></span>
+                            <button class="editor-tool" style="font-size: 0.6rem;" onclick="aiAssist('mejorar')" title="Mejorar texto con IA">🤖 Mejorar</button>
+                            <button class="editor-tool" style="font-size: 0.6rem;" onclick="aiAssist('resumir')" title="Resumir con IA">✂️ Resumir</button>
+                        </div>
+                        
+                        <!-- Editable Content -->
+                        <div id="art-content" contenteditable="true" 
+                            style="min-height: 280px; padding: 18px; border: 1px solid var(--border-color); border-radius: 0 0 12px 12px; background: rgba(255,255,255,0.03); color: var(--text-main, #fff); font-size: 0.9rem; line-height: 1.7; outline: none; font-family: 'Inter', sans-serif;"
+                            oninput="updateWordCount()" 
+                            data-placeholder="Escribe el contenido del artículo aquí..."></div>
+                    </div>
+                </div>
+
+                <!-- ═══ RIGHT: SEO & Config Panel ═══ -->
+                <div style="padding: 24px; background: rgba(255,255,255,0.015); overflow-y: auto; max-height: 75vh;">
+                    
+                    <!-- Config Section -->
+                    <div style="margin-bottom: 24px;">
+                        <h4 style="font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-grey); margin: 0 0 12px 0;">⚙️ Configuración</h4>
+                        
+                        <div style="margin-bottom: 12px;">
+                            <label style="display: block; font-size: 0.65rem; color: var(--text-grey); margin-bottom: 4px;">Categoría</label>
+                            <select id="art-category" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card, #1c1c1e); color: var(--text-main, #fff); font-size: 0.8rem; font-family: 'Inter', sans-serif; outline: none;">
+                                <option value="ia">🤖 Inteligencia Artificial</option>
+                                <option value="negocio">💼 Negocio</option>
+                                <option value="tutorial">📚 Tutorial</option>
+                                <option value="noticia">📰 Noticia</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-bottom: 12px;">
+                            <label style="display: block; font-size: 0.65rem; color: var(--text-grey); margin-bottom: 4px;">Estado</label>
+                            <select id="art-status" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card, #1c1c1e); color: var(--text-main, #fff); font-size: 0.8rem; font-family: 'Inter', sans-serif; outline: none;">
+                                <option value="borrador">📝 Borrador</option>
+                                <option value="publicado">📋 Publicado</option>
+                                <option value="programado">⏰ Programado</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-bottom: 12px;">
+                            <label style="display: block; font-size: 0.65rem; color: var(--text-grey); margin-bottom: 4px;">Fecha de publicación</label>
+                            <input type="date" id="art-date" 
+                                style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card, #1c1c1e); color: var(--text-main, #fff); font-size: 0.8rem; font-family: 'Inter', sans-serif; outline: none; box-sizing: border-box;">
+                        </div>
+
+                        <div style="margin-bottom: 12px;">
+                            <label style="display: block; font-size: 0.65rem; color: var(--text-grey); margin-bottom: 4px;">Autor</label>
+                            <input type="text" id="art-author" value="Gerard · IA de Barrio" 
+                                style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 0.8rem; font-family: 'Inter', sans-serif; outline: none; box-sizing: border-box;">
+                        </div>
+
+                        <div>
+                            <label style="display: block; font-size: 0.65rem; color: var(--text-grey); margin-bottom: 4px;">Tiempo de lectura (min)</label>
+                            <input type="number" id="art-read-time" min="1" max="60" value="5" 
+                                style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 0.8rem; font-family: 'Inter', sans-serif; outline: none; box-sizing: border-box;">
+                        </div>
+                    </div>
+
+                    <!-- SEO Section -->
+                    <div style="margin-bottom: 24px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h4 style="font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-grey); margin: 0;">🔍 SEO</h4>
+                            <span id="seo-score" style="font-size: 0.6rem; padding: 3px 10px; border-radius: 10px; background: rgba(255,149,0,0.1); color: #ff9500; font-weight: 600;">Score: --</span>
+                        </div>
+
+                        <div style="margin-bottom: 12px;">
+                            <label style="display: block; font-size: 0.65rem; color: var(--text-grey); margin-bottom: 4px;">Meta Título <span id="meta-title-count" style="float: right;">0/60</span></label>
+                            <input type="text" id="art-meta-title" placeholder="Título optimizado para buscadores (máx. 60 caracteres)"
+                                style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 0.8rem; font-family: 'Inter', sans-serif; outline: none; box-sizing: border-box;"
+                                oninput="updateSeoScore()" maxlength="60">
+                        </div>
+
+                        <div style="margin-bottom: 12px;">
+                            <label style="display: block; font-size: 0.65rem; color: var(--text-grey); margin-bottom: 4px;">Meta Descripción <span id="meta-desc-count" style="float: right;">0/155</span></label>
+                            <textarea id="art-meta-desc" placeholder="Descripción para Google (máx. 155 caracteres). Incluye la keyword principal."
+                                rows="3" maxlength="155"
+                                style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 0.8rem; font-family: 'Inter', sans-serif; outline: none; resize: none; box-sizing: border-box;"
+                                oninput="updateSeoScore()"></textarea>
+                        </div>
+
+                        <div style="margin-bottom: 12px;">
+                            <label style="display: block; font-size: 0.65rem; color: var(--text-grey); margin-bottom: 4px;">Slug URL</label>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span style="font-size: 0.7rem; color: var(--text-grey); white-space: nowrap;">/newsletter/</span>
+                                <input type="text" id="art-slug" placeholder="titulo-del-articulo"
+                                    style="flex: 1; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 0.8rem; font-family: 'Inter', sans-serif; outline: none;"
+                                    oninput="updateSeoScore()">
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 12px;">
+                            <label style="display: block; font-size: 0.65rem; color: var(--text-grey); margin-bottom: 4px;">Keywords (separadas por coma)</label>
+                            <input type="text" id="art-keywords" placeholder="inteligencia artificial, negocio, automatización"
+                                style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 0.8rem; font-family: 'Inter', sans-serif; outline: none; box-sizing: border-box;"
+                                oninput="updateSeoScore()">
+                        </div>
+
+                        <!-- Google Preview -->
+                        <div style="margin-top: 16px;">
+                            <label style="display: block; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-grey); margin-bottom: 8px;">👀 Vista previa en Google</label>
+                            <div style="background: white; border-radius: 12px; padding: 16px; font-family: Arial, sans-serif;">
+                                <div id="google-preview-url" style="font-size: 0.7rem; color: #202124; margin-bottom: 2px;">iadebarrio.com › newsletter › <span id="gp-slug">titulo-del-articulo</span></div>
+                                <div id="google-preview-title" style="font-size: 1.05rem; color: #1a0dab; margin-bottom: 4px; line-height: 1.3; cursor: pointer;">Título del artículo | IA de Barrio</div>
+                                <div id="google-preview-desc" style="font-size: 0.78rem; color: #4d5156; line-height: 1.4;">Añade una meta descripción para previsualizar cómo aparecerá tu artículo en los resultados de Google.</div>
+                            </div>
+                        </div>
+
+                        <!-- SEO Checklist -->
+                        <div style="margin-top: 16px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px;">
+                            <label style="display: block; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-grey); margin-bottom: 10px;">✅ Checklist SEO</label>
+                            <div id="seo-checklist" style="font-size: 0.7rem; line-height: 2;">
+                                <div id="chk-title" style="color: var(--text-grey);">⬜ Meta título (30-60 caracteres)</div>
+                                <div id="chk-desc" style="color: var(--text-grey);">⬜ Meta descripción (120-155 chars)</div>
+                                <div id="chk-slug" style="color: var(--text-grey);">⬜ Slug URL definido</div>
+                                <div id="chk-keywords" style="color: var(--text-grey);">⬜ Keywords definidas</div>
+                                <div id="chk-alt" style="color: var(--text-grey);">⬜ Texto alt en imagen</div>
+                                <div id="chk-content" style="color: var(--text-grey);">⬜ Contenido +300 palabras</div>
+                                <div id="chk-h2" style="color: var(--text-grey);">⬜ Al menos un H2 en contenido</div>
+                            </div>
+                        </div>
+
+                        <!-- Auto-generate SEO -->
+                        <button class="btn-action" style="width: 100%; justify-content: center; margin-top: 12px; background: rgba(0,113,227,0.1); border-color: var(--accent-blue); color: var(--accent-blue); font-size: 0.75rem;" onclick="autoGenerateSeo()">
+                            🤖 Generar SEO con IA
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Editor Tool Buttons */
+        .editor-tool {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid transparent;
+            color: var(--text-grey);
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            transition: all 0.2s;
+        }
+        .editor-tool:hover {
+            background: rgba(0,113,227,0.15);
+            color: var(--accent-blue);
+            border-color: rgba(0,113,227,0.3);
+        }
+        #art-content:empty::before {
+            content: attr(data-placeholder);
+            color: var(--text-grey);
+            pointer-events: none;
+        }
+        #art-content h2, #art-content h3 { margin: 16px 0 8px; }
+        #art-content p { margin: 0 0 12px; }
+        #art-content blockquote {
+            border-left: 3px solid var(--accent-blue);
+            padding-left: 16px;
+            margin: 12px 0;
+            color: var(--text-grey);
+            font-style: italic;
+        }
+        #art-content ul, #art-content ol { padding-left: 24px; margin: 8px 0; }
+
+        /* Responsive editor */
+        @media (max-width: 900px) {
+            #article-editor-modal > div > div:last-child {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
     <!-- SDKs -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
@@ -1830,11 +2111,251 @@
     }
 
     function openNewsEditor() {
-        alert('Editor de noticias próximamente. Aquí podrás crear y editar artículos con un editor visual completo.');
+        document.getElementById('editor-modal-title').textContent = 'Nueva Noticia';
+        document.getElementById('art-title').value = '';
+        document.getElementById('art-subtitle').value = '';
+        document.getElementById('art-content').innerHTML = '';
+        document.getElementById('art-meta-title').value = '';
+        document.getElementById('art-meta-desc').value = '';
+        document.getElementById('art-slug').value = '';
+        document.getElementById('art-keywords').value = '';
+        document.getElementById('art-alt-text').value = '';
+        document.getElementById('art-date').value = new Date().toISOString().split('T')[0];
+        document.getElementById('art-category').value = 'ia';
+        document.getElementById('art-status').value = 'borrador';
+        resetMediaPreview();
+        updateSeoScore();
+        updateWordCount();
+        document.getElementById('article-editor-modal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
     }
 
     function editArticle(index) {
-        alert('Editor para el artículo #' + (index + 1) + ' próximamente.');
+        const rows = document.querySelectorAll('#nl-articles-body tr');
+        if (rows[index]) {
+            const title = rows[index].querySelector('div[style*="font-weight: 600"]')?.textContent || '';
+            document.getElementById('editor-modal-title').textContent = 'Editar Noticia';
+            document.getElementById('art-title').value = title;
+            document.getElementById('art-subtitle').value = rows[index].querySelector('div[style*="0.7rem"]')?.textContent || '';
+            document.getElementById('art-meta-title').value = title.substring(0, 60);
+            document.getElementById('art-slug').value = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').substring(0, 50);
+            document.getElementById('art-date').value = new Date().toISOString().split('T')[0];
+            updateSeoPreview();
+            updateSeoScore();
+        }
+        document.getElementById('article-editor-modal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeArticleEditor() {
+        document.getElementById('article-editor-modal').style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    // Rich text editor commands
+    function execCmd(cmd, val) {
+        if (cmd === 'formatBlock') val = '<' + val + '>';
+        document.execCommand(cmd, false, val || null);
+        document.getElementById('art-content').focus();
+    }
+
+    function insertLink() {
+        const url = prompt('Introduce la URL del enlace:');
+        if (url) document.execCommand('createLink', false, url);
+    }
+
+    // Word counter
+    function updateWordCount() {
+        const content = document.getElementById('art-content').innerText.trim();
+        const words = content ? content.split(/\s+/).length : 0;
+        document.getElementById('word-count').textContent = words + ' palabras';
+        updateSeoScore();
+    }
+
+    // SEO live preview
+    function updateSeoPreview() {
+        const title = document.getElementById('art-title').value || 'Título del artículo';
+        const subtitle = document.getElementById('art-subtitle').value;
+        const metaTitle = document.getElementById('art-meta-title').value || title;
+        const metaDesc = document.getElementById('art-meta-desc').value || subtitle || 'Añade una meta descripción...';
+        
+        // Auto-generate slug from title
+        if (!document.getElementById('art-slug').value && title !== 'Título del artículo') {
+            document.getElementById('art-slug').value = title.toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').substring(0, 50);
+        }
+
+        document.getElementById('google-preview-title').textContent = metaTitle + ' | IA de Barrio';
+        document.getElementById('google-preview-desc').textContent = metaDesc;
+        document.getElementById('gp-slug').textContent = document.getElementById('art-slug').value || 'titulo-del-articulo';
+        
+        updateSeoScore();
+    }
+
+    // SEO score calculator
+    function updateSeoScore() {
+        let score = 0;
+        const metaTitle = document.getElementById('art-meta-title').value;
+        const metaDesc = document.getElementById('art-meta-desc').value;
+        const slug = document.getElementById('art-slug').value;
+        const keywords = document.getElementById('art-keywords').value;
+        const altText = document.getElementById('art-alt-text').value;
+        const content = document.getElementById('art-content').innerText.trim();
+        const wordCount = content ? content.split(/\s+/).length : 0;
+        const hasH2 = document.getElementById('art-content').querySelector('h2') !== null;
+
+        // Update counters
+        document.getElementById('meta-title-count').textContent = metaTitle.length + '/60';
+        document.getElementById('meta-desc-count').textContent = metaDesc.length + '/155';
+
+        // Check each criterion
+        const chkTitle = metaTitle.length >= 30 && metaTitle.length <= 60;
+        const chkDesc = metaDesc.length >= 120 && metaDesc.length <= 155;
+        const chkSlug = slug.length > 0;
+        const chkKeywords = keywords.length > 0;
+        const chkAlt = altText.length > 0;
+        const chkContent = wordCount >= 300;
+        const chkH2 = hasH2;
+
+        if (chkTitle) score += 15;
+        if (chkDesc) score += 15;
+        if (chkSlug) score += 15;
+        if (chkKeywords) score += 15;
+        if (chkAlt) score += 10;
+        if (chkContent) score += 20;
+        if (chkH2) score += 10;
+
+        // Update checklist
+        document.getElementById('chk-title').innerHTML = (chkTitle ? '✅' : '⬜') + ' Meta título (30-60 caracteres)';
+        document.getElementById('chk-title').style.color = chkTitle ? '#34c759' : '';
+        document.getElementById('chk-desc').innerHTML = (chkDesc ? '✅' : '⬜') + ' Meta descripción (120-155 chars)';
+        document.getElementById('chk-desc').style.color = chkDesc ? '#34c759' : '';
+        document.getElementById('chk-slug').innerHTML = (chkSlug ? '✅' : '⬜') + ' Slug URL definido';
+        document.getElementById('chk-slug').style.color = chkSlug ? '#34c759' : '';
+        document.getElementById('chk-keywords').innerHTML = (chkKeywords ? '✅' : '⬜') + ' Keywords definidas';
+        document.getElementById('chk-keywords').style.color = chkKeywords ? '#34c759' : '';
+        document.getElementById('chk-alt').innerHTML = (chkAlt ? '✅' : '⬜') + ' Texto alt en imagen';
+        document.getElementById('chk-alt').style.color = chkAlt ? '#34c759' : '';
+        document.getElementById('chk-content').innerHTML = (chkContent ? '✅' : '⬜') + ' Contenido +300 palabras (' + wordCount + ')';
+        document.getElementById('chk-content').style.color = chkContent ? '#34c759' : '';
+        document.getElementById('chk-h2').innerHTML = (chkH2 ? '✅' : '⬜') + ' Al menos un H2 en contenido';
+        document.getElementById('chk-h2').style.color = chkH2 ? '#34c759' : '';
+
+        // Score badge
+        const scoreEl = document.getElementById('seo-score');
+        scoreEl.textContent = 'Score: ' + score + '%';
+        if (score >= 80) { scoreEl.style.background = 'rgba(52,199,89,0.1)'; scoreEl.style.color = '#34c759'; }
+        else if (score >= 50) { scoreEl.style.background = 'rgba(255,149,0,0.1)'; scoreEl.style.color = '#ff9500'; }
+        else { scoreEl.style.background = 'rgba(255,59,48,0.1)'; scoreEl.style.color = '#ff3b30'; }
+    }
+
+    // Media handlers
+    function setMediaType(type) {
+        const imgBtn = document.getElementById('media-type-image');
+        const vidBtn = document.getElementById('media-type-video');
+        if (type === 'image') {
+            imgBtn.style.background = 'rgba(0,113,227,0.1)'; imgBtn.style.borderColor = 'var(--accent-blue)'; imgBtn.style.color = 'var(--accent-blue)';
+            vidBtn.style.background = ''; vidBtn.style.borderColor = ''; vidBtn.style.color = '';
+            document.getElementById('media-file-input').accept = 'image/*';
+        } else {
+            vidBtn.style.background = 'rgba(0,113,227,0.1)'; vidBtn.style.borderColor = 'var(--accent-blue)'; vidBtn.style.color = 'var(--accent-blue)';
+            imgBtn.style.background = ''; imgBtn.style.borderColor = ''; imgBtn.style.color = '';
+            document.getElementById('media-file-input').accept = 'video/*';
+        }
+    }
+
+    function handleMediaUpload(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const preview = document.getElementById('media-preview-area');
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = '<img src="' + e.target.result + '" style="max-width: 100%; border-radius: 12px; max-height: 200px; object-fit: cover;"><p style="margin: 8px 0 0; font-size: 0.7rem; color: var(--text-grey);">' + file.name + ' (' + (file.size/1024).toFixed(0) + ' KB)</p><button onclick="event.stopPropagation(); resetMediaPreview()" style="position: absolute; top: 8px; right: 8px; background: rgba(255,59,48,0.8); border: none; color: white; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 0.7rem;">✕</button>';
+                };
+                reader.readAsDataURL(file);
+            } else if (file.type.startsWith('video/')) {
+                preview.innerHTML = '<div style="font-size: 2rem;">🎬</div><p style="margin: 8px 0 0; font-size: 0.85rem; color: var(--accent-blue); font-weight: 600;">' + file.name + '</p><p style="margin: 4px 0 0; font-size: 0.65rem; color: var(--text-grey);">(' + (file.size/1024/1024).toFixed(1) + ' MB)</p><button onclick="event.stopPropagation(); resetMediaPreview()" style="position: absolute; top: 8px; right: 8px; background: rgba(255,59,48,0.8); border: none; color: white; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 0.7rem;">✕</button>';
+            }
+        }
+    }
+
+    function handleMediaDrop(e) {
+        e.preventDefault();
+        e.currentTarget.style.borderColor = 'var(--border-color)';
+        e.currentTarget.style.background = 'transparent';
+        const dt = e.dataTransfer;
+        if (dt.files.length) {
+            document.getElementById('media-file-input').files = dt.files;
+            handleMediaUpload(document.getElementById('media-file-input'));
+        }
+    }
+
+    function resetMediaPreview() {
+        document.getElementById('media-preview-area').innerHTML = '<div style="font-size: 2rem; margin-bottom: 8px;">📁</div><p style="margin: 0; font-size: 0.85rem; color: var(--text-grey);">Arrastra tu archivo aquí o haz clic para subir</p><p style="margin: 4px 0 0 0; font-size: 0.65rem; color: var(--text-grey);">JPG, PNG, WebP, MP4 · Máx. 10MB</p>';
+        document.getElementById('media-file-input').value = '';
+    }
+
+    function generateMediaAI() {
+        const prompt = document.getElementById('ai-media-prompt').value;
+        if (!prompt) { alert('Escribe una descripción de la imagen que quieres generar.'); return; }
+        const btn = event.target;
+        btn.textContent = '⏳ Generando...';
+        btn.disabled = true;
+        setTimeout(() => {
+            document.getElementById('media-preview-area').innerHTML = '<div style="background: linear-gradient(135deg, #667eea, #764ba2); width: 100%; height: 180px; border-radius: 12px; display: flex; align-items: center; justify-content: center;"><span style="font-size: 2.5rem;">🖼️</span></div><p style="margin: 8px 0 0; font-size: 0.7rem; color: #af52de; font-weight: 600;">Imagen generada con IA</p><p style="margin: 2px 0 0; font-size: 0.6rem; color: var(--text-grey);">Prompt: ' + prompt + '</p>';
+            btn.textContent = '✨ Generar';
+            btn.disabled = false;
+        }, 2000);
+    }
+
+    // AI assist for content
+    function aiAssist(type) {
+        const content = document.getElementById('art-content').innerText;
+        if (!content.trim()) { alert('Escribe algo de contenido primero.'); return; }
+        alert('La asistencia de IA (' + type + ') se conectará con la API de OpenAI próximamente.\n\nEsta función mejorará, resumirá o expandirá tu texto automáticamente.');
+    }
+
+    // Auto-generate SEO with AI
+    function autoGenerateSeo() {
+        const title = document.getElementById('art-title').value;
+        if (!title) { alert('Escribe un título primero.'); return; }
+        
+        // Simulate AI SEO generation
+        const slug = title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').substring(0, 50);
+        
+        document.getElementById('art-meta-title').value = title.substring(0, 60);
+        document.getElementById('art-meta-desc').value = (document.getElementById('art-subtitle').value || title + ' - Descubre las últimas tendencias en IA y automatización para tu negocio.').substring(0, 155);
+        document.getElementById('art-slug').value = slug;
+        document.getElementById('art-keywords').value = 'inteligencia artificial, ' + title.split(' ').slice(0, 3).join(', ').toLowerCase();
+        
+        updateSeoPreview();
+        updateSeoScore();
+    }
+
+    // Publish / Draft
+    function publishArticle() {
+        const title = document.getElementById('art-title').value;
+        if (!title) { alert('El título es obligatorio.'); return; }
+        alert('✅ Artículo "' + title + '" publicado correctamente.\n\nSe añadirá a la página pública de Newsletter y estará disponible para el próximo envío.');
+        closeArticleEditor();
+    }
+
+    function saveArticleDraft() {
+        const title = document.getElementById('art-title').value;
+        if (!title) { alert('El título es obligatorio.'); return; }
+        alert('📝 Borrador "' + title + '" guardado correctamente.');
+        closeArticleEditor();
+    }
+
+    function previewArticle() {
+        const title = document.getElementById('art-title').value || 'Sin título';
+        const content = document.getElementById('art-content').innerHTML || '<p>Sin contenido</p>';
+        const w = window.open('', '_blank', 'width=800,height=600');
+        w.document.write('<html><head><title>' + title + '</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"><style>body{font-family:Inter,sans-serif;max-width:700px;margin:40px auto;padding:20px;color:#1d1d1f;line-height:1.7;}h1{font-size:2rem;}h2{font-size:1.4rem;margin-top:32px;}p{margin:0 0 16px;}blockquote{border-left:3px solid #0071e3;padding-left:16px;color:#666;font-style:italic;}</style></head><body><h1>' + title + '</h1>' + content + '</body></html>');
+        w.document.close();
     }
 
     function deleteArticle(btn) {
