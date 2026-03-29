@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter IA | IA de Barrio</title>
+    <meta name="description" content="Artículos sobre Inteligencia Artificial, automatización y negocio digital.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="landing_apple_unified.css?v=11.5">
+    <style>
+        .reading-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent-blue),#af52de);z-index:9999;transition:width .1s}
+        .article-hero{position:relative;width:100%;height:420px;overflow:hidden;border-radius:0 0 30px 30px}
+        .article-hero img{width:100%;height:100%;object-fit:cover}
+        .article-hero-overlay{position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(0,0,0,0.85))}
+        .article-hero-content{position:absolute;bottom:40px;left:0;right:0;padding:0 20px;max-width:800px;margin:0 auto}
+        .article-tag{display:inline-block;padding:4px 12px;border-radius:8px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px}
+        .tag-ia-full{background:rgba(0,113,227,.2);color:#5ac8fa}.tag-negocio-full{background:rgba(52,199,89,.2);color:#34c759}
+        .tag-tutorial-full{background:rgba(255,149,0,.2);color:#ff9500}.tag-noticia-full{background:rgba(175,82,222,.2);color:#af52de}
+        .article-hero-content h1{font-size:2.2rem;font-weight:700;color:#fff;line-height:1.2;margin-bottom:12px}
+        .article-meta-hero{display:flex;gap:16px;align-items:center;font-size:.8rem;color:rgba(255,255,255,.7)}
+        .article-meta-hero span{display:flex;align-items:center;gap:4px}
+        .article-layout{max-width:800px;margin:0 auto;padding:50px 20px}
+        .article-content{font-size:1.05rem;line-height:1.85;color:var(--text-main)}
+        .article-content h2{font-size:1.5rem;font-weight:700;margin:40px 0 16px;padding-top:20px;border-top:1px solid var(--border-color)}
+        .article-content h3{font-size:1.15rem;font-weight:600;margin:28px 0 12px;color:var(--accent-blue)}
+        .article-content p{margin-bottom:18px}
+        .article-content ul,.article-content ol{margin:16px 0 24px 24px}
+        .article-content li{margin-bottom:10px;line-height:1.7}
+        .article-content blockquote{border-left:3px solid var(--accent-blue);padding:16px 24px;margin:24px 0;background:rgba(0,113,227,.04);border-radius:0 12px 12px 0;font-style:italic;color:var(--text-grey)}
+        .article-content img{width:100%;border-radius:16px;margin:24px 0}
+        .article-content .video-embed{width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;margin:24px 0;background:#000}
+        .article-content .video-embed iframe{width:100%;height:100%;border:none}
+        .info-box{padding:20px 24px;border-radius:14px;margin:24px 0;border:1px solid}
+        .info-box.tip{background:rgba(52,199,89,.05);border-color:rgba(52,199,89,.2)}.info-box.tip::before{content:"💡 ";font-weight:700}
+        .info-box.warning{background:rgba(255,149,0,.05);border-color:rgba(255,149,0,.2)}.info-box.warning::before{content:"⚠️ ";font-weight:700}
+        .toc{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:24px;margin-bottom:36px}
+        .toc h4{font-size:.85rem;font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-grey)}
+        .toc ol{margin:0;padding-left:20px}.toc li{margin-bottom:6px}
+        .toc a{color:var(--accent-blue);text-decoration:none;font-size:.85rem;font-weight:500}.toc a:hover{text-decoration:underline}
+        .share-bar{display:flex;gap:10px;padding:20px 0;border-top:1px solid var(--border-color);border-bottom:1px solid var(--border-color);margin:40px 0}
+        .share-btn{padding:8px 16px;border-radius:10px;border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-main);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;display:flex;align-items:center;gap:6px}
+        .share-btn:hover{border-color:var(--accent-blue);color:var(--accent-blue)}
+        .author-card{display:flex;gap:20px;align-items:center;padding:24px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;margin:40px 0}
+        .author-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--accent-blue),#af52de);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:700;color:#fff;flex-shrink:0}
+        .author-info h4{font-size:.95rem;margin-bottom:2px}.author-info p{font-size:.8rem;color:var(--text-grey);margin:0}
+        .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:30px}
+        .related-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;transition:all .3s;cursor:pointer;text-decoration:none;color:inherit}
+        .related-card:hover{transform:translateY(-4px);border-color:var(--accent-blue)}
+        .related-card img{width:100%;height:140px;object-fit:cover}
+        .related-card-body{padding:16px}
+        .related-card-body h4{font-size:.85rem;font-weight:600;line-height:1.3;margin-bottom:6px}
+        .related-card-body span{font-size:.65rem;color:var(--text-grey)}
+        .article-nav{display:flex;justify-content:space-between;gap:20px;margin:40px 0}
+        .article-nav a{flex:1;padding:20px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;text-decoration:none;color:var(--text-main);transition:all .3s}
+        .article-nav a:hover{border-color:var(--accent-blue)}
+        .article-nav .nav-label{font-size:.65rem;color:var(--text-grey);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+        .article-nav .nav-title{font-size:.85rem;font-weight:600}
+        @media(max-width:768px){
+            .article-hero{height:300px}.article-hero-content h1{font-size:1.5rem}
+            .related-grid{grid-template-columns:1fr}.article-nav{flex-direction:column}
+            .article-layout{padding:30px 16px}
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <div class="reading-progress" id="reading-progress"></div>
+
+    <nav class="apple-nav">
+        <div class="container nav-content">
+            <div class="logo"><a href="index.html" style="color:inherit;text-decoration:none">IA<span>deBarrio</span></a></div>
+            <button id="mobile-menu-btn" class="mobile-menu-toggle" aria-label="Abrir menú">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-open"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-close"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <div class="nav-links" id="apple-nav-links">
+                <a href="newsletter.html" class="nav-link">← Newsletter</a>
+                <a href="index.html#problemas" class="nav-link">Problemas</a>
+                <a href="index.html#precios" class="nav-link">Precios</a>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema"></button>
+                    <a href="index.html#contacto" class="btn-apple-buy" style="text-decoration:none">Contactar</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════ -->
+    <!-- ARTICLE CONTAINER - JS switches -->
+    <!-- ═══════════════════════════════════ -->
+    <main id="article-container"></main>
+
+    <footer class="apple-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">IA<span>deBarrio</span></div>
+                    <p class="footer-desc">Inteligencia Artificial para negocios reales.</p>
+                    <p style="font-size:.75rem">© 2026 IA de Barrio. Hecho con ❤️ desde Menorca.</p>
+                </div>
+                <div class="footer-col"><h4>Servicios</h4><a href="servicios.html">Consultoría IA</a><a href="automatizaciones.html">Automatizaciones</a><a href="demos.html">Demos</a></div>
+                <div class="footer-col"><h4>Aprender</h4><a href="academia.html">Academia IA</a><a href="newsletter.html">Newsletter</a><a href="conocimientos.html">Conocimientos</a></div>
+                <div class="footer-col"><h4>Empresa</h4><a href="login.html">Admin</a><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="landing_apple.js?v=11.4"></script>
+    <script>
+    // Articles data
+    const articles = {
+        'gpt5-futuro-negocio': {
+            tag: 'IA', tagClass: 'tag-ia-full',
+            title: 'GPT-5: Lo que sabemos y cómo afectará a tu negocio',
+            date: '28 Mar 2026', readTime: '5 min', author: 'Gerard · IA de Barrio',
+            img: 'img/newsletter/gpt5-futuro-ia.png',
+            metaTitle: 'GPT-5: Impacto en empresas y negocios | IA de Barrio',
+            metaDesc: 'Descubre qué es GPT-5, sus nuevas capacidades y cómo impactará a tu empresa. Guía práctica con 5 estrategias para prepararte.',
+            content: `
+                <div class="toc"><h4>📑 Índice</h4><ol>
+                    <li><a href="#s1">¿Qué es GPT-5 y por qué importa?</a></li>
+                    <li><a href="#s2">Las 5 mejoras clave confirmadas</a></li>
+                    <li><a href="#s3">Impacto real en tu negocio</a></li>
+                    <li><a href="#s4">Cómo prepararte hoy</a></li>
+                    <li><a href="#s5">Conclusión</a></li>
+                </ol></div>
+
+                <h2 id="s1">¿Qué es GPT-5 y por qué importa?</h2>
+                <p>OpenAI está a punto de dar el salto más significativo en inteligencia artificial generativa desde el lanzamiento de GPT-4. <strong>GPT-5</strong> no es solo una mejora incremental — es un cambio de paradigma que redefinirá cómo las empresas interactúan con la tecnología.</p>
+                <p>Mientras que GPT-4 revolucionó la generación de texto y el razonamiento, GPT-5 promete algo radicalmente diferente: <strong>capacidad de acción autónoma</strong>. Ya no se trata solo de generar respuestas, sino de ejecutar tareas completas de principio a fin.</p>
+                <blockquote>"GPT-5 no solo entiende lo que le pides — lo hace por ti." — Sam Altman, CEO de OpenAI</blockquote>
+
+                <div class="video-embed"><iframe src="https://www.youtube.com/embed/sal78ACtGTc" title="El futuro de la IA con GPT-5" allowfullscreen loading="lazy"></iframe></div>
+
+                <h2 id="s2">Las 5 mejoras clave confirmadas</h2>
+                <h3>1. Razonamiento en cadena avanzado</h3>
+                <p>GPT-5 puede descomponer problemas complejos en pasos lógicos y resolverlos como un analista senior. Esto significa que puede analizar tus datos financieros, detectar anomalías y sugerir acciones correctivas — todo en una sola consulta.</p>
+                <h3>2. Memoria persistente real</h3>
+                <p>A diferencia de versiones anteriores, GPT-5 <strong>recuerda el contexto</strong> entre sesiones. Tu IA aprenderá tu estilo de comunicación, tus preferencias de negocio y tu histórico de decisiones.</p>
+                <h3>3. Multimodalidad nativa</h3>
+                <p>Texto, imagen, audio y vídeo — todo procesado en un único modelo. Podrás enviar una foto de tu inventario y recibir un análisis completo con recomendaciones de stock.</p>
+                <h3>4. Ejecución de acciones (Function Calling 2.0)</h3>
+                <p>GPT-5 no solo sugiere — actúa. Puede enviar emails, actualizar tu CRM, crear facturas y programar reuniones directamente.</p>
+                <h3>5. Costes un 60% menores</h3>
+                <p>OpenAI ha optimizado drásticamente la eficiencia computacional. Lo que antes costaba 100€/mes en API, ahora será aproximadamente 40€.</p>
+
+                <div class="info-box tip">Las empresas que ya usan GPT-4 podrán migrar a GPT-5 sin cambios en su código. La API es retrocompatible.</div>
+
+                <h2 id="s3">Impacto real en tu negocio</h2>
+                <p>Hemos analizado con nuestros clientes los escenarios más probables:</p>
+                <ul>
+                    <li><strong>Atención al cliente:</strong> Resolución autónoma del 85% de consultas (vs 60% actual)</li>
+                    <li><strong>Marketing:</strong> Campañas personalizadas generadas automáticamente con datos en tiempo real</li>
+                    <li><strong>Ventas:</strong> Cualificación de leads con scoring predictivo basado en señales multimodales</li>
+                    <li><strong>Operaciones:</strong> Automatización end-to-end de procesos que hoy requieren 3+ herramientas</li>
+                </ul>
+
+                <h2 id="s4">Cómo prepararte hoy</h2>
+                <ol>
+                    <li>Audita tus procesos actuales e identifica los que pueden beneficiarse de IA autónoma</li>
+                    <li>Empieza a documentar tus workflows en herramientas como n8n</li>
+                    <li>Forma a tu equipo en prompting avanzado y gestión de agentes IA</li>
+                    <li>Estructura tus datos para que la IA pueda acceder a ellos fácilmente</li>
+                    <li>Contacta con nosotros para una auditoría IA gratuita de tu negocio</li>
+                </ol>
+
+                <div class="info-box warning">No esperes a que GPT-5 esté disponible para actuar. Las empresas que se preparan ahora tendrán 6 meses de ventaja competitiva.</div>
+
+                <h2 id="s5">Conclusión</h2>
+                <p>GPT-5 no es solo otro modelo de lenguaje. Es la transición de la IA como <em>asistente</em> a la IA como <em>compañero de trabajo autónomo</em>. Las empresas que entiendan este cambio y se preparen estarán en una posición privilegiada.</p>
+                <p>En <strong>IA de Barrio</strong> estamos ayudando a negocios a prepararse. Si quieres saber cómo GPT-5 puede transformar tu empresa, <a href="index.html#contacto" style="color:var(--accent-blue)">agenda tu auditoría gratuita</a>.</p>
+            `,
+            related: ['automatizaciones-pyme-2026','agentes-autonomos-productividad','roi-ia-metricas-negocio']
+        },
+
+        'automatizaciones-pyme-2026': {
+            tag: 'Negocio', tagClass: 'tag-negocio-full',
+            title: '5 automatizaciones que toda PYME debería tener en 2026',
+            date: '25 Mar 2026', readTime: '7 min', author: 'Gerard · IA de Barrio',
+            img: 'img/newsletter/automatizaciones-pyme.png',
+            metaTitle: '5 automatizaciones esenciales para PYMEs 2026 | IA de Barrio',
+            metaDesc: 'Las 5 automatizaciones que toda PYME necesita en 2026: facturación, CRM, email marketing, atención al cliente y reporting.',
+            content: `
+                <div class="toc"><h4>📑 Índice</h4><ol>
+                    <li><a href="#a1">Por qué automatizar en 2026</a></li>
+                    <li><a href="#a2">Las 5 automatizaciones esenciales</a></li>
+                    <li><a href="#a3">Resultados reales de nuestros clientes</a></li>
+                    <li><a href="#a4">Cómo empezar</a></li>
+                </ol></div>
+
+                <h2 id="a1">Por qué automatizar en 2026</h2>
+                <p>Las PYMEs que automatizan procesos crecen un <strong>40% más rápido</strong> que las que no lo hacen. En 2026, automatizar ya no es una ventaja competitiva — es una necesidad de supervivencia.</p>
+                <p>Con herramientas como <strong>n8n, Make y Zapier</strong>, cualquier negocio puede automatizar tareas repetitivas sin necesidad de programar. El ROI medio de una automatización es de <strong>300% en los primeros 6 meses</strong>.</p>
+
+                <div class="video-embed"><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Automatizaciones para PYMEs" allowfullscreen loading="lazy"></iframe></div>
+
+                <h2 id="a2">Las 5 automatizaciones esenciales</h2>
+                <h3>1. 📧 Email Marketing Inteligente</h3>
+                <p>Deja de enviar emails genéricos. Configura flujos automáticos que se activan cuando un cliente realiza una acción: abandona el carrito, cumple un mes como cliente o visita una página específica.</p>
+                <ul>
+                    <li>Secuencias de bienvenida personalizadas</li>
+                    <li>Recuperación de carritos abandonados</li>
+                    <li>Newsletters segmentadas por interés</li>
+                </ul>
+
+                <h3>2. 🤖 Atención al Cliente 24/7</h3>
+                <p>Un chatbot de IA conectado a tu base de conocimiento puede resolver el <strong>70% de consultas</strong> sin intervención humana. El resto se escala automáticamente a tu equipo con todo el contexto.</p>
+
+                <h3>3. 📊 Reporting Automático</h3>
+                <p>¿Pasas horas creando informes? Automatiza la extracción de datos de Google Analytics, CRM y redes sociales. Recibe un informe visual en tu email cada lunes a las 9:00.</p>
+
+                <h3>4. 💰 Facturación y Cobros</h3>
+                <p>Conecta tu CRM con tu plataforma de facturación. Cuando un deal se cierra, la factura se genera y envía automáticamente. Los recordatorios de pago se gestionan solos.</p>
+
+                <h3>5. 📱 Social Media Posting</h3>
+                <p>Programa y publica contenido en todas tus redes desde un solo lugar. Con IA, genera variaciones de tu contenido adaptadas a cada plataforma automáticamente.</p>
+
+                <div class="info-box tip">Empieza por la automatización que te ahorre más tiempo. Para la mayoría de PYMEs, es el reporting automático — ahorra unas 5 horas semanales.</div>
+
+                <h2 id="a3">Resultados reales de nuestros clientes</h2>
+                <ul>
+                    <li><strong>Restaurante en Mahón:</strong> 12 horas/semana ahorradas en gestión de reservas y pedidos</li>
+                    <li><strong>Tienda online Barcelona:</strong> +35% en conversiones con emails automáticos de carrito abandonado</li>
+                    <li><strong>Consultoría Madrid:</strong> Reportes que tardaban 4 horas ahora se generan en 30 segundos</li>
+                </ul>
+
+                <h2 id="a4">Cómo empezar</h2>
+                <p>No necesitas implementar las 5 a la vez. Nuestra recomendación:</p>
+                <ol>
+                    <li>Identifica tu cuello de botella — ¿dónde pierdes más tiempo?</li>
+                    <li>Elige UNA automatización y hazla funcionar perfectamente</li>
+                    <li>Mide el resultado durante 30 días</li>
+                    <li>Escala al siguiente proceso</li>
+                </ol>
+                <p>¿Quieres saber cuál automatización tendrá más impacto en tu negocio? <a href="index.html#contacto" style="color:var(--accent-blue)">Agenda una consulta gratuita</a>.</p>
+            `,
+            related: ['gpt5-futuro-negocio','roi-ia-metricas-negocio','tutorial-n8n-paso-a-paso']
+        },
+
+        'tutorial-n8n-paso-a-paso': {
+            tag: 'Tutorial', tagClass: 'tag-tutorial-full',
+            title: 'Cómo crear tu primer flujo de trabajo en n8n paso a paso',
+            date: '22 Mar 2026', readTime: '10 min', author: 'Gerard · IA de Barrio',
+            img: 'img/newsletter/tutorial-n8n.png',
+            metaTitle: 'Tutorial n8n: Crea tu primer flujo de trabajo | IA de Barrio',
+            metaDesc: 'Guía completa paso a paso para crear tu primer flujo de automatización en n8n conectando Gmail, OpenAI y Slack.',
+            content: `
+                <div class="toc"><h4>📑 Índice</h4><ol>
+                    <li><a href="#t1">¿Qué es n8n?</a></li>
+                    <li><a href="#t2">Instalación rápida</a></li>
+                    <li><a href="#t3">Tu primer workflow: Gmail → OpenAI → Slack</a></li>
+                    <li><a href="#t4">Testing y depuración</a></li>
+                    <li><a href="#t5">Próximos pasos</a></li>
+                </ol></div>
+
+                <h2 id="t1">¿Qué es n8n?</h2>
+                <p><strong>n8n</strong> es una plataforma de automatización open-source que te permite conectar cualquier aplicación y crear flujos de trabajo visuales sin programar. Es como tener un desarrollador trabajando 24/7 para ti.</p>
+                <p>A diferencia de Zapier o Make, n8n te da <strong>control total</strong>: puedes alojarlo en tu propio servidor, no tiene límites de ejecuciones y tiene nodos de IA integrados.</p>
+
+                <div class="info-box tip">n8n es gratuito y open-source. Puedes alojarlo en tu servidor o usar su cloud a partir de 20€/mes.</div>
+
+                <h2 id="t2">Instalación rápida</h2>
+                <p>La forma más rápida de empezar es con Docker:</p>
+                <blockquote>docker run -it --rm --name n8n -p 5678:5678 -v ~/.n8n:/home/node/.n8n n8nio/n8n</blockquote>
+                <p>Abre tu navegador en <code style="background:rgba(0,113,227,.1);padding:2px 8px;border-radius:6px;font-size:.9rem">localhost:5678</code> y ya tienes n8n funcionando.</p>
+
+                <h2 id="t3">Tu primer workflow: Gmail → OpenAI → Slack</h2>
+                <p>Vamos a crear un flujo que automáticamente resuma los emails importantes y envíe el resumen a un canal de Slack.</p>
+                <h3>Paso 1: Trigger de Gmail</h3>
+                <p>Arrastra el nodo <strong>"Gmail Trigger"</strong> al canvas. Configura tu cuenta de Google y selecciona la etiqueta de emails que quieres monitorizar.</p>
+                <h3>Paso 2: Procesar con OpenAI</h3>
+                <p>Añade un nodo <strong>"OpenAI"</strong> y conéctalo al trigger de Gmail. En el prompt escribe:</p>
+                <blockquote>"Resume el siguiente email en 2-3 frases clave. Indica si requiere acción urgente: {{$json.text}}"</blockquote>
+                <h3>Paso 3: Enviar a Slack</h3>
+                <p>Finalmente, añade un nodo <strong>"Slack"</strong> y mapea el output de OpenAI al mensaje. Selecciona el canal donde quieres recibir los resúmenes.</p>
+
+                <div class="video-embed"><iframe src="https://www.youtube.com/embed/1KQmUbR2J7U" title="Tutorial n8n workflow" allowfullscreen loading="lazy"></iframe></div>
+
+                <h2 id="t4">Testing y depuración</h2>
+                <p>n8n tiene un modo de prueba que te permite ejecutar cada nodo individualmente:</p>
+                <ol>
+                    <li>Haz clic en el nodo que quieres probar</li>
+                    <li>Pulsa <strong>"Execute Node"</strong></li>
+                    <li>Revisa el output en el panel de la derecha</li>
+                    <li>Si algo falla, ajusta la configuración y vuelve a probar</li>
+                </ol>
+
+                <div class="info-box warning">Asegúrate de tener las credenciales correctas configuradas antes de probar. Gmail y OpenAI requieren API keys.</div>
+
+                <h2 id="t5">Próximos pasos</h2>
+                <p>Una vez domines este flujo básico, puedes explorar:</p>
+                <ul>
+                    <li>Automatizar respuestas a emails con IA</li>
+                    <li>Conectar con tu CRM para registrar interacciones</li>
+                    <li>Añadir filtros condicionales (IF/ELSE)</li>
+                    <li>Programar ejecuciones con Cron</li>
+                </ul>
+                <p>En nuestra <a href="academia.html" style="color:var(--accent-blue)">Academia IA</a> tenemos un curso completo de n8n con más de 20 workflows listos para usar.</p>
+            `,
+            related: ['automatizaciones-pyme-2026','gpt5-futuro-negocio','agentes-autonomos-productividad']
+        },
+
+        'ue-normas-ia-empresa': {
+            tag: 'Noticia', tagClass: 'tag-noticia-full',
+            title: 'La UE aprueba nuevas normas de IA: qué implica para tu empresa',
+            date: '20 Mar 2026', readTime: '6 min', author: 'Gerard · IA de Barrio',
+            img: 'img/newsletter/eu-ai-act.png',
+            metaTitle: 'AI Act UE: Qué implica para tu empresa | IA de Barrio',
+            metaDesc: 'El AI Act europeo entra en vigor. Te explicamos los requisitos de cumplimiento, plazos y cómo preparar tu empresa.',
+            content: `
+                <div class="toc"><h4>📑 Índice</h4><ol>
+                    <li><a href="#e1">¿Qué es el AI Act?</a></li>
+                    <li><a href="#e2">Clasificación por riesgo</a></li>
+                    <li><a href="#e3">¿A quién afecta?</a></li>
+                    <li><a href="#e4">Plazos y multas</a></li>
+                    <li><a href="#e5">Cómo prepararse</a></li>
+                </ol></div>
+
+                <h2 id="e1">¿Qué es el AI Act?</h2>
+                <p>El <strong>AI Act</strong> (Ley de Inteligencia Artificial) es la primera regulación integral sobre IA a nivel mundial. Aprobada por el Parlamento Europeo, establece un marco legal para el desarrollo y uso de sistemas de IA en la Unión Europea.</p>
+                <p>Su objetivo es <strong>garantizar que la IA se use de forma segura y ética</strong>, protegiendo los derechos fundamentales sin frenar la innovación.</p>
+
+                <h2 id="e2">Clasificación por riesgo</h2>
+                <p>El AI Act clasifica los sistemas de IA en 4 niveles:</p>
+                <ul>
+                    <li><strong>🔴 Riesgo inaceptable:</strong> IA prohibida (puntuación social, vigilancia masiva biométrica)</li>
+                    <li><strong>🟠 Alto riesgo:</strong> Regulación estricta (IA médica, selección de personal, scoring crediticio)</li>
+                    <li><strong>🟡 Riesgo limitado:</strong> Obligaciones de transparencia (chatbots, deepfakes)</li>
+                    <li><strong>🟢 Riesgo mínimo:</strong> Sin restricciones (filtros de spam, recomendaciones de productos)</li>
+                </ul>
+
+                <div class="info-box warning">Si tu empresa usa IA para tomar decisiones sobre personas (contratación, créditos, seguros), probablemente estás en la categoría de "alto riesgo".</div>
+
+                <h2 id="e3">¿A quién afecta?</h2>
+                <p>El AI Act afecta a <strong>cualquier empresa que opere en la UE</strong> y use o desarrolle sistemas de IA, independientemente de dónde esté su sede. Esto incluye:</p>
+                <ul>
+                    <li>Empresas que desarrollan modelos de IA</li>
+                    <li>Empresas que implementan soluciones de IA de terceros</li>
+                    <li>Importadores y distribuidores de productos con IA</li>
+                </ul>
+
+                <h2 id="e4">Plazos y multas</h2>
+                <p>Las multas por incumplimiento son severas:</p>
+                <ul>
+                    <li><strong>Usar IA prohibida:</strong> Hasta 35M€ o 7% de la facturación global</li>
+                    <li><strong>Incumplir requisitos de alto riesgo:</strong> Hasta 15M€ o 3% de la facturación</li>
+                    <li><strong>Información incorrecta:</strong> Hasta 7.5M€ o 1% de la facturación</li>
+                </ul>
+
+                <h2 id="e5">Cómo prepararse</h2>
+                <ol>
+                    <li><strong>Audita</strong> todos los sistemas de IA que usas en tu empresa</li>
+                    <li><strong>Clasifica</strong> cada sistema según el nivel de riesgo</li>
+                    <li><strong>Documenta</strong> los procesos de toma de decisiones de tus IAs</li>
+                    <li><strong>Implementa</strong> supervisión humana en los sistemas de alto riesgo</li>
+                    <li><strong>Consulta</strong> con un especialista para garantizar el cumplimiento</li>
+                </ol>
+                <p>En <strong>IA de Barrio</strong> ofrecemos auditorías de cumplimiento del AI Act. <a href="index.html#contacto" style="color:var(--accent-blue)">Contacta con nosotros</a> para asegurar que tu empresa cumple.</p>
+            `,
+            related: ['gpt5-futuro-negocio','roi-ia-metricas-negocio','automatizaciones-pyme-2026']
+        },
+
+        'agentes-autonomos-productividad': {
+            tag: 'IA', tagClass: 'tag-ia-full',
+            title: 'Agentes autónomos: la próxima revolución en productividad empresarial',
+            date: '18 Mar 2026', readTime: '8 min', author: 'Gerard · IA de Barrio',
+            img: 'img/newsletter/agentes-autonomos.png',
+            metaTitle: 'Agentes autónomos de IA: La revolución productiva | IA de Barrio',
+            metaDesc: 'Descubre qué son los agentes autónomos de IA, cómo funcionan y cómo pueden multiplicar la productividad de tu empresa.',
+            content: `
+                <div class="toc"><h4>📑 Índice</h4><ol>
+                    <li><a href="#g1">¿Qué son los agentes autónomos?</a></li>
+                    <li><a href="#g2">Cómo funcionan</a></li>
+                    <li><a href="#g3">Casos de uso empresarial</a></li>
+                    <li><a href="#g4">Herramientas disponibles</a></li>
+                    <li><a href="#g5">El futuro de los agentes</a></li>
+                </ol></div>
+
+                <h2 id="g1">¿Qué son los agentes autónomos?</h2>
+                <p>Los <strong>agentes autónomos de IA</strong> son sistemas que van más allá de responder preguntas. Son capaces de <strong>planificar, razonar y ejecutar tareas complejas</strong> de forma independiente, tomando decisiones en cada paso del proceso.</p>
+                <p>Imagina un empleado digital que puede investigar un tema, escribir un informe, enviarlo por email a las personas correctas y programar una reunión de seguimiento — todo sin intervención humana.</p>
+
+                <div class="video-embed"><iframe src="https://www.youtube.com/embed/jvqFAi7vkBc" title="Agentes autónomos de IA" allowfullscreen loading="lazy"></iframe></div>
+
+                <h2 id="g2">Cómo funcionan</h2>
+                <p>Un agente autónomo típico tiene 4 componentes:</p>
+                <ul>
+                    <li><strong>🧠 Cerebro (LLM):</strong> Un modelo como GPT-4 o Claude que razona y decide</li>
+                    <li><strong>🔧 Herramientas:</strong> Acceso a APIs, bases de datos, navegador web, email</li>
+                    <li><strong>💾 Memoria:</strong> Almacena contexto y aprende de interacciones anteriores</li>
+                    <li><strong>📋 Planificador:</strong> Descompone tareas complejas en subtareas manejables</li>
+                </ul>
+                <blockquote>"Un agente no es un chatbot con más funciones. Es un sistema que piensa, planifica y actúa como un profesional." — Andrew Ng</blockquote>
+
+                <h2 id="g3">Casos de uso empresarial</h2>
+                <h3>Agente de ventas</h3>
+                <p>Investiga prospectos en LinkedIn, personaliza emails de contacto, programa llamadas y actualiza el CRM automáticamente. Nuestros clientes reportan un <strong>+60% en respuesta a cold emails</strong>.</p>
+                <h3>Agente de soporte</h3>
+                <p>Analiza tickets, busca en la base de conocimiento, redacta respuestas y escala los casos complejos. Resuelve el <strong>80% de tickets en menos de 2 minutos</strong>.</p>
+                <h3>Agente de investigación</h3>
+                <p>Monitoriza competidores, analiza tendencias de mercado, genera informes semanales y alerta sobre oportunidades. Es como tener un analista que nunca duerme.</p>
+
+                <div class="info-box tip">Los agentes funcionan mejor cuando tienen instrucciones claras y acceso a las herramientas adecuadas. Empieza con procesos simples y ve escalando.</div>
+
+                <h2 id="g4">Herramientas disponibles</h2>
+                <ul>
+                    <li><strong>CrewAI:</strong> Framework para crear equipos de agentes colaborativos</li>
+                    <li><strong>AutoGen:</strong> Plataforma de Microsoft para agentes conversacionales</li>
+                    <li><strong>LangGraph:</strong> Orquestación de agentes con grafos de estado</li>
+                    <li><strong>n8n + IA:</strong> Agentes visuales sin código con nodos de IA integrados</li>
+                </ul>
+
+                <h2 id="g5">El futuro de los agentes</h2>
+                <p>En 2027 se estima que el <strong>30% de las tareas empresariales</strong> serán ejecutadas por agentes autónomos. Las empresas que adopten esta tecnología ahora tendrán una ventaja competitiva enorme.</p>
+                <p>¿Quieres implementar agentes en tu negocio? <a href="index.html#contacto" style="color:var(--accent-blue)">Agenda tu consulta gratuita</a>.</p>
+            `,
+            related: ['gpt5-futuro-negocio','tutorial-n8n-paso-a-paso','automatizaciones-pyme-2026']
+        },
+
+        'roi-ia-metricas-negocio': {
+            tag: 'Negocio', tagClass: 'tag-negocio-full',
+            title: 'Cómo medir el ROI de la IA en tu negocio: métricas que importan',
+            date: '15 Mar 2026', readTime: '6 min', author: 'Gerard · IA de Barrio',
+            img: 'img/newsletter/roi-ia-metricas.png',
+            metaTitle: 'Cómo medir el ROI de la IA en tu negocio | IA de Barrio',
+            metaDesc: 'Las 7 métricas clave para medir el retorno de inversión de la inteligencia artificial en tu empresa. Con ejemplos prácticos.',
+            content: `
+                <div class="toc"><h4>📑 Índice</h4><ol>
+                    <li><a href="#r1">Por qué medir el ROI de la IA</a></li>
+                    <li><a href="#r2">Las 7 métricas clave</a></li>
+                    <li><a href="#r3">Cómo calcular el ROI</a></li>
+                    <li><a href="#r4">Errores comunes</a></li>
+                    <li><a href="#r5">Plantilla gratuita</a></li>
+                </ol></div>
+
+                <h2 id="r1">Por qué medir el ROI de la IA</h2>
+                <p>El 67% de las empresas que implementan IA <strong>no miden su retorno de inversión</strong>. Esto lleva a dos problemas: sobreinversión en tecnología que no aporta valor, o abandono prematuro de proyectos que necesitan más tiempo para madurar.</p>
+                <p>Medir el ROI de la IA no es diferente de medir cualquier otra inversión — pero requiere entender qué métricas son relevantes para cada caso de uso.</p>
+
+                <h2 id="r2">Las 7 métricas clave</h2>
+                <h3>1. ⏱️ Tiempo ahorrado</h3>
+                <p>La métrica más directa. ¿Cuántas horas semanales ahorra tu equipo gracias a la IA? Multiplica por el coste/hora medio y tienes un valor monetario claro.</p>
+
+                <h3>2. 💰 Reducción de costes operativos</h3>
+                <p>Compara los costes antes y después de implementar IA. Incluye licencias, pero también la reducción en personal temporal, errores corregidos y trabajo repetitivo eliminado.</p>
+
+                <h3>3. 📈 Incremento de ingresos</h3>
+                <p>¿La IA ha generado más ventas? Mide el impacto en conversiones, valor medio del pedido y retención de clientes.</p>
+
+                <h3>4. 😊 Satisfacción del cliente (CSAT/NPS)</h3>
+                <p>Si usas IA en atención al cliente, compara las puntuaciones de satisfacción antes y después. Un chatbot bien configurado puede aumentar el CSAT un 15-20%.</p>
+
+                <h3>5. ⚡ Velocidad de respuesta</h3>
+                <p>¿Cuánto tardas en responder a un cliente o en generar un informe? La IA suele reducir los tiempos de respuesta en un 70%.</p>
+
+                <h3>6. 🎯 Precisión y calidad</h3>
+                <p>Mide la tasa de errores antes y después. Un sistema de IA bien entrenado puede reducir errores humanos en un 90% en tareas como clasificación de datos o extracción de información.</p>
+
+                <h3>7. 🔄 Escalabilidad</h3>
+                <p>¿Puedes manejar más clientes sin contratar más personal? Esta es una de las ventajas menos visibles pero más potentes de la IA.</p>
+
+                <div class="info-box tip">Empieza midiendo solo 2-3 métricas. Las más fáciles de rastrear suelen ser "tiempo ahorrado" y "reducción de costes".</div>
+
+                <h2 id="r3">Cómo calcular el ROI</h2>
+                <p>La fórmula básica:</p>
+                <blockquote>ROI (%) = [(Beneficio obtenido - Coste de la IA) / Coste de la IA] × 100</blockquote>
+                <p><strong>Ejemplo real:</strong> Un cliente invierte 500€/mes en automatización con IA. Ahorra 40 horas/mes de trabajo administrativo (valoradas en 25€/hora = 1.000€). Su ROI es del <strong>100%</strong>.</p>
+
+                <h2 id="r4">Errores comunes</h2>
+                <ul>
+                    <li><strong>Medir demasiado pronto:</strong> La IA necesita al menos 30-60 días para mostrar resultados fiables</li>
+                    <li><strong>Ignorar costes ocultos:</strong> Incluye tiempo de configuración, formación y mantenimiento</li>
+                    <li><strong>No tener una baseline:</strong> Si no mides el "antes", no puedes calcular la mejora</li>
+                    <li><strong>Comparar con la perfección:</strong> Compara con el proceso humano anterior, no con un ideal inalcanzable</li>
+                </ul>
+
+                <h2 id="r5">Plantilla gratuita</h2>
+                <p>Hemos creado una <strong>plantilla de cálculo de ROI</strong> que puedes usar con tus propios datos. Incluye las 7 métricas, fórmulas automáticas y gráficos de seguimiento mensual.</p>
+                <p>📥 <a href="index.html#contacto" style="color:var(--accent-blue)">Contacta con nosotros</a> y te la enviamos gratis junto con una sesión de 30 minutos para configurarla con tus datos reales.</p>
+            `,
+            related: ['automatizaciones-pyme-2026','gpt5-futuro-negocio','ue-normas-ia-empresa']
+        }
+    };
+
+    const slugMap = {
+        0: 'gpt5-futuro-negocio',
+        1: 'automatizaciones-pyme-2026',
+        2: 'tutorial-n8n-paso-a-paso',
+        3: 'ue-normas-ia-empresa',
+        4: 'agentes-autonomos-productividad',
+        5: 'roi-ia-metricas-negocio'
+    };
+
+    function getSlug() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('slug') || 'gpt5-futuro-negocio';
+    }
+
+    function renderArticle() {
+        const slug = getSlug();
+        const art = articles[slug];
+        if (!art) { document.getElementById('article-container').innerHTML = '<div style="text-align:center;padding:200px 20px"><h2>Artículo no encontrado</h2><a href="newsletter.html">← Volver a Newsletter</a></div>'; return; }
+
+        document.title = art.metaTitle;
+        document.querySelector('meta[name="description"]').content = art.metaDesc;
+
+        const relatedHTML = (art.related || []).map(r => {
+            const rel = articles[r]; if (!rel) return '';
+            return '<a class="related-card" href="articulo.html?slug='+r+'">' +
+                '<img src="'+rel.img+'" alt="'+rel.title+'" loading="lazy">' +
+                '<div class="related-card-body"><span class="article-tag '+rel.tagClass+'" style="font-size:.5rem;margin-bottom:6px">'+rel.tag+'</span>' +
+                '<h4>'+rel.title+'</h4><span>'+rel.date+' · '+rel.readTime+'</span></div></a>';
+        }).join('');
+
+        // Prev / Next
+        const slugKeys = Object.keys(articles);
+        const idx = slugKeys.indexOf(slug);
+        const prevSlug = idx > 0 ? slugKeys[idx-1] : null;
+        const nextSlug = idx < slugKeys.length-1 ? slugKeys[idx+1] : null;
+        let navHTML = '<div class="article-nav">';
+        if (prevSlug) navHTML += '<a href="articulo.html?slug='+prevSlug+'"><div class="nav-label">← Anterior</div><div class="nav-title">'+articles[prevSlug].title+'</div></a>';
+        if (nextSlug) navHTML += '<a href="articulo.html?slug='+nextSlug+'" style="text-align:right"><div class="nav-label">Siguiente →</div><div class="nav-title">'+articles[nextSlug].title+'</div></a>';
+        navHTML += '</div>';
+
+        document.getElementById('article-container').innerHTML = `
+            <div class="article-hero">
+                <img src="${art.img}" alt="${art.title}">
+                <div class="article-hero-overlay"></div>
+                <div class="article-hero-content">
+                    <span class="article-tag ${art.tagClass}">${art.tag}</span>
+                    <h1>${art.title}</h1>
+                    <div class="article-meta-hero">
+                        <span>📅 ${art.date}</span>
+                        <span>⏱ ${art.readTime}</span>
+                        <span>✍️ ${art.author}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="article-layout">
+                <div class="article-content">${art.content}</div>
+                <div class="share-bar">
+                    <span style="font-size:.75rem;font-weight:600;color:var(--text-grey);margin-right:8px">Compartir:</span>
+                    <a class="share-btn" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(art.title)}&url=${encodeURIComponent(window.location.href)}" target="_blank">𝕏 Twitter</a>
+                    <a class="share-btn" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}" target="_blank">in LinkedIn</a>
+                    <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href);this.textContent='✅ Copiado!'">🔗 Copiar</button>
+                </div>
+                <div class="author-card">
+                    <div class="author-avatar">G</div>
+                    <div class="author-info">
+                        <h4>Gerard · IA de Barrio</h4>
+                        <p>Especialista en Inteligencia Artificial aplicada al negocio. Fundador de IA de Barrio. Ayudo a empresas a crecer con IA desde Menorca.</p>
+                    </div>
+                </div>
+                ${navHTML}
+                <section style="margin-top:50px">
+                    <h3 style="font-size:1.2rem;margin-bottom:8px">📖 Artículos relacionados</h3>
+                    <p style="color:var(--text-grey);font-size:.85rem;margin-bottom:20px">Continúa aprendiendo con estos artículos</p>
+                    <div class="related-grid">${relatedHTML}</div>
+                </section>
+                <div style="text-align:center;margin-top:60px;padding:40px;background:linear-gradient(135deg,rgba(0,113,227,.06),rgba(175,82,222,.06));border-radius:20px;border:1px solid rgba(0,113,227,.15)">
+                    <h3 style="margin-bottom:8px">📬 ¿Te ha gustado este artículo?</h3>
+                    <p style="color:var(--text-grey);font-size:.9rem;margin-bottom:20px">Suscríbete y recibe contenido como este cada semana.</p>
+                    <a href="newsletter.html#suscripcion" class="btn-apple-primary" style="text-decoration:none">Suscribirme Gratis →</a>
+                </div>
+            </div>`;
+    }
+
+    // Reading progress
+    window.addEventListener('scroll', () => {
+        const h = document.documentElement.scrollHeight - window.innerHeight;
+        const p = (window.scrollY / h) * 100;
+        document.getElementById('reading-progress').style.width = Math.min(p, 100) + '%';
+    });
+
+    renderArticle();
+    </script>
+</body>
+</html>
