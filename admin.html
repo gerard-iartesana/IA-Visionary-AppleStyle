@@ -1784,6 +1784,91 @@
                 <!-- ═══ LEFT: Content Area ═══ -->
                 <div style="padding: 28px; border-right: 1px solid rgba(255,255,255,0.06); overflow-y: auto; max-height: 75vh;">
                     
+                    <!-- 💡 Ideas & Inspiration Panel -->
+                    <div id="ideas-panel" style="margin-bottom: 24px; border: 1px solid rgba(255,204,0,0.2); border-radius: 16px; overflow: hidden; background: linear-gradient(135deg, rgba(255,204,0,0.04), rgba(255,149,0,0.04));">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; cursor: pointer; user-select: none;" onclick="toggleIdeasPanel()">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 1.2rem;">💡</span>
+                                <div>
+                                    <span style="font-weight: 700; font-size: 0.85rem;">Inspiración · Ideas para Noticias</span>
+                                    <p style="margin: 0; font-size: 0.6rem; color: var(--text-grey);">Explora temas trending, genera ideas con IA o busca inspiración</p>
+                                </div>
+                            </div>
+                            <span id="ideas-toggle-icon" style="font-size: 0.7rem; color: var(--text-grey); transition: transform 0.3s;">▼</span>
+                        </div>
+                        
+                        <div id="ideas-content" style="padding: 0 18px 18px; display: block;">
+                            <!-- Trending Topics -->
+                            <div style="margin-bottom: 16px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span style="font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #ffcc00;">🔥 Trending ahora</span>
+                                    <button class="ai-field-btn" onclick="refreshTrending()" style="font-size: 0.55rem; padding: 2px 8px; background: rgba(255,204,0,0.1); border-color: rgba(255,204,0,0.3); color: #ffcc00;">🔄 Actualizar</button>
+                                </div>
+                                <div id="trending-tags" style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                    <span class="idea-tag" onclick="useIdeaTag(this)">GPT-5 y empresas</span>
+                                    <span class="idea-tag" onclick="useIdeaTag(this)">Agentes IA autónomos</span>
+                                    <span class="idea-tag" onclick="useIdeaTag(this)">IA en marketing</span>
+                                    <span class="idea-tag" onclick="useIdeaTag(this)">Automatización n8n</span>
+                                    <span class="idea-tag" onclick="useIdeaTag(this)">Voice AI</span>
+                                    <span class="idea-tag" onclick="useIdeaTag(this)">Regulación UE IA</span>
+                                    <span class="idea-tag" onclick="useIdeaTag(this)">WhatsApp Business IA</span>
+                                    <span class="idea-tag" onclick="useIdeaTag(this)">SEO con IA</span>
+                                </div>
+                            </div>
+                            
+                            <!-- AI Idea Generator -->
+                            <div style="margin-bottom: 16px;">
+                                <span style="display: block; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #af52de; margin-bottom: 8px;">🤖 Generador de Ideas con IA</span>
+                                <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                                    <select id="idea-category" style="flex: 1; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card, #1c1c1e); color: var(--text-main, #fff); font-size: 0.75rem; font-family: 'Inter', sans-serif; outline: none;">
+                                        <option value="ia">🤖 Inteligencia Artificial</option>
+                                        <option value="negocio">💼 Negocio & Marketing</option>
+                                        <option value="tutorial">📚 Tutoriales & Guías</option>
+                                        <option value="noticia">📰 Actualidad Tech</option>
+                                        <option value="tendencia">📈 Tendencias 2026</option>
+                                    </select>
+                                    <button class="ai-field-btn" onclick="generateIdeas()" style="padding: 8px 16px; font-size: 0.7rem;">🧠 Generar 5 Ideas</button>
+                                </div>
+                                <div id="generated-ideas" style="display: none;"></div>
+                            </div>
+
+                            <!-- Quick Start Templates -->
+                            <div>
+                                <span style="display: block; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-blue); margin-bottom: 8px;">📋 Plantillas Rápidas</span>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                    <div class="idea-template" onclick="useTemplate('caso-exito')">
+                                        <span style="font-size: 1rem;">🏆</span>
+                                        <div>
+                                            <div style="font-weight: 600; font-size: 0.75rem;">Caso de Éxito</div>
+                                            <div style="font-size: 0.6rem; color: var(--text-grey);">Historia de cliente real</div>
+                                        </div>
+                                    </div>
+                                    <div class="idea-template" onclick="useTemplate('tutorial')">
+                                        <span style="font-size: 1rem;">🎓</span>
+                                        <div>
+                                            <div style="font-weight: 600; font-size: 0.75rem;">Tutorial Paso a Paso</div>
+                                            <div style="font-size: 0.6rem; color: var(--text-grey);">Guía práctica con capturas</div>
+                                        </div>
+                                    </div>
+                                    <div class="idea-template" onclick="useTemplate('comparativa')">
+                                        <span style="font-size: 1rem;">⚖️</span>
+                                        <div>
+                                            <div style="font-weight: 600; font-size: 0.75rem;">Comparativa</div>
+                                            <div style="font-size: 0.6rem; color: var(--text-grey);">Herramienta A vs B vs C</div>
+                                        </div>
+                                    </div>
+                                    <div class="idea-template" onclick="useTemplate('listado')">
+                                        <span style="font-size: 1rem;">📊</span>
+                                        <div>
+                                            <div style="font-weight: 600; font-size: 0.75rem;">Top / Listado</div>
+                                            <div style="font-size: 0.6rem; color: var(--text-grey);">Los X mejores de 2026</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Title -->
                     <div style="margin-bottom: 20px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
@@ -2021,6 +2106,73 @@
     </div>
 
     <style>
+        /* Idea Tags */
+        .idea-tag {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: rgba(255,204,0,0.08);
+            border: 1px solid rgba(255,204,0,0.2);
+            color: #ffcc00;
+            font-size: 0.68rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .idea-tag:hover {
+            background: rgba(255,204,0,0.18);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(255,204,0,0.15);
+        }
+        /* Idea Templates */
+        .idea-template {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .idea-template:hover {
+            background: rgba(0,113,227,0.06);
+            border-color: rgba(0,113,227,0.3);
+            transform: translateY(-2px);
+        }
+        /* Idea Cards (generated) */
+        .idea-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: rgba(175,82,222,0.04);
+            border: 1px solid rgba(175,82,222,0.12);
+            margin-bottom: 6px;
+            transition: all 0.2s;
+            gap: 8px;
+        }
+        .idea-card:hover {
+            background: rgba(175,82,222,0.1);
+            border-color: rgba(175,82,222,0.25);
+        }
+        .idea-card-use {
+            background: rgba(175,82,222,0.15);
+            border: none;
+            color: #af52de;
+            padding: 4px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.6rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .idea-card-use:hover { background: #af52de; color: white; }
         /* AI Field Assist Buttons */
         .ai-field-btn {
             background: rgba(175,82,222,0.1);
@@ -2180,6 +2332,153 @@
                 btn.disabled = false;
             }, 3000);
         }, 2000);
+    }
+
+    // ═══ IDEAS PANEL FUNCTIONS ═══
+    function toggleIdeasPanel() {
+        const content = document.getElementById('ideas-content');
+        const icon = document.getElementById('ideas-toggle-icon');
+        if (content.style.display === 'none') {
+            content.style.display = 'block';
+            icon.style.transform = 'rotate(0deg)';
+        } else {
+            content.style.display = 'none';
+            icon.style.transform = 'rotate(-90deg)';
+        }
+    }
+
+    function refreshTrending() {
+        const allTopics = [
+            'GPT-5 y empresas', 'Agentes IA autónomos', 'IA en marketing', 'Automatización n8n',
+            'Voice AI', 'Regulación UE IA', 'WhatsApp Business IA', 'SEO con IA',
+            'Claude vs GPT', 'IA para ventas', 'Chatbots avanzados', 'Machine Learning PYMEs',
+            'Copilots empresariales', 'IA generativa imágenes', 'RAG y bases de datos',
+            'Multimodal AI 2026', 'IA en contabilidad', 'Productividad con IA', 'No-code + IA',
+            'Gemini para negocios', 'IA y atención cliente', 'Webhooks inteligentes',
+            'Text-to-video IA', 'IA en email marketing', 'Modelos locales LLM'
+        ];
+        const shuffled = allTopics.sort(() => 0.5 - Math.random()).slice(0, 8);
+        document.getElementById('trending-tags').innerHTML = shuffled.map(t => 
+            '<span class="idea-tag" onclick="useIdeaTag(this)">' + t + '</span>'
+        ).join('');
+    }
+
+    function useIdeaTag(el) {
+        document.getElementById('art-title').value = el.textContent + ': ';
+        document.getElementById('art-title').focus();
+        updateSeoPreview();
+    }
+
+    function generateIdeas() {
+        const cat = document.getElementById('idea-category').value;
+        const btn = event.target;
+        btn.textContent = '⏳ Pensando...';
+        btn.classList.add('loading');
+
+        const ideasDB = {
+            ia: [
+                { title: 'Cómo integrar la IA en tu workflow diario sin ser programador', angle: '🎯 Práctico' },
+                { title: '5 herramientas de IA gratis que usan las empresas del IBEX 35', angle: '🆓 Gratuito' },
+                { title: 'IA conversacional: Por qué tu negocio necesita un chatbot en 2026', angle: '💬 Chatbots' },
+                { title: 'Prompt Engineering: El arte de hablar con la IA para obtener resultados', angle: '✍️ Prompts' },
+                { title: 'RAG vs Fine-tuning: Cuál elegir para tu empresa', angle: '🔬 Técnico' }
+            ],
+            negocio: [
+                { title: 'El ROI real de la IA: Datos de empresas españolas en 2026', angle: '📊 Datos' },
+                { title: 'Cómo reducimos un 60% los costes operativos con automatización IA', angle: '💰 Ahorro' },
+                { title: 'De 0 a 10K suscriptores: Estrategia de newsletter con IA', angle: '📈 Crecimiento' },
+                { title: 'IA para PYMEs: Plan de implementación en 30 días', angle: '🗓️ Planificación' },
+                { title: 'Los 3 errores fatales al implementar IA en tu negocio', angle: '⚠️ Errores' }
+            ],
+            tutorial: [
+                { title: 'Tutorial: Crea un agente de WhatsApp con n8n y OpenAI', angle: '📱 WhatsApp' },
+                { title: 'Automatiza tu email marketing en 15 minutos con n8n', angle: '📧 Email' },
+                { title: 'Guía: Construye tu propio asistente de ventas con IA', angle: '🤖 Asistente' },
+                { title: 'Cómo conectar tu CRM con IA para seguimiento automático', angle: '🔗 CRM' },
+                { title: 'Paso a paso: Analiza tus datos con IA sin saber programar', angle: '📊 Análisis' }
+            ],
+            noticia: [
+                { title: 'OpenAI presenta su nuevo modelo: ¿Qué cambia para las empresas?', angle: '🆕 Lanzamiento' },
+                { title: 'La UE aprueba nuevas regulaciones de IA: Impacto en PYMEs', angle: '⚖️ Legal' },
+                { title: 'Google revoluciona el SEO con su nuevo algoritmo de IA', angle: '🔍 SEO' },
+                { title: 'Apple anuncia integración total de IA en sus dispositivos', angle: '🍎 Apple' },
+                { title: 'Las 5 startups de IA españolas que están cambiando el juego', angle: '🇪🇸 España' }
+            ],
+            tendencia: [
+                { title: 'Las 10 tendencias de IA que dominarán el segundo semestre de 2026', angle: '📈 Tendencias' },
+                { title: 'Multimodal AI: Por qué texto + imagen + voz lo cambia todo', angle: '🎭 Multimodal' },
+                { title: 'IA en el edge: Modelos que funcionan sin internet', angle: '📡 Edge AI' },
+                { title: 'La era de los agentes: IA que actúa, no solo responde', angle: '🤖 Agentes' },
+                { title: 'Personalización extrema: IA que conoce a tu cliente mejor que tú', angle: '🎯 Personal' }
+            ]
+        };
+
+        setTimeout(() => {
+            btn.textContent = '🧠 Generar 5 Ideas';
+            btn.classList.remove('loading');
+            
+            const ideas = ideasDB[cat] || ideasDB.ia;
+            const container = document.getElementById('generated-ideas');
+            container.style.display = 'block';
+            container.innerHTML = '<p style="font-size: 0.6rem; color: #af52de; font-weight: 600; margin: 0 0 8px;">🤖 Ideas generadas — haz clic en "Usar" para empezar:</p>' +
+                ideas.map((idea, i) => 
+                    '<div class="idea-card">' +
+                    '<div style="flex: 1;"><span style="font-size: 0.55rem; padding: 2px 6px; border-radius: 6px; background: rgba(175,82,222,0.1); color: #af52de; font-weight: 600; margin-right: 6px;">' + idea.angle + '</span>' +
+                    '<span style="font-size: 0.78rem;">' + idea.title + '</span></div>' +
+                    '<button class="idea-card-use" onclick="useIdea(\'' + idea.title.replace(/'/g, "\\'") + '\')">✨ Usar</button>' +
+                    '</div>'
+                ).join('');
+        }, 1500);
+    }
+
+    function useIdea(title) {
+        document.getElementById('art-title').value = title;
+        updateSeoPreview();
+        document.getElementById('generated-ideas').style.display = 'none';
+        // Auto-scroll down to editing area
+        document.getElementById('art-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function useTemplate(type) {
+        const templates = {
+            'caso-exito': {
+                title: 'Caso de Éxito: Cómo [Empresa] Transformó su Negocio con IA',
+                subtitle: 'Descubre cómo [empresa] logró [resultado] implementando soluciones de IA en su día a día.',
+                content: '<h2>El desafío</h2><p>Describe la situación inicial del cliente, sus problemas y objetivos.</p><h2>La solución implementada</h2><p>Detalla las herramientas y estrategias de IA que se aplicaron.</p><h2>Los resultados</h2><ul><li><strong>+X% en productividad</strong></li><li><strong>-X% en costes operativos</strong></li><li><strong>X horas ahorradas/semana</strong></li></ul><h2>Testimonio del cliente</h2><blockquote>Inserta aquí una cita directa del cliente sobre su experiencia.</blockquote><h2>Conclusión</h2><p>Resume los aprendizajes clave y cómo otros negocios pueden replicar este éxito.</p>',
+                category: 'negocio'
+            },
+            'tutorial': {
+                title: 'Tutorial: Cómo [Hacer X] Paso a Paso con IA',
+                subtitle: 'Guía práctica para [objetivo] usando [herramienta]. No necesitas experiencia técnica.',
+                content: '<h2>¿Qué vamos a construir?</h2><p>Describe el resultado final que el lector conseguirá al terminar el tutorial.</p><h2>Requisitos previos</h2><ul><li>Cuenta gratuita en [herramienta]</li><li>10-15 minutos de tiempo</li><li>Ganas de aprender 🚀</li></ul><h2>Paso 1: Configuración inicial</h2><p>Explica la configuración inicial con capturas de pantalla.</p><h2>Paso 2: Crear la automatización</h2><p>Detalla el segundo paso con ejemplos visuales.</p><h2>Paso 3: Probar y ajustar</h2><p>Muestra cómo verificar que todo funciona correctamente.</p><h2>Resultado final</h2><p>Muestra el resultado y sugiere posibles mejoras o extensiones.</p>',
+                category: 'tutorial'
+            },
+            'comparativa': {
+                title: '[Herramienta A] vs [Herramienta B]: ¿Cuál es Mejor para tu Negocio?',
+                subtitle: 'Análisis detallado comparando las dos opciones más populares de [categoría] en 2026.',
+                content: '<h2>Introducción</h2><p>¿Estás buscando la mejor herramienta de [categoría]? Hemos probado ambas para que no tengas que hacerlo tú.</p><h2>Tabla comparativa</h2><p><em>[Inserta aquí una tabla comparativa con las características principales]</em></p><h2>[Herramienta A] — Pros y contras</h2><p>Analiza los puntos fuertes y débiles en detalle.</p><h2>[Herramienta B] — Pros y contras</h2><p>Analiza los puntos fuertes y débiles en detalle.</p><h2>Precio</h2><p>Compara los planes de precios y la relación valor/coste.</p><h2>Veredicto final</h2><blockquote>Nuestra recomendación: [Herramienta X] si buscas [objetivo A], [Herramienta Y] si priorizas [objetivo B].</blockquote>',
+                category: 'ia'
+            },
+            'listado': {
+                title: 'Los [X] Mejores [Herramientas/Estrategias] de IA en 2026',
+                subtitle: 'Selección actualizada de las [X] opciones más potentes para [objetivo].',
+                content: '<h2>¿Por qué esta selección?</h2><p>Explica los criterios de selección y por qué son relevantes ahora.</p><h2>1. [Herramienta/Estrategia]</h2><p><strong>Mejor para:</strong> [caso de uso]<br><strong>Precio:</strong> Desde X€/mes<br>Descripción breve de por qué destaca.</p><h2>2. [Herramienta/Estrategia]</h2><p><strong>Mejor para:</strong> [caso de uso]<br><strong>Precio:</strong> Desde X€/mes<br>Descripción breve de por qué destaca.</p><h2>3. [Herramienta/Estrategia]</h2><p><strong>Mejor para:</strong> [caso de uso]<br><strong>Precio:</strong> Desde X€/mes<br>Descripción breve de por qué destaca.</p><h2>Conclusión: ¿Cuál elegir?</h2><p>Resumen con recomendaciones según tipo de negocio o necesidad.</p>',
+                category: 'ia'
+            }
+        };
+
+        const t = templates[type];
+        if (!t) return;
+
+        document.getElementById('art-title').value = t.title;
+        document.getElementById('art-subtitle').value = t.subtitle;
+        document.getElementById('art-content').innerHTML = t.content;
+        document.getElementById('art-category').value = t.category;
+        updateSeoPreview();
+        updateWordCount();
+        
+        // Scroll to title
+        document.getElementById('art-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     function openNewsEditor() {
