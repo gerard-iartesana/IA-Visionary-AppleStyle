@@ -158,6 +158,19 @@ body {
     background: var(--accent-blue);
 }
 
+/* Override for <a> used as buy button (inside .nav-links a which sets color to --text-main) */
+a.btn-apple-buy,
+.nav-links a.btn-apple-buy {
+    color: var(--btn-buy-text) !important;
+    opacity: 1 !important;
+    text-decoration: none;
+}
+
+a.btn-apple-buy::after,
+.nav-links a.btn-apple-buy::after {
+    display: none !important;
+}
+
 /* Mobile Menu Toggle */
 .mobile-menu-toggle {
     display: none;
