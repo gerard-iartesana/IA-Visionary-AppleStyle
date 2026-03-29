@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatizaciones IA | IA de Barrio</title>
+    <meta name="description" content="Automatizaciones inteligentes con n8n y Antigravity. Flujos de trabajo que conectan tus herramientas y eliminan tareas repetitivas.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="landing_apple_unified.css?v=11.4">
+
+    <style>
+        /* ====== AUTOMATIZACIONES CUSTOM STYLES ====== */
+
+        /* Workflow Grid */
+        .workflows-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 60px;
+        }
+
+        .workflow-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .workflow-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            border-color: var(--accent-blue);
+        }
+
+        .workflow-card img {
+            width: 100%;
+            aspect-ratio: 16/10;
+            object-fit: cover;
+            display: block;
+        }
+
+        .workflow-card-body {
+            padding: 24px;
+        }
+
+        .workflow-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        .status-active {
+            background: rgba(52,199,89,0.15);
+            color: #34c759;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #34c759;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .status-coming {
+            background: rgba(255,149,0,0.15);
+            color: #ff9500;
+        }
+
+        .workflow-card h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .workflow-card p {
+            font-size: 0.85rem;
+            color: var(--text-grey);
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .workflow-tools {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tool-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.65rem;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border-color);
+            color: var(--text-grey);
+        }
+
+        [data-theme="light"] .tool-badge {
+            background: rgba(0,0,0,0.04);
+        }
+
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), #af52de);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-grey);
+            font-weight: 400;
+        }
+
+        /* How it works */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .step-item {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .step-number {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            background: rgba(0,113,227,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        .step-item h4 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .step-item p {
+            font-size: 0.85rem;
+            color: var(--text-grey);
+            line-height: 1.5;
+        }
+
+        /* n8n badge in hero */
+        .tech-badges {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .tech-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-grey);
+        }
+
+        .tech-badge svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* CTA Admin Panel */
+        .admin-cta-card {
+            background: linear-gradient(135deg, rgba(0,113,227,0.08), rgba(175,82,222,0.08));
+            border: 1px solid rgba(0,113,227,0.2);
+            border-radius: 24px;
+            padding: 50px 40px;
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .admin-cta-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .admin-cta-card p {
+            color: var(--text-grey);
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .workflows-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .stat-number {
+                font-size: 2.2rem;
+            }
+
+            .stat-item {
+                padding: 25px 15px;
+            }
+
+            .tech-badges {
+                flex-wrap: wrap;
+            }
+
+            .admin-cta-card {
+                padding: 35px 25px;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .workflows-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <!-- Nav Bar -->
+    <nav class="apple-nav">
+        <div class="container nav-content">
+            <div class="logo"><a href="index.html" style="color: inherit; text-decoration: none;">IA<span>deBarrio</span></a></div>
+            
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="mobile-menu-toggle" aria-label="Abrir menú">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-open"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-close"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+
+            <div class="nav-links" id="apple-nav-links">
+                <a href="index.html#problemas" class="nav-link">Problemas</a>
+                <a href="index.html#solucion" class="nav-link">Solución</a>
+                <a href="index.html#precios" class="nav-link">Precios</a>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema"></button>
+                    <a href="admin.html" class="btn-apple-buy" style="text-decoration: none;">Panel Admin</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero" style="min-height: 50vh; padding-top: 140px; text-align: center;">
+        <div class="container hero-container" style="align-items: center;">
+            <div style="display: inline-block; padding: 6px 16px; border-radius: 20px; background: rgba(52,199,89,0.12); color: #34c759; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px;">
+                ⚡ Automatizaciones con IA
+            </div>
+            <h1 style="margin-bottom: 20px;">Tus procesos.<br><span style="color: var(--accent-blue);">En piloto automático.</span></h1>
+            <p class="hero-sub" style="max-width: 650px; margin: 0 auto 30px;">Conectamos tus herramientas, eliminamos tareas repetitivas y creamos flujos inteligentes que trabajan por ti 24/7 usando n8n + IA.</p>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <a href="#workflows" class="btn-apple-primary" style="text-decoration: none;">Ver Automatizaciones</a>
+                <a href="admin.html" class="btn-apple-secondary" style="text-decoration: none;">Panel Admin →</a>
+            </div>
+
+            <!-- Tech Badges -->
+            <div class="tech-badges">
+                <span class="tech-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#ff6d5a" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+                    n8n
+                </span>
+                <span class="tech-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#0071e3" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M8 12l2 2 4-4"></path></svg>
+                    Antigravity
+                </span>
+                <span class="tech-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="2"><path d="M12 2a10 10 0 0 1 0 20 10 10 0 0 1 0-20z"></path><path d="M12 6v6l4 2"></path></svg>
+                    24/7 Activo
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats Section -->
+    <section class="section" style="padding-top: 40px;">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">+200</div>
+                    <div class="stat-label">Horas ahorradas / mes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Flujos activos</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">99.9%</div>
+                    <div class="stat-label">Uptime garantizado</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Errores manuales</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workflows Section -->
+    <section class="section" id="workflows">
+        <div class="container">
+            <header class="section-intro">
+                <h2>Nuestras automatizaciones.</h2>
+                <p>Flujos de trabajo reales construidos con n8n + IA que ya están funcionando para nuestros clientes.</p>
+            </header>
+
+            <div class="workflows-grid">
+                <!-- Workflow 1: Email Agent -->
+                <div class="workflow-card">
+                    <img src="img/automatizaciones/email-agent.png" alt="Agente de Email Inteligente" loading="lazy">
+                    <div class="workflow-card-body">
+                        <span class="workflow-status status-active"><span class="status-dot"></span> Activo</span>
+                        <h3>Agente de Email Inteligente</h3>
+                        <p>Recibe emails, los analiza con IA, genera respuestas, registra en Sheets y notifica por WhatsApp.</p>
+                        <div class="workflow-tools">
+                            <span class="tool-badge">📧 Gmail</span>
+                            <span class="tool-badge">🧠 OpenAI</span>
+                            <span class="tool-badge">📊 Sheets</span>
+                            <span class="tool-badge">💬 WhatsApp</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workflow 2: Scraper AI -->
+                <div class="workflow-card">
+                    <img src="img/automatizaciones/scraper-ai.png" alt="Scraper + IA de Contenido" loading="lazy">
+                    <div class="workflow-card-body">
+                        <span class="workflow-status status-active"><span class="status-dot"></span> Activo</span>
+                        <h3>Scraper + IA de Contenido</h3>
+                        <p>Extrae contenido web cada 12h, lo resume con IA, publica en Slack y actualiza tu CRM automáticamente.</p>
+                        <div class="workflow-tools">
+                            <span class="tool-badge">🕷️ Scraper</span>
+                            <span class="tool-badge">🧠 OpenAI</span>
+                            <span class="tool-badge">💜 Slack</span>
+                            <span class="tool-badge">📁 CRM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workflow 3: Payments -->
+                <div class="workflow-card">
+                    <img src="img/automatizaciones/payments.png" alt="Gestión de Pagos Automática" loading="lazy">
+                    <div class="workflow-card-body">
+                        <span class="workflow-status status-active"><span class="status-dot"></span> Activo</span>
+                        <h3>Gestión de Pagos Automática</h3>
+                        <p>Webhook de Stripe → valida pagos → envía facturas automáticamente y notifica al equipo si falla.</p>
+                        <div class="workflow-tools">
+                            <span class="tool-badge">🔗 Webhook</span>
+                            <span class="tool-badge">💳 Stripe</span>
+                            <span class="tool-badge">📄 Factura</span>
+                            <span class="tool-badge">🔔 Alertas</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workflow 4: Leads -->
+                <div class="workflow-card">
+                    <img src="img/automatizaciones/leads.png" alt="Cualificación de Leads con IA" loading="lazy">
+                    <div class="workflow-card-body">
+                        <span class="workflow-status status-active"><span class="status-dot"></span> Activo</span>
+                        <h3>Cualificación de Leads con IA</h3>
+                        <p>Nuevo lead → IA lo cualifica y puntúa → prioridad alta va a Calendar, baja a secuencia de emails.</p>
+                        <div class="workflow-tools">
+                            <span class="tool-badge">📋 Formulario</span>
+                            <span class="tool-badge">🧠 IA Score</span>
+                            <span class="tool-badge">📅 Calendar</span>
+                            <span class="tool-badge">📧 Email</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workflow 5: Voice -->
+                <div class="workflow-card">
+                    <img src="img/automatizaciones/voice.png" alt="Transcripción de Llamadas + IA" loading="lazy">
+                    <div class="workflow-card-body">
+                        <span class="workflow-status status-active"><span class="status-dot"></span> Activo</span>
+                        <h3>Llamadas → Resumen IA</h3>
+                        <p>Llamada telefónica → transcripción → resumen con IA → actualiza CRM y envía reporte por email.</p>
+                        <div class="workflow-tools">
+                            <span class="tool-badge">📞 Voz</span>
+                            <span class="tool-badge">📝 Transcribe</span>
+                            <span class="tool-badge">🧠 Resumen IA</span>
+                            <span class="tool-badge">📁 CRM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workflow 6: Social -->
+                <div class="workflow-card">
+                    <img src="img/automatizaciones/social.png" alt="Monitor Social + IA" loading="lazy">
+                    <div class="workflow-card-body">
+                        <span class="workflow-status status-coming">🔜 Próximamente</span>
+                        <h3>Monitor Social con IA</h3>
+                        <p>Monitoriza menciones → analiza sentimiento con IA → repostea positivos, alerta y responde negativos.</p>
+                        <div class="workflow-tools">
+                            <span class="tool-badge">👁️ Monitor</span>
+                            <span class="tool-badge">🧠 Sentimiento</span>
+                            <span class="tool-badge">🔔 Alertas</span>
+                            <span class="tool-badge">✍️ IA Draft</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section class="section">
+        <div class="container">
+            <header class="section-intro">
+                <h2>Cómo funciona.</h2>
+                <p>Activar una automatización es tan fácil como pulsar un botón.</p>
+            </header>
+
+            <div class="steps-grid">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <h4>Elige tu automatización</h4>
+                    <p>Explora los flujos disponibles y elige el que mejor se adapte a las necesidades de tu negocio.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <h4>Actívala desde el panel</h4>
+                    <p>Accede al panel de administración, configura tus credenciales y activa la automatización con un clic.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <h4>Trabaja por ti 24/7</h4>
+                    <p>La automatización se ejecuta continuamente. Monitoriza su estado y resultados desde tu dashboard.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin CTA Section -->
+    <section class="section" style="padding-bottom: 100px;">
+        <div class="container">
+            <header class="section-intro">
+                <h2>Gestiona todo desde un solo lugar.</h2>
+                <p>Tu panel de administración es el centro de control de todas tus automatizaciones.</p>
+            </header>
+
+            <div class="admin-cta-card">
+                <div style="font-size: 3rem; margin-bottom: 20px;">🎛️</div>
+                <h3>Panel de Automatizaciones</h3>
+                <p>Activa, desactiva y monitoriza cada flujo de trabajo desde tu panel privado. Ve métricas en tiempo real, historial de ejecuciones y logs de errores.</p>
+                <a href="admin.html" class="btn-apple-primary" style="text-decoration: none; font-size: 1rem; padding: 18px 40px;">Acceder al Panel →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="apple-footer">
+        <div class="container footer-grid">
+            <p>© 2026 IA de Barrio. Hecho con ❤️ desde Menorca.</p>
+            <div class="f-links">
+                <a href="servicios.html">Servicios</a>
+                <a href="conocimientos.html">Conocimientos</a>
+                <a href="demos.html">Demos</a>
+                <a href="inversion.html">Inversión</a>
+                <a href="academia.html">Academia</a>
+                <a href="automatizaciones.html" style="color: var(--accent-blue);">Automatizaciones</a>
+                <a href="login.html">Admin</a>
+                <a href="privacidad.html">Privacidad</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Main JS -->
+    <script src="landing_apple.js?v=11.4"></script>
+</body>
+</html>
