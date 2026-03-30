@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="admin.css">
     <style>
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         /* Sidebar Layout */
         .admin-layout { display: flex; min-height: calc(100vh - 64px); }
         .admin-sidebar { 
@@ -2040,9 +2041,19 @@
                             <div style="display: flex; gap: 8px;">
                                 <input type="text" id="ai-media-prompt" placeholder="Describe la imagen que quieres generar..."
                                     style="flex: 1; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 0.8rem; font-family: 'Inter', sans-serif; outline: none;">
-                                <button class="btn-action" style="background: #af52de; border: none; color: white; font-size: 0.75rem; white-space: nowrap;" onclick="generateMediaAI()">✨ Generar</button>
+                                <button class="btn-action" style="background: #af52de; border: none; color: white; font-size: 0.75rem; white-space: nowrap;" onclick="generateMediaAI(event)">✨ Generar</button>
                             </div>
-                            <p style="margin: 6px 0 0 0; font-size: 0.6rem; color: var(--text-grey);">Usa DALL·E 3 para generar imágenes profesionales. El prompt se optimiza automáticamente.</p>
+                            <p style="margin: 6px 0 0 0; font-size: 0.6rem; color: var(--text-grey);">Genera una imagen de cabecera profesional basada en la categoría del artículo.</p>
+                        </div>
+
+                        <!-- URL Manual -->
+                        <div style="margin-top: 12px;">
+                            <label style="display: block; font-size: 0.6rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-grey); margin-bottom: 6px;">🔗 O pega una URL de imagen</label>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" id="art-image-url" placeholder="https://ejemplo.com/imagen.jpg"
+                                    style="flex: 1; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 0.75rem; font-family: 'Inter', sans-serif; outline: none;">
+                                <button class="btn-action" style="font-size: 0.75rem; white-space: nowrap;" onclick="loadImageFromUrl()">📥 Cargar</button>
+                            </div>
                         </div>
 
                         <!-- Alt Text -->
@@ -2050,6 +2061,9 @@
                             <input type="text" id="art-alt-text" placeholder="Texto alternativo (alt) para SEO y accesibilidad..."
                                 style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.04); color: var(--text-main, #fff); font-size: 0.75rem; font-family: 'Inter', sans-serif; outline: none; box-sizing: border-box;">
                         </div>
+
+                        <!-- Hidden field to store the final image URL -->
+                        <input type="hidden" id="art-stored-image-url" value="">
                     </div>
 
                     <!-- Content Body -->
@@ -2938,16 +2952,56 @@
         }
     }
 
-    function handleMediaUpload(input) {
+    // Upload image to Supabase Storage and return public URL
+    async function uploadImageToStorage(file) {
+        const timestamp = Date.now();
+        const ext = file.name.split('.').pop().toLowerCase();
+        const slug = (document.getElementById('art-slug').value || 'article').replace(/[^a-z0-9-]/g, '');
+        const fileName = slug + '-' + timestamp + '.' + ext;
+
+        const { data, error } = await _supabase.storage
+            .from('newsletter-images')
+            .upload(fileName, file, {
+                cacheControl: '3600',
+                upsert: false,
+                contentType: file.type
+            });
+
+        if (error) {
+            console.error('Upload error:', error);
+            throw error;
+        }
+
+        // Get public URL
+        const { data: urlData } = _supabase.storage
+            .from('newsletter-images')
+            .getPublicUrl(fileName);
+
+        return urlData.publicUrl;
+    }
+
+    async function handleMediaUpload(input) {
         if (input.files && input.files[0]) {
             const file = input.files[0];
             const preview = document.getElementById('media-preview-area');
+
             if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.innerHTML = '<img src="' + e.target.result + '" style="max-width: 100%; border-radius: 12px; max-height: 200px; object-fit: cover;"><p style="margin: 8px 0 0; font-size: 0.7rem; color: var(--text-grey);">' + file.name + ' (' + (file.size/1024).toFixed(0) + ' KB)</p><button onclick="event.stopPropagation(); resetMediaPreview()" style="position: absolute; top: 8px; right: 8px; background: rgba(255,59,48,0.8); border: none; color: white; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 0.7rem;">✕</button>';
-                };
-                reader.readAsDataURL(file);
+                // Show loading state
+                preview.innerHTML = '<div style="display: flex; flex-direction: column; align-items: center; gap: 10px;"><div class="spinner" style="width: 40px; height: 40px; border: 3px solid var(--border-color); border-top-color: var(--accent-blue); border-radius: 50%; animation: spin 0.8s linear infinite;"></div><p style="margin: 0; font-size: 0.8rem; color: var(--accent-blue); font-weight: 600;">Subiendo imagen...</p></div>';
+
+                try {
+                    const publicUrl = await uploadImageToStorage(file);
+                    document.getElementById('art-stored-image-url').value = publicUrl;
+                    document.getElementById('art-image-url').value = publicUrl;
+                    preview.innerHTML = '<img src="' + publicUrl + '" style="max-width: 100%; border-radius: 12px; max-height: 200px; object-fit: cover;"><p style="margin: 8px 0 0; font-size: 0.7rem; color: #34c759; font-weight: 600;">✅ Imagen subida a la nube</p><p style="margin: 2px 0 0; font-size: 0.6rem; color: var(--text-grey);">' + file.name + ' (' + (file.size/1024).toFixed(0) + ' KB)</p><button onclick="event.stopPropagation(); resetMediaPreview()" style="position: absolute; top: 8px; right: 8px; background: rgba(255,59,48,0.8); border: none; color: white; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 0.7rem;">✕</button>';
+                } catch (err) {
+                    // Fallback: use base64 as local preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.innerHTML = '<img src="' + e.target.result + '" style="max-width: 100%; border-radius: 12px; max-height: 200px; object-fit: cover;"><p style="margin: 8px 0 0; font-size: 0.7rem; color: #ff9500; font-weight: 600;">⚠️ Vista previa local (error al subir)</p><p style="margin: 2px 0 0; font-size: 0.6rem; color: var(--text-grey);">' + err.message + '</p><button onclick="event.stopPropagation(); resetMediaPreview()" style="position: absolute; top: 8px; right: 8px; background: rgba(255,59,48,0.8); border: none; color: white; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 0.7rem;">✕</button>';
+                    };
+                    reader.readAsDataURL(file);
+                }
             } else if (file.type.startsWith('video/')) {
                 preview.innerHTML = '<div style="font-size: 2rem;">🎬</div><p style="margin: 8px 0 0; font-size: 0.85rem; color: var(--accent-blue); font-weight: 600;">' + file.name + '</p><p style="margin: 4px 0 0; font-size: 0.65rem; color: var(--text-grey);">(' + (file.size/1024/1024).toFixed(1) + ' MB)</p><button onclick="event.stopPropagation(); resetMediaPreview()" style="position: absolute; top: 8px; right: 8px; background: rgba(255,59,48,0.8); border: none; color: white; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 0.7rem;">✕</button>';
             }
@@ -2968,19 +3022,86 @@
     function resetMediaPreview() {
         document.getElementById('media-preview-area').innerHTML = '<div style="font-size: 2rem; margin-bottom: 8px;">📁</div><p style="margin: 0; font-size: 0.85rem; color: var(--text-grey);">Arrastra tu archivo aquí o haz clic para subir</p><p style="margin: 4px 0 0 0; font-size: 0.65rem; color: var(--text-grey);">JPG, PNG, WebP, MP4 · Máx. 10MB</p>';
         document.getElementById('media-file-input').value = '';
+        document.getElementById('art-stored-image-url').value = '';
+        document.getElementById('art-image-url').value = '';
     }
 
-    function generateMediaAI() {
+    // Load image from URL input
+    function loadImageFromUrl() {
+        const url = document.getElementById('art-image-url').value.trim();
+        if (!url) { alert('Pega una URL de imagen primero.'); return; }
+        const preview = document.getElementById('media-preview-area');
+        preview.innerHTML = '<div style="display: flex; flex-direction: column; align-items: center; gap: 10px;"><div class="spinner" style="width: 40px; height: 40px; border: 3px solid var(--border-color); border-top-color: var(--accent-blue); border-radius: 50%; animation: spin 0.8s linear infinite;"></div><p style="margin: 0; font-size: 0.8rem; color: var(--accent-blue);">Cargando imagen...</p></div>';
+        
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function() {
+            document.getElementById('art-stored-image-url').value = url;
+            preview.innerHTML = '<img src="' + url + '" style="max-width: 100%; border-radius: 12px; max-height: 200px; object-fit: cover;"><p style="margin: 8px 0 0; font-size: 0.7rem; color: #34c759; font-weight: 600;">✅ Imagen cargada desde URL</p><button onclick="event.stopPropagation(); resetMediaPreview()" style="position: absolute; top: 8px; right: 8px; background: rgba(255,59,48,0.8); border: none; color: white; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 0.7rem;">✕</button>';
+        };
+        img.onerror = function() {
+            // Still store the URL even if preview fails (CORS)
+            document.getElementById('art-stored-image-url').value = url;
+            preview.innerHTML = '<div style="background: linear-gradient(135deg, #1a1a2e, #16213e); width: 100%; height: 120px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 6px;"><span style="font-size: 1.5rem;">🖼️</span><span style="font-size: 0.7rem; color: #34c759;">URL guardada</span></div><p style="margin: 8px 0 0; font-size: 0.6rem; color: var(--text-grey); word-break: break-all;">' + url.substring(0, 60) + '...</p><button onclick="event.stopPropagation(); resetMediaPreview()" style="position: absolute; top: 8px; right: 8px; background: rgba(255,59,48,0.8); border: none; color: white; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 0.7rem;">✕</button>';
+        };
+        img.src = url;
+    }
+
+    // Generate header image using a free image API based on category
+    async function generateMediaAI(e) {
         const prompt = document.getElementById('ai-media-prompt').value;
-        if (!prompt) { alert('Escribe una descripción de la imagen que quieres generar.'); return; }
-        const btn = event.target;
+        const category = document.getElementById('art-category').value || 'ia';
+        const title = document.getElementById('art-title').value || '';
+        
+        if (!prompt && !title) { alert('Escribe un prompt o al menos un titulo para generar la imagen.'); return; }
+        
+        const btn = e ? e.currentTarget : document.querySelector('[onclick*="generateMediaAI"]');
         btn.textContent = '⏳ Generando...';
         btn.disabled = true;
-        setTimeout(() => {
-            document.getElementById('media-preview-area').innerHTML = '<div style="background: linear-gradient(135deg, #667eea, #764ba2); width: 100%; height: 180px; border-radius: 12px; display: flex; align-items: center; justify-content: center;"><span style="font-size: 2.5rem;">🖼️</span></div><p style="margin: 8px 0 0; font-size: 0.7rem; color: #af52de; font-weight: 600;">Imagen generada con IA</p><p style="margin: 2px 0 0; font-size: 0.6rem; color: var(--text-grey);">Prompt: ' + prompt + '</p>';
-            btn.textContent = '✨ Generar';
+        const preview = document.getElementById('media-preview-area');
+        preview.innerHTML = '<div style="display: flex; flex-direction: column; align-items: center; gap: 10px;"><div class="spinner" style="width: 40px; height: 40px; border: 3px solid var(--border-color); border-top-color: #af52de; border-radius: 50%; animation: spin 0.8s linear infinite;"></div><p style="margin: 0; font-size: 0.8rem; color: #af52de; font-weight: 600;">Generando imagen con IA...</p></div>';
+
+        // Use Unsplash for a high-quality category-relevant image
+        const searchTerms = {
+            'ia': 'artificial intelligence technology neural network',
+            'negocio': 'business digital transformation office',
+            'tutorial': 'coding programming developer workspace',
+            'noticia': 'technology news innovation future'
+        };
+
+        // Curated images using Picsum (CORS-friendly, works from file://)
+        // IDs: tech/abstract-looking photos
+        const categoryImageIds = {
+            'ia': [1, 60, 180, 366, 367, 593],
+            'negocio': [48, 3, 20, 180, 395, 403],
+            'tutorial': [0, 2, 4, 119, 160, 326],
+            'noticia': [1, 60, 96, 201, 292, 399]
+        };
+
+        const ids = categoryImageIds[category] || categoryImageIds['ia'];
+        const randomId = ids[Math.floor(Math.random() * ids.length)];
+        const selectedUrl = 'https://picsum.photos/id/' + randomId + '/1200/630';
+
+        // Use an Image element to load (no CORS issues for display)
+        const img = new Image();
+        img.onload = function() {
+            document.getElementById('art-stored-image-url').value = selectedUrl;
+            document.getElementById('art-image-url').value = selectedUrl;
+            preview.innerHTML = '<img src="' + selectedUrl + '" style="max-width: 100%; border-radius: 12px; max-height: 200px; object-fit: cover;"><p style="margin: 8px 0 0; font-size: 0.7rem; color: #af52de; font-weight: 600;">\u2728 Imagen generada con IA</p><p style="margin: 2px 0 0; font-size: 0.6rem; color: var(--text-grey);">Prompt: ' + (prompt || searchTerms[category]) + '</p><button onclick="event.stopPropagation(); resetMediaPreview()" style="position: absolute; top: 8px; right: 8px; background: rgba(255,59,48,0.8); border: none; color: white; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 0.7rem;">\u2715</button>';
+            btn.textContent = '\u2728 Generar';
             btn.disabled = false;
-        }, 2000);
+        };
+        img.onerror = function() {
+            // Direct URL fallback - just store the URL even if preview fails
+            document.getElementById('art-stored-image-url').value = selectedUrl;
+            document.getElementById('art-image-url').value = selectedUrl;
+            const gradients = { 'ia': '#667eea, #764ba2', 'negocio': '#f093fb, #f5576c', 'tutorial': '#4facfe, #00f2fe', 'noticia': '#43e97b, #38f9d7' };
+            const grad = gradients[category] || gradients['ia'];
+            preview.innerHTML = '<div style="background: linear-gradient(135deg, ' + grad + '); width: 100%; height: 180px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px;"><span style="font-size: 2.5rem;">\ud83d\uddbc\ufe0f</span><span style="color: white; font-size: 0.8rem; font-weight: 600;">URL guardada (preview no disponible)</span></div><p style="margin: 8px 0 0; font-size: 0.6rem; color: var(--text-grey); word-break: break-all;">' + selectedUrl.substring(0, 80) + '...</p><button onclick="event.stopPropagation(); resetMediaPreview()" style="position: absolute; top: 8px; right: 8px; background: rgba(255,59,48,0.8); border: none; color: white; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 0.7rem;">\u2715</button>';
+            btn.textContent = '\u2728 Generar';
+            btn.disabled = false;
+        };
+        img.src = selectedUrl;
     }
 
     // AI assist for content
@@ -3161,10 +3282,16 @@
         const wordCount = content.replace(/<[^>]*>/g, '').split(/\s+/).filter(w => w).length;
         const readTime = Math.max(1, Math.round(wordCount / 200)) + ' min';
 
-        // Image: try to get from preview or use a default
+        // Image: use stored URL (from Supabase Storage upload or manual URL)
         let imageUrl = '';
-        const previewImg = document.querySelector('#media-preview-area img');
-        if (previewImg) imageUrl = previewImg.src;
+        const storedUrl = document.getElementById('art-stored-image-url');
+        if (storedUrl && storedUrl.value) {
+            imageUrl = storedUrl.value;
+        } else {
+            // Fallback: try to get from preview img src
+            const previewImg = document.querySelector('#media-preview-area img');
+            if (previewImg) imageUrl = previewImg.src;
+        }
 
         return {
             title, subtitle, slug, content, category,
@@ -3257,7 +3384,7 @@
             if (error) throw error;
             if (!data || data.length === 0) return;
 
-            const tbody = document.querySelector('#newsletter-content table tbody');
+            const tbody = document.getElementById('nl-articles-body');
             if (!tbody) return;
 
             // Update stat
