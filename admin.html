@@ -3437,15 +3437,57 @@
 
     // ── Delete article from Supabase ──
     async function deleteSupabaseArticle(id, btn) {
-        if (!confirm('¿Seguro que quieres eliminar este artículo?')) return;
+        if (!confirm('¿Seguro que quieres eliminar este artículo? (ID: ' + id + ')')) return;
+        
+        console.log('[DELETE] Intentando eliminar artículo con ID:', id);
+        
         try {
-            const { error } = await _supabase.from('articles').delete().eq('id', id);
+            // First verify the article exists
+            const { data: checkData, error: checkError } = await _supabase
+                .from('articles').select('id, title').eq('id', id);
+            console.log('[DELETE] Verificación previa:', checkData, checkError);
+            
+            if (checkError) {
+                console.error('[DELETE] Error al verificar:', checkError);
+                throw checkError;
+            }
+            
+            if (!checkData || checkData.length === 0) {
+                alert('⚠️ El artículo no se encontró en la base de datos (posible problema de permisos RLS)');
+                return;
+            }
+            
+            // Perform the delete
+            const { data: deleteData, error, count } = await _supabase
+                .from('articles').delete().eq('id', id).select();
+            
+            console.log('[DELETE] Resultado:', { deleteData, error, count });
+            
             if (error) throw error;
+            
+            if (!deleteData || deleteData.length === 0) {
+                console.warn('[DELETE] La operación no devolvió filas eliminadas');
+                alert('⚠️ No se pudo eliminar. Posible problema de permisos. Contacta al administrador.');
+                return;
+            }
+            
+            // Success - remove the row with animation
             const row = btn.closest('tr');
             row.style.opacity = '0';
             row.style.transition = 'opacity 0.3s';
-            setTimeout(() => row.remove(), 300);
+            setTimeout(() => {
+                row.remove();
+                // Update the article count
+                const totalEl = document.getElementById('nl-total-articles');
+                if (totalEl) {
+                    const current = parseInt(totalEl.textContent) || 0;
+                    totalEl.textContent = Math.max(0, current - 1);
+                }
+            }, 300);
+            
+            console.log('[DELETE] ✅ Artículo eliminado exitosamente');
         } catch (err) {
+            console.error('[DELETE] Error:', err);
             alert('❌ Error al eliminar: ' + err.message);
         }
     }
