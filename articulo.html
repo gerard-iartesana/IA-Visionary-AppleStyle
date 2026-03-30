@@ -113,9 +113,13 @@
         </div>
     </footer>
 
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+
     <script src="landing_apple.js?v=11.4"></script>
     <script>
-    // Articles data
+    // Articles data (fallback)
     const articles = {
         'gpt5-futuro-negocio': {
             tag: 'IA', tagClass: 'tag-ia-full',
@@ -580,7 +584,79 @@
         document.getElementById('reading-progress').style.width = Math.min(p, 100) + '%';
     });
 
-    renderArticle();
+    // ── Try loading from Supabase first, fallback to hardcoded ──
+    async function initArticle() {
+        const slug = getSlug();
+
+        try {
+            // Try to get the article from Supabase
+            const { data: sArticle, error } = await _supabase
+                .from('articles')
+                .select('*')
+                .eq('slug', slug)
+                .eq('status', 'publicado')
+                .single();
+
+            if (!error && sArticle && sArticle.content) {
+                // Map Supabase data to the article format
+                const tagMap = {
+                    ia: { tag: 'IA', tagClass: 'tag-ia-full' },
+                    negocio: { tag: 'Negocio', tagClass: 'tag-negocio-full' },
+                    tutorial: { tag: 'Tutorial', tagClass: 'tag-tutorial-full' },
+                    noticia: { tag: 'Noticia', tagClass: 'tag-noticia-full' }
+                };
+                const tm = tagMap[sArticle.category] || tagMap.ia;
+                const dateStr = sArticle.published_at
+                    ? new Date(sArticle.published_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+                    : '';
+
+                // Insert into articles object so renderArticle works
+                articles[slug] = {
+                    tag: tm.tag, tagClass: tm.tagClass,
+                    title: sArticle.title,
+                    date: dateStr,
+                    readTime: sArticle.read_time || '5 min',
+                    author: sArticle.author || 'Gerard · IA de Barrio',
+                    img: sArticle.image_url || `img/newsletter/${slug}.png`,
+                    metaTitle: sArticle.meta_title || sArticle.title,
+                    metaDesc: sArticle.meta_description || sArticle.subtitle || '',
+                    content: sArticle.content,
+                    related: []
+                };
+
+                // Also load related articles from Supabase for navigation
+                const { data: allPub } = await _supabase
+                    .from('articles')
+                    .select('slug, title, image_url, category, published_at, read_time')
+                    .eq('status', 'publicado')
+                    .neq('slug', slug)
+                    .order('published_at', { ascending: false })
+                    .limit(3);
+
+                if (allPub && allPub.length > 0) {
+                    allPub.forEach(rel => {
+                        const rtm = tagMap[rel.category] || tagMap.ia;
+                        const rd = rel.published_at ? new Date(rel.published_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }) : '';
+                        articles[rel.slug] = articles[rel.slug] || {
+                            tag: rtm.tag, tagClass: rtm.tagClass,
+                            title: rel.title,
+                            date: rd,
+                            readTime: rel.read_time || '5 min',
+                            img: rel.image_url || `img/newsletter/${rel.slug}.png`,
+                            content: ''
+                        };
+                    });
+                    articles[slug].related = allPub.map(r => r.slug);
+                }
+            }
+        } catch (err) {
+            console.warn('Supabase no disponible, usando artículos locales:', err.message);
+        }
+
+        renderArticle();
+    }
+
+    initArticle();
     </script>
 </body>
 </html>

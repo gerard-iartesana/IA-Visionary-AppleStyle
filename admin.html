@@ -3139,20 +3139,224 @@
         updateSeoScore();
     }
 
-    // Publish / Draft
-    function publishArticle() {
+    // ── Collect article data from editor ──
+    function collectArticleData(status) {
         const title = document.getElementById('art-title').value;
-        if (!title) { alert('El título es obligatorio.'); return; }
-        alert('✅ Artículo "' + title + '" publicado correctamente.\n\nSe añadirá a la página pública de Newsletter y estará disponible para el próximo envío.');
-        closeArticleEditor();
+        if (!title) { alert('El título es obligatorio.'); return null; }
+
+        const subtitle = document.getElementById('art-subtitle').value || '';
+        const content = document.getElementById('art-content').innerHTML || '';
+        const category = document.getElementById('art-category').value || 'ia';
+        const pubDate = document.getElementById('art-date').value || null;
+        const author = document.getElementById('art-author').value || 'Gerard · IA de Barrio';
+        const slug = document.getElementById('art-slug').value ||
+            title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').substring(0, 50);
+        const metaTitle = document.getElementById('art-meta-title').value || title;
+        const metaDesc = document.getElementById('art-meta-desc').value || subtitle;
+        const keywords = document.getElementById('art-keywords').value || '';
+        const altText = document.getElementById('art-alt-text') ? document.getElementById('art-alt-text').value : '';
+
+        // Estimate read time
+        const wordCount = content.replace(/<[^>]*>/g, '').split(/\s+/).filter(w => w).length;
+        const readTime = Math.max(1, Math.round(wordCount / 200)) + ' min';
+
+        // Image: try to get from preview or use a default
+        let imageUrl = '';
+        const previewImg = document.querySelector('#media-preview-area img');
+        if (previewImg) imageUrl = previewImg.src;
+
+        return {
+            title, subtitle, slug, content, category,
+            status: status,
+            image_url: imageUrl,
+            alt_text: altText,
+            author, read_time: readTime,
+            meta_title: metaTitle,
+            meta_description: metaDesc,
+            keywords,
+            published_at: status === 'publicado' ? (pubDate ? new Date(pubDate).toISOString() : new Date().toISOString()) : null,
+            updated_at: new Date().toISOString()
+        };
     }
 
-    function saveArticleDraft() {
-        const title = document.getElementById('art-title').value;
-        if (!title) { alert('El título es obligatorio.'); return; }
-        alert('📝 Borrador "' + title + '" guardado correctamente.');
-        closeArticleEditor();
+    // ── Save article to Supabase ──
+    async function saveArticleToSupabase(articleData) {
+        try {
+            // Check if article with same slug already exists (update vs insert)
+            const { data: existing } = await _supabase
+                .from('articles').select('id').eq('slug', articleData.slug).maybeSingle();
+
+            let result;
+            if (existing) {
+                result = await _supabase.from('articles').update(articleData).eq('id', existing.id).select();
+            } else {
+                result = await _supabase.from('articles').insert([articleData]).select();
+            }
+
+            if (result.error) throw result.error;
+            return result.data[0];
+        } catch (err) {
+            console.error('Error guardando artículo:', err);
+            throw err;
+        }
     }
+
+    // Publish
+    async function publishArticle() {
+        const data = collectArticleData('publicado');
+        if (!data) return;
+
+        const btn = event.target;
+        const origText = btn.innerHTML;
+        btn.innerHTML = '⏳ Publicando...';
+        btn.disabled = true;
+
+        try {
+            await saveArticleToSupabase(data);
+            alert('✅ Artículo "' + data.title + '" publicado correctamente.\n\nYa es visible en la página pública de Newsletter.');
+            closeArticleEditor();
+            // Refresh the articles table in admin
+            if (typeof loadAdminArticles === 'function') loadAdminArticles();
+        } catch (err) {
+            alert('❌ Error al publicar: ' + (err.message || err));
+        } finally {
+            btn.innerHTML = origText;
+            btn.disabled = false;
+        }
+    }
+
+    // Save Draft
+    async function saveArticleDraft() {
+        const data = collectArticleData('borrador');
+        if (!data) return;
+
+        const btn = event.target;
+        const origText = btn.innerHTML;
+        btn.innerHTML = '⏳ Guardando...';
+        btn.disabled = true;
+
+        try {
+            await saveArticleToSupabase(data);
+            alert('📝 Borrador "' + data.title + '" guardado correctamente.');
+            closeArticleEditor();
+            if (typeof loadAdminArticles === 'function') loadAdminArticles();
+        } catch (err) {
+            alert('❌ Error al guardar borrador: ' + (err.message || err));
+        } finally {
+            btn.innerHTML = origText;
+            btn.disabled = false;
+        }
+    }
+
+    // ── Load articles from Supabase into admin table ──
+    async function loadAdminArticles() {
+        try {
+            const { data, error } = await _supabase
+                .from('articles').select('*').order('created_at', { ascending: false });
+            if (error) throw error;
+            if (!data || data.length === 0) return;
+
+            const tbody = document.querySelector('#newsletter-content table tbody');
+            if (!tbody) return;
+
+            // Update stat
+            const totalEl = document.getElementById('nl-total-articles');
+            if (totalEl) totalEl.textContent = data.length;
+
+            // Clear existing rows and rebuild
+            tbody.innerHTML = '';
+            const catMeta = {
+                ia: { icon: '🤖', label: 'IA', bg: 'rgba(0,113,227,0.1)', color: '#0071e3' },
+                negocio: { icon: '💼', label: 'Negocio', bg: 'rgba(52,199,89,0.1)', color: '#34c759' },
+                tutorial: { icon: '📚', label: 'Tutorial', bg: 'rgba(255,149,0,0.1)', color: '#ff9500' },
+                noticia: { icon: '📰', label: 'Noticia', bg: 'rgba(175,82,222,0.1)', color: '#af52de' }
+            };
+            const statusMeta = {
+                publicado: { icon: '🟢', label: 'Publicado', bg: 'rgba(52,199,89,0.1)', color: '#34c759' },
+                borrador: { icon: '📝', label: 'Borrador', bg: 'rgba(255,149,0,0.1)', color: '#ff9500' },
+                programado: { icon: '⏰', label: 'Programado', bg: 'rgba(0,113,227,0.1)', color: '#0071e3' }
+            };
+
+            data.forEach(art => {
+                const cat = catMeta[art.category] || catMeta.ia;
+                const st = statusMeta[art.status] || statusMeta.borrador;
+                const dateStr = art.published_at ? new Date(art.published_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+                const tr = document.createElement('tr');
+                tr.dataset.cat = art.category;
+                tr.dataset.status = art.status;
+                tr.innerHTML = `
+                    <td style="min-width: 200px;">
+                        <div style="font-weight: 600; font-size: 0.85rem;">${art.title}</div>
+                        <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">${art.subtitle || ''}</div>
+                    </td>
+                    <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: ${cat.bg}; color: ${cat.color};">${cat.icon} ${cat.label}</span></td>
+                    <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: ${st.bg}; color: ${st.color};">${st.icon} ${st.label}</span></td>
+                    <td style="font-size: 0.8rem; color: var(--text-grey);">${dateStr}</td>
+                    <td style="font-size: 0.8rem; color: var(--text-grey);">${art.read_time || '—'}</td>
+                    <td>
+                        <div style="display: flex; gap: 6px;">
+                            <button class="btn-action" style="font-size: 0.65rem; padding: 4px 10px;" onclick="editSupabaseArticle('${art.id}')">✏️</button>
+                            <button class="btn-action" style="font-size: 0.65rem; padding: 4px 10px; border-color: rgba(255,59,48,0.3); color: #ff3b30;" onclick="deleteSupabaseArticle('${art.id}', this)">🗑️</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (err) {
+            console.warn('No se pudo cargar artículos de Supabase (¿tabla no creada?):', err.message);
+        }
+    }
+
+    // ── Delete article from Supabase ──
+    async function deleteSupabaseArticle(id, btn) {
+        if (!confirm('¿Seguro que quieres eliminar este artículo?')) return;
+        try {
+            const { error } = await _supabase.from('articles').delete().eq('id', id);
+            if (error) throw error;
+            const row = btn.closest('tr');
+            row.style.opacity = '0';
+            row.style.transition = 'opacity 0.3s';
+            setTimeout(() => row.remove(), 300);
+        } catch (err) {
+            alert('❌ Error al eliminar: ' + err.message);
+        }
+    }
+
+    // ── Edit existing article ──
+    async function editSupabaseArticle(id) {
+        try {
+            const { data: art, error } = await _supabase.from('articles').select('*').eq('id', id).single();
+            if (error) throw error;
+
+            openNewsEditor();
+            document.getElementById('editor-modal-title').textContent = 'Editar Noticia';
+            document.getElementById('art-title').value = art.title || '';
+            document.getElementById('art-subtitle').value = art.subtitle || '';
+            document.getElementById('art-content').innerHTML = art.content || '';
+            document.getElementById('art-category').value = art.category || 'ia';
+            document.getElementById('art-status').value = art.status || 'borrador';
+            document.getElementById('art-author').value = art.author || '';
+            document.getElementById('art-slug').value = art.slug || '';
+            if (document.getElementById('art-meta-title')) document.getElementById('art-meta-title').value = art.meta_title || '';
+            if (document.getElementById('art-meta-desc')) document.getElementById('art-meta-desc').value = art.meta_description || '';
+            if (document.getElementById('art-keywords')) document.getElementById('art-keywords').value = art.keywords || '';
+            if (art.published_at) {
+                document.getElementById('art-date').value = art.published_at.substring(0, 10);
+            }
+            updateWordCount();
+            updateSeoPreview();
+            updateSeoScore();
+        } catch (err) {
+            alert('❌ Error al cargar artículo: ' + err.message);
+        }
+    }
+
+    // Load articles on newsletter section init
+    document.addEventListener('DOMContentLoaded', function() {
+        // If we're on the newsletter section, load from Supabase
+        setTimeout(loadAdminArticles, 1000);
+    });
 
     function previewArticle() {
         const title = document.getElementById('art-title').value || 'Sin título';

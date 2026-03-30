@@ -491,6 +491,10 @@
         </div>
     </footer>
 
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
+
     <!-- JS -->
     <script src="landing_apple.js?v=11.4"></script>
     <script>
@@ -499,7 +503,6 @@
         e.preventDefault();
         const form = document.getElementById('newsletter-form');
         const success = document.getElementById('subscribe-success');
-        // Here you would send to Supabase / n8n webhook
         form.style.display = 'none';
         success.style.display = 'block';
         return false;
@@ -524,6 +527,59 @@
     const style = document.createElement('style');
     style.textContent = '@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }';
     document.head.appendChild(style);
+
+    // ── Dynamic article loading from Supabase ──
+    const tagConfig = {
+        ia:       { label: 'IA',       css: 'tag-ia' },
+        negocio:  { label: 'Negocio',  css: 'tag-negocio' },
+        tutorial: { label: 'Tutorial', css: 'tag-tutorial' },
+        noticia:  { label: 'Noticia',  css: 'tag-noticia' }
+    };
+
+    function renderArticleCard(art) {
+        const tag = tagConfig[art.category] || tagConfig.ia;
+        const dateStr = art.published_at
+            ? new Date(art.published_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+            : '';
+        const imgSrc = art.image_url || `img/newsletter/${art.slug}.png`;
+        return `
+            <article class="news-card" data-category="${art.category}" style="animation: fadeIn 0.4s ease">
+                <img src="${imgSrc}" alt="${art.alt_text || art.title}" class="news-card-img" loading="lazy" onerror="this.style.display='none'">
+                <div class="news-card-body">
+                    <span class="news-tag ${tag.css}">${tag.label}</span>
+                    <h3>${art.title}</h3>
+                    <p>${art.subtitle || ''}</p>
+                    <div class="news-meta">
+                        <span>${dateStr}${art.read_time ? ' · ' + art.read_time : ''}</span>
+                        <a href="articulo.html?slug=${art.slug}" class="read-more">Leer más →</a>
+                    </div>
+                </div>
+            </article>`;
+    }
+
+    async function loadArticlesFromSupabase() {
+        try {
+            const { data, error } = await _supabase
+                .from('articles')
+                .select('*')
+                .eq('status', 'publicado')
+                .order('published_at', { ascending: false });
+
+            if (error) throw error;
+            if (!data || data.length === 0) return; // keep hardcoded fallback
+
+            const grid = document.getElementById('news-grid');
+            if (!grid) return;
+
+            grid.innerHTML = data.map(renderArticleCard).join('');
+        } catch (err) {
+            console.warn('Usando artículos estáticos (no se conectó a Supabase):', err.message);
+            // Hardcoded articles remain visible
+        }
+    }
+
+    // Load on page ready
+    document.addEventListener('DOMContentLoaded', loadArticlesFromSupabase);
     </script>
 </body>
 </html>
