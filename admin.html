@@ -3435,61 +3435,107 @@
         }
     }
 
-    // ── Delete article from Supabase ──
-    async function deleteSupabaseArticle(id, btn) {
-        if (!confirm('¿Seguro que quieres eliminar este artículo? (ID: ' + id + ')')) return;
-        
-        console.log('[DELETE] Intentando eliminar artículo con ID:', id);
-        
+    // ── Delete confirmation modal ──
+    let _pendingDeleteId = null;
+    let _pendingDeleteBtn = null;
+
+    function showDeleteModal(id, btn) {
+        _pendingDeleteId = id;
+        _pendingDeleteBtn = btn;
+        const modal = document.getElementById('delete-confirm-modal');
+        const titleEl = btn.closest('tr').querySelector('td div[style*="font-weight"]');
+        const title = titleEl ? titleEl.textContent : 'este artículo';
+        document.getElementById('delete-modal-title').textContent = '"' + title + '"';
+        modal.style.display = 'flex';
+        setTimeout(() => modal.style.opacity = '1', 10);
+    }
+
+    function hideDeleteModal() {
+        const modal = document.getElementById('delete-confirm-modal');
+        modal.style.opacity = '0';
+        setTimeout(() => { modal.style.display = 'none'; }, 200);
+        _pendingDeleteId = null;
+        _pendingDeleteBtn = null;
+    }
+
+    async function confirmDeleteArticle() {
+        const id = _pendingDeleteId;
+        const btn = _pendingDeleteBtn;
+        if (!id) return;
+
+        const confirmBtn = document.getElementById('delete-modal-confirm-btn');
+        confirmBtn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px;"></span> Eliminando...';
+        confirmBtn.disabled = true;
+
+        console.log('[DELETE] Eliminando artículo ID:', id);
+
         try {
-            // First verify the article exists
-            const { data: checkData, error: checkError } = await _supabase
-                .from('articles').select('id, title').eq('id', id);
-            console.log('[DELETE] Verificación previa:', checkData, checkError);
-            
-            if (checkError) {
-                console.error('[DELETE] Error al verificar:', checkError);
-                throw checkError;
-            }
-            
-            if (!checkData || checkData.length === 0) {
-                alert('⚠️ El artículo no se encontró en la base de datos (posible problema de permisos RLS)');
-                return;
-            }
-            
-            // Perform the delete
-            const { data: deleteData, error, count } = await _supabase
+            const { data: deleteData, error } = await _supabase
                 .from('articles').delete().eq('id', id).select();
-            
-            console.log('[DELETE] Resultado:', { deleteData, error, count });
-            
+
+            console.log('[DELETE] Resultado:', { deleteData, error });
+
             if (error) throw error;
-            
+
             if (!deleteData || deleteData.length === 0) {
-                console.warn('[DELETE] La operación no devolvió filas eliminadas');
-                alert('⚠️ No se pudo eliminar. Posible problema de permisos. Contacta al administrador.');
+                console.warn('[DELETE] No se devolvieron filas eliminadas');
+                hideDeleteModal();
+                // Show inline error
+                showNotification('⚠️ No se pudo eliminar. Verifica permisos RLS.', 'warning');
+                confirmBtn.innerHTML = '🗑️ Sí, eliminar';
+                confirmBtn.disabled = false;
                 return;
             }
-            
-            // Success - remove the row with animation
-            const row = btn.closest('tr');
-            row.style.opacity = '0';
-            row.style.transition = 'opacity 0.3s';
-            setTimeout(() => {
-                row.remove();
-                // Update the article count
-                const totalEl = document.getElementById('nl-total-articles');
-                if (totalEl) {
-                    const current = parseInt(totalEl.textContent) || 0;
-                    totalEl.textContent = Math.max(0, current - 1);
-                }
-            }, 300);
-            
-            console.log('[DELETE] ✅ Artículo eliminado exitosamente');
+
+            // Success
+            hideDeleteModal();
+            showNotification('✅ Artículo eliminado correctamente', 'success');
+
+            if (btn) {
+                const row = btn.closest('tr');
+                row.style.opacity = '0';
+                row.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => {
+                    row.remove();
+                    const totalEl = document.getElementById('nl-total-articles');
+                    if (totalEl) {
+                        const current = parseInt(totalEl.textContent) || 0;
+                        totalEl.textContent = Math.max(0, current - 1);
+                    }
+                }, 300);
+            }
+
+            console.log('[DELETE] ✅ Eliminado exitosamente');
         } catch (err) {
             console.error('[DELETE] Error:', err);
-            alert('❌ Error al eliminar: ' + err.message);
+            hideDeleteModal();
+            showNotification('❌ Error al eliminar: ' + err.message, 'error');
         }
+
+        confirmBtn.innerHTML = '🗑️ Sí, eliminar';
+        confirmBtn.disabled = false;
+    }
+
+    // Notification toast
+    function showNotification(msg, type) {
+        let toast = document.getElementById('admin-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'admin-toast';
+            toast.style.cssText = 'position:fixed;bottom:30px;right:30px;padding:14px 24px;border-radius:14px;font-size:0.85rem;font-weight:600;z-index:100000;opacity:0;transition:opacity 0.3s;font-family:Inter,sans-serif;max-width:400px;box-shadow:0 8px 32px rgba(0,0,0,0.3);';
+            document.body.appendChild(toast);
+        }
+        const colors = { success: '#34c759', error: '#ff3b30', warning: '#ff9500' };
+        toast.style.background = colors[type] || '#0071e3';
+        toast.style.color = 'white';
+        toast.textContent = msg;
+        toast.style.opacity = '1';
+        setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+    }
+
+    // Keep backward compat: deleteSupabaseArticle now uses modal
+    function deleteSupabaseArticle(id, btn) {
+        showDeleteModal(id, btn);
     }
 
     // ── Edit existing article ──
@@ -3536,13 +3582,26 @@
     }
 
     function deleteArticle(btn) {
-        if (confirm('¿Seguro que quieres eliminar este artículo?')) {
-            const row = btn.closest('tr');
-            row.style.opacity = '0';
-            row.style.transition = 'opacity 0.3s';
-            setTimeout(() => row.remove(), 300);
-        }
+        const row = btn.closest('tr');
+        row.style.opacity = '0';
+        row.style.transition = 'opacity 0.3s';
+        setTimeout(() => row.remove(), 300);
     }
     </script>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-confirm-modal" style="display:none;opacity:0;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);z-index:99999;align-items:center;justify-content:center;transition:opacity 0.2s ease;">
+        <div style="background:var(--card-bg,#1c1c1e);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:32px;max-width:420px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+            <div style="font-size:3rem;margin-bottom:12px;">&#9888;&#65039;</div>
+            <h3 style="color:var(--text-white,#f5f5f7);font-size:1.1rem;margin:0 0 8px;">Eliminar articulo?</h3>
+            <p id="delete-modal-title" style="color:var(--text-grey,#86868b);font-size:0.85rem;margin:0 0 24px;line-height:1.4;"></p>
+            <p style="color:var(--text-grey,#86868b);font-size:0.75rem;margin:0 0 24px;">Esta accion no se puede deshacer.</p>
+            <div style="display:flex;gap:12px;justify-content:center;">
+                <button onclick="hideDeleteModal()" style="flex:1;padding:12px 20px;border-radius:12px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:var(--text-white,#f5f5f7);font-size:0.85rem;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;">Cancelar</button>
+                <button id="delete-modal-confirm-btn" onclick="confirmDeleteArticle()" style="flex:1;padding:12px 20px;border-radius:12px;border:none;background:#ff3b30;color:white;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;">&#128465;&#65039; Si, eliminar</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
