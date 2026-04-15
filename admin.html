@@ -1024,10 +1024,10 @@
             <section id="section-newsletter" class="admin-content-area">
                 <header class="admin-header" style="padding-top: 0; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
                     <div>
-                        <h1 style="display: flex; align-items: center; gap: 12px;">📰 Newsletter
-                            <span style="font-size: 0.6rem; background: rgba(175,82,222,0.15); color: #af52de; padding: 4px 10px; border-radius: 12px; font-weight: 600;">Contenidos</span>
+                        <h1 style="display: flex; align-items: center; gap: 12px;">Newsletter
+                            <span style="font-size: 0.6rem; background: rgba(175,82,222,0.15); color: #af52de; padding: 4px 10px; border-radius: 12px; font-weight: 600;">Envío Automatizado</span>
                         </h1>
-                        <p style="color: var(--text-grey);">Gestiona artículos, suscriptores y lanza envíos automatizados.</p>
+                        <p style="color: var(--text-grey);">Gestiona suscriptores, programa envíos y selecciona artículos para tu newsletter.</p>
                     </div>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <a href="newsletter.html" class="btn-action" style="text-decoration: none; display: flex; align-items: center; gap: 6px;">
@@ -1041,339 +1041,88 @@
                     </div>
                 </header>
 
-                <!-- Stats -->
-                <div class="stats-grid" style="margin-bottom: 24px;">
-                    <div class="stat-card">
-                        <span class="stat-label">Total Artículos</span>
-                        <h2 id="nl-total-articles" style="color: #af52de;">10</h2>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-label">Suscriptores</span>
-                        <h2 id="nl-subscribers" class="text-green">320</h2>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-label">Envíos (mes)</span>
-                        <h2 id="nl-sent">4</h2>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-label">Tasa Apertura</span>
-                        <h2 id="nl-open-rate" style="color: var(--accent-blue);">92%</h2>
-                    </div>
-                </div>
-
-                <!-- Automation Trigger -->
-                <div style="background: linear-gradient(135deg, rgba(175,82,222,0.06), rgba(0,113,227,0.06)); border: 1px solid rgba(175,82,222,0.2); border-radius: 16px; padding: 20px 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-                    <div>
-                        <h4 style="margin: 0 0 4px 0; font-size: 0.95rem;">⚡ Lanzar Envío de Newsletter</h4>
-                        <p style="margin: 0; font-size: 0.75rem; color: var(--text-grey);">Dispara la automatización n8n para enviar la newsletter a todos los suscriptores (Email + WhatsApp).</p>
-                    </div>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn-action" style="background: #af52de; border: none; color: white; font-weight: 600;" onclick="triggerNewsletterSend()" id="btn-send-newsletter">
-                            🚀 Lanzar Envío
-                        </button>
-                        <button class="btn-action" onclick="alert('Aquí puedes configurar el webhook de n8n para envíos automáticos programados')">
-                            ⚙️ Configurar
-                        </button>
-                    </div>
-                </div>
-
-                <!-- View Switcher -->
-                <div style="display: flex; gap: 0; margin-bottom: 20px; background: rgba(255,255,255,0.04); border-radius: 12px; padding: 3px; width: fit-content;">
-                    <button id="view-list-btn" class="nl-view-btn active" onclick="switchNLView('list')">📋 Lista</button>
-                    <button id="view-calendar-btn" class="nl-view-btn" onclick="switchNLView('calendar')">📅 Calendario</button>
-                </div>
-
-                <!-- Search & Filters -->
-                <div id="nl-filters-bar" style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
-                    <div class="search-box" style="flex: 1; min-width: 250px;">
-                        <svg style="width: 18px; color: var(--text-grey);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                        <input type="text" id="nl-search" placeholder="Buscar por título o contenido..." oninput="filterNewsletterArticles()" style="flex: 1;">
-                    </div>
-                    <select id="nl-filter-category" class="admin-select" onchange="filterNewsletterArticles()">
-                        <option value="all">Todas las categorías</option>
-                        <option value="ia">🤖 IA</option>
-                        <option value="negocio">💼 Negocio</option>
-                        <option value="tutorial">📚 Tutorial</option>
-                        <option value="noticia">📰 Noticia</option>
-                    </select>
-                    <select id="nl-filter-status" class="admin-select" onchange="filterNewsletterArticles()">
-                        <option value="all">Todos los estados</option>
-                        <option value="publicado">📋 Publicado</option>
-                        <option value="borrador">📝 Borrador</option>
-                        <option value="programado">⏰ Programado</option>
-                        <option value="enviado">✅ Enviado</option>
-                    </select>
-                </div>
-
-                <!-- ═══ LIST VIEW ═══ -->
-                <div id="nl-list-view">
-                    <!-- Articles Table -->
-                    <div class="leads-container">
-                        <div class="table-wrapper">
-                            <table class="leads-table" id="nl-articles-table">
-                                <thead>
-                                    <tr>
-                                        <th style="padding: 12px;">Título</th>
-                                        <th style="padding: 12px;">Categoría</th>
-                                        <th style="padding: 12px;">Estado</th>
-                                        <th style="padding: 12px;">Fecha</th>
-                                        <th style="padding: 12px;">Suscriptores</th>
-                                        <th style="padding: 12px;">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="nl-articles-body">
-                                    <tr data-cat="ia" data-status="enviado">
-                                        <td style="padding: 12px;">
-                                            <div style="font-weight: 600; color: var(--text-white);">GPT-5: Lo que sabemos y cómo afectará a tu negocio</div>
-                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">OpenAI prepara su modelo más avanzado...</div>
-                                        </td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(0,113,227,0.1); color: var(--accent-blue);">🤖 IA</span></td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">✅ Enviado</span></td>
-                                        <td style="font-size: 0.8rem; color: var(--text-grey);">28 Mar</td>
-                                        <td style="font-size: 0.8rem;">312 / 320</td>
-                                        <td>
-                                            <div style="display: flex; gap: 6px;">
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(0)">✏️ Editar</button>
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr data-cat="negocio" data-status="enviado">
-                                        <td style="padding: 12px;">
-                                            <div style="font-weight: 600; color: var(--text-white);">5 automatizaciones que toda PYME debería tener en 2026</div>
-                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">Las empresas que automatizan crecen un 40% más rápido...</div>
-                                        </td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">💼 Negocio</span></td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">✅ Enviado</span></td>
-                                        <td style="font-size: 0.8rem; color: var(--text-grey);">25 Mar</td>
-                                        <td style="font-size: 0.8rem;">305 / 318</td>
-                                        <td>
-                                            <div style="display: flex; gap: 6px;">
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(1)">✏️ Editar</button>
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr data-cat="tutorial" data-status="publicado">
-                                        <td style="padding: 12px;">
-                                            <div style="font-weight: 600; color: var(--text-white);">Cómo crear tu primer flujo de trabajo en n8n paso a paso</div>
-                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">Guía completa para principiantes: conecta Gmail, OpenAI y Slack...</div>
-                                        </td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,149,0,0.1); color: #ff9500;">📚 Tutorial</span></td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(0,113,227,0.1); color: var(--accent-blue);">📋 Publicado</span></td>
-                                        <td style="font-size: 0.8rem; color: var(--text-grey);">22 Mar</td>
-                                        <td style="font-size: 0.8rem;">—</td>
-                                        <td>
-                                            <div style="display: flex; gap: 6px;">
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(2)">✏️ Editar</button>
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr data-cat="noticia" data-status="publicado">
-                                        <td style="padding: 12px;">
-                                            <div style="font-weight: 600; color: var(--text-white);">La UE aprueba nuevas normas de IA: qué implica para tu empresa</div>
-                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">El AI Act europeo entra en vigor...</div>
-                                        </td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(175,82,222,0.1); color: #af52de;">📰 Noticia</span></td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(0,113,227,0.1); color: var(--accent-blue);">📋 Publicado</span></td>
-                                        <td style="font-size: 0.8rem; color: var(--text-grey);">20 Mar</td>
-                                        <td style="font-size: 0.8rem;">—</td>
-                                        <td>
-                                            <div style="display: flex; gap: 6px;">
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(3)">✏️ Editar</button>
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr data-cat="ia" data-status="borrador">
-                                        <td style="padding: 12px;">
-                                            <div style="font-weight: 600; color: var(--text-white);">Agentes autónomos: la próxima revolución en productividad</div>
-                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">Los agentes de IA ya no solo responden preguntas...</div>
-                                        </td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(0,113,227,0.1); color: var(--accent-blue);">🤖 IA</span></td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,149,0,0.1); color: #ff9500;">📝 Borrador</span></td>
-                                        <td style="font-size: 0.8rem; color: var(--text-grey);">18 Mar</td>
-                                        <td style="font-size: 0.8rem;">—</td>
-                                        <td>
-                                            <div style="display: flex; gap: 6px;">
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(4)">✏️ Editar</button>
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr data-cat="negocio" data-status="borrador">
-                                        <td style="padding: 12px;">
-                                            <div style="font-weight: 600; color: var(--text-white);">Cómo medir el ROI de la IA en tu negocio: métricas que importan</div>
-                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">No basta con implementar IA — hay que medir su impacto...</div>
-                                        </td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">💼 Negocio</span></td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,149,0,0.1); color: #ff9500;">📝 Borrador</span></td>
-                                        <td style="font-size: 0.8rem; color: var(--text-grey);">15 Mar</td>
-                                        <td style="font-size: 0.8rem;">—</td>
-                                        <td>
-                                            <div style="display: flex; gap: 6px;">
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(5)">✏️ Editar</button>
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr data-cat="tutorial" data-status="programado">
-                                        <td style="padding: 12px;">
-                                            <div style="font-weight: 600; color: var(--text-white);">Tutorial: Conecta WhatsApp Business con IA en 20 minutos</div>
-                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">Aprende a crear un chatbot inteligente para tu WhatsApp...</div>
-                                        </td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,149,0,0.1); color: #ff9500;">📚 Tutorial</span></td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(90,200,250,0.1); color: #5ac8fa;">⏰ Programado</span></td>
-                                        <td style="font-size: 0.8rem; color: var(--text-grey);">1 Abr</td>
-                                        <td style="font-size: 0.8rem;">—</td>
-                                        <td>
-                                            <div style="display: flex; gap: 6px;">
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(6)">✏️ Editar</button>
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr data-cat="ia" data-status="programado">
-                                        <td style="padding: 12px;">
-                                            <div style="font-weight: 600; color: var(--text-white);">Multimodal AI: texto + imagen + voz lo cambia todo</div>
-                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">Los modelos multimodales están redefiniendo la IA empresarial...</div>
-                                        </td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(0,113,227,0.1); color: var(--accent-blue);">🤖 IA</span></td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(90,200,250,0.1); color: #5ac8fa;">⏰ Programado</span></td>
-                                        <td style="font-size: 0.8rem; color: var(--text-grey);">5 Abr</td>
-                                        <td style="font-size: 0.8rem;">—</td>
-                                        <td>
-                                            <div style="display: flex; gap: 6px;">
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(7)">✏️ Editar</button>
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr data-cat="negocio" data-status="programado">
-                                        <td style="padding: 12px;">
-                                            <div style="font-weight: 600; color: var(--text-white);">De freelance a agencia IA: escalando tu negocio</div>
-                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">Cómo pasar de hacer proyectos sueltos a montar una agencia...</div>
-                                        </td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(52,199,89,0.1); color: #34c759;">💼 Negocio</span></td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(90,200,250,0.1); color: #5ac8fa;">⏰ Programado</span></td>
-                                        <td style="font-size: 0.8rem; color: var(--text-grey);">10 Abr</td>
-                                        <td style="font-size: 0.8rem;">—</td>
-                                        <td>
-                                            <div style="display: flex; gap: 6px;">
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(8)">✏️ Editar</button>
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr data-cat="ia" data-status="borrador">
-                                        <td style="padding: 12px;">
-                                            <div style="font-weight: 600; color: var(--text-white);">RAG vs Fine-tuning: cuál elegir para tu proyecto</div>
-                                            <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">Las dos técnicas más populares para personalizar modelos de IA...</div>
-                                        </td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(0,113,227,0.1); color: var(--accent-blue);">🤖 IA</span></td>
-                                        <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: rgba(255,149,0,0.1); color: #ff9500;">📝 Borrador</span></td>
-                                        <td style="font-size: 0.8rem; color: var(--text-grey);">12 Mar</td>
-                                        <td style="font-size: 0.8rem;">—</td>
-                                        <td>
-                                            <div style="display: flex; gap: 6px;">
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px;" onclick="editArticle(9)">✏️ Editar</button>
-                                                <button class="btn-action" style="font-size: 0.7rem; padding: 4px 10px; background: rgba(255,59,48,0.1); color: #ff3b30; border-color: rgba(255,59,48,0.3);" onclick="deleteArticle(this)">🗑️</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                <!-- Top Row: Subscribers + Scheduling -->
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; margin-bottom: 24px;">
+                    
+                    <!-- Subscribers Card -->
+                    <div style="background: var(--bg-card); padding: 24px; border-radius: 20px; border: 1px solid var(--border-color);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h3 style="margin: 0; font-size: 1.1rem;">👥 Suscriptores <span id="subscriber-count" style="font-size: 0.75rem; background: rgba(52,199,89,0.15); color: #34c759; padding: 2px 8px; border-radius: 10px; margin-left: 6px;">0</span></h3>
+                        </div>
+                        <!-- Add subscriber form -->
+                        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                            <input type="text" id="nl-sub-name" placeholder="Nombre" style="flex: 1; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-white); font-size: 0.85rem;">
+                            <input type="email" id="nl-sub-email" placeholder="email@ejemplo.com" style="flex: 1.5; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-white); font-size: 0.85rem;">
+                            <button class="btn-action" style="background: var(--accent-blue); border: none; color: white; font-weight: 600; white-space: nowrap;" onclick="addNewsletterSubscriber()">+ Añadir</button>
+                        </div>
+                        <!-- List -->
+                        <div id="subscribers-list" style="max-height: 250px; overflow-y: auto;">
+                            <p style="color: var(--text-grey); font-size: 0.82rem; text-align: center;">Cargando...</p>
                         </div>
                     </div>
-                </div>
 
-                <!-- ═══ CALENDAR VIEW ═══ -->
-                <div id="nl-calendar-view" style="display: none;">
-                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden;">
-                        <!-- Calendar Header -->
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border-color);">
-                            <button class="btn-action" onclick="changeCalendarMonth(-1)" style="padding: 6px 12px;">◀ Anterior</button>
-                            <h3 id="cal-month-title" style="margin: 0; font-size: 1.1rem; font-weight: 700;"></h3>
-                            <button class="btn-action" onclick="changeCalendarMonth(1)" style="padding: 6px 12px;">Siguiente ▶</button>
-                        </div>
-                        <!-- Calendar Legend -->
-                        <div style="display: flex; gap: 16px; padding: 12px 24px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap;">
-                            <span style="display: flex; align-items: center; gap: 5px; font-size: 0.7rem; color: var(--text-grey);"><span style="width: 8px; height: 8px; border-radius: 50%; background: #34c759; display: inline-block;"></span> Enviado</span>
-                            <span style="display: flex; align-items: center; gap: 5px; font-size: 0.7rem; color: var(--text-grey);"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-blue); display: inline-block;"></span> Publicado</span>
-                            <span style="display: flex; align-items: center; gap: 5px; font-size: 0.7rem; color: var(--text-grey);"><span style="width: 8px; height: 8px; border-radius: 50%; background: #5ac8fa; display: inline-block;"></span> Programado</span>
-                            <span style="display: flex; align-items: center; gap: 5px; font-size: 0.7rem; color: var(--text-grey);"><span style="width: 8px; height: 8px; border-radius: 50%; background: #ff9500; display: inline-block;"></span> Borrador</span>
-                        </div>
-                        <!-- Calendar Grid -->
-                        <div style="padding: 16px;">
-                            <div class="cal-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px;">
-                                <div class="cal-header-cell">Lun</div>
-                                <div class="cal-header-cell">Mar</div>
-                                <div class="cal-header-cell">Mié</div>
-                                <div class="cal-header-cell">Jue</div>
-                                <div class="cal-header-cell">Vie</div>
-                                <div class="cal-header-cell" style="color: #ff9500;">Sáb</div>
-                                <div class="cal-header-cell" style="color: #ff3b30;">Dom</div>
+                    <!-- Scheduling Card -->
+                    <div style="background: var(--bg-card); padding: 24px; border-radius: 20px; border: 1px solid var(--border-color);">
+                        <h3 style="margin: 0 0 16px 0; font-size: 1.1rem;">⏰ Programación de envío</h3>
+                        <!-- Day + Time -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                            <div>
+                                <label style="font-size: 0.7rem; color: var(--text-grey); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">Día de envío</label>
+                                <select id="nl-send-day" class="admin-select" style="width: 100%;">
+                                    <option value="0">Domingo</option>
+                                    <option value="1" selected>Lunes</option>
+                                    <option value="2">Martes</option>
+                                    <option value="3">Miércoles</option>
+                                    <option value="4">Jueves</option>
+                                    <option value="5">Viernes</option>
+                                    <option value="6">Sábado</option>
+                                </select>
                             </div>
-                            <div id="cal-days-grid" class="cal-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px;"></div>
+                            <div>
+                                <label style="font-size: 0.7rem; color: var(--text-grey); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">Hora de envío</label>
+                                <input type="time" id="nl-send-time" value="10:00" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-white); font-size: 0.85rem;">
+                            </div>
                         </div>
-                    </div>
-
-                    <!-- Upcoming / Day Detail -->
-                    <div id="cal-day-detail" style="margin-top: 20px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px 24px; display: none;">
-                        <h4 id="cal-detail-title" style="margin: 0 0 12px; font-size: 0.9rem;"></h4>
-                        <div id="cal-detail-items"></div>
+                        <button class="btn-action" style="width: 100%; background: linear-gradient(135deg, var(--accent-blue), #af52de); border: none; color: white; font-weight: 600; padding: 12px;" onclick="saveNewsletterConfig()">💾 Guardar programación</button>
+                        
+                        <!-- Next + Last Send Info -->
+                        <div style="margin-top: 16px; display: grid; gap: 10px;">
+                            <div style="background: var(--bg-secondary); padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border-color);">
+                                <div style="font-size: 0.7rem; color: var(--text-grey); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Próximo envío</div>
+                                <div id="nl-next-send" style="font-size: 0.88rem; font-weight: 600;">—</div>
+                            </div>
+                            <div style="background: var(--bg-secondary); padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border-color);">
+                                <div style="font-size: 0.7rem; color: var(--text-grey); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Último envío</div>
+                                <div id="nl-last-sent" style="font-size: 0.88rem; font-weight: 600;">Nunca</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Subscribers List -->
-                <div style="background: var(--bg-card); padding: 24px; border-radius: 20px; border: 1px solid var(--border-color); margin-top: 24px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <h3 style="margin: 0; font-size: 1.1rem;">👥 Últimos Suscriptores</h3>
-                        <button class="btn-action" style="font-size: 0.75rem;" onclick="alert('Exportar CSV próximamente')">📥 Exportar CSV</button>
+                <!-- Pending Articles -->
+                <div style="background: var(--bg-card); padding: 24px; border-radius: 20px; border: 1px solid var(--border-color); margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+                        <h3 style="margin: 0; font-size: 1.1rem;">📰 Artículos pendientes de envío <span id="nl-pending-count" style="font-size: 0.75rem; background: rgba(0,113,227,0.15); color: var(--accent-blue); padding: 2px 8px; border-radius: 10px; margin-left: 6px;">0</span></h3>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <label style="display: flex; align-items: center; gap: 6px; font-size: 0.82rem; cursor: pointer; color: var(--text-grey);">
+                                <input type="checkbox" id="nl-select-all" onchange="toggleSelectAllArticles(this.checked)" style="accent-color: #34c759; width: 16px; height: 16px; cursor: pointer;">
+                                Todos
+                            </label>
+                            <button class="btn-action" style="background: #34c759; border: none; color: white; font-weight: 600; display: flex; align-items: center; gap: 6px;" onclick="sendNewsletterNow()">
+                                🚀 Enviar seleccionados
+                            </button>
+                        </div>
                     </div>
-                    <div class="table-wrapper" style="max-height: 250px; overflow-y: auto;">
-                        <table class="leads-table" style="width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th style="padding: 10px;">Nombre</th>
-                                    <th style="padding: 10px;">Email</th>
-                                    <th style="padding: 10px;">WhatsApp</th>
-                                    <th style="padding: 10px;">Canales</th>
-                                    <th style="padding: 10px;">Fecha</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td style="font-size: 0.8rem; font-weight: 600;">Ana García</td>
-                                    <td style="font-size: 0.8rem;">ana@empresa.com</td>
-                                    <td style="font-size: 0.8rem;">+34 612 345 678</td>
-                                    <td><span style="font-size: 0.65rem;">📧💬</span></td>
-                                    <td style="font-size: 0.8rem; color: var(--text-grey);">29 Mar</td>
-                                </tr>
-                                <tr>
-                                    <td style="font-size: 0.8rem; font-weight: 600;">Carlos López</td>
-                                    <td style="font-size: 0.8rem;">carlos@startup.io</td>
-                                    <td style="font-size: 0.8rem;">—</td>
-                                    <td><span style="font-size: 0.65rem;">📧</span></td>
-                                    <td style="font-size: 0.8rem; color: var(--text-grey);">28 Mar</td>
-                                </tr>
-                                <tr>
-                                    <td style="font-size: 0.8rem; font-weight: 600;">María Fernández</td>
-                                    <td style="font-size: 0.8rem;">maria@negocio.es</td>
-                                    <td style="font-size: 0.8rem;">+34 678 901 234</td>
-                                    <td><span style="font-size: 0.65rem;">📧💬</span></td>
-                                    <td style="font-size: 0.8rem; color: var(--text-grey);">27 Mar</td>
-                                </tr>
-                                <tr>
-                                    <td style="font-size: 0.8rem; font-weight: 600;">Pedro Martínez</td>
-                                    <td style="font-size: 0.8rem;">pedro@consulting.com</td>
-                                    <td style="font-size: 0.8rem;">+34 600 123 456</td>
-                                    <td><span style="font-size: 0.65rem;">💬</span></td>
-                                    <td style="font-size: 0.8rem; color: var(--text-grey);">26 Mar</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div id="nl-pending-articles" style="display: grid; gap: 8px;">
+                        <p style="color: var(--text-grey); font-size: 0.82rem; text-align: center; padding: 20px 0;">Cargando...</p>
+                    </div>
+                </div>
+
+                <!-- Send History -->
+                <div style="background: var(--bg-card); padding: 24px; border-radius: 20px; border: 1px solid var(--border-color);">
+                    <h3 style="margin: 0 0 16px 0; font-size: 1.1rem;">📋 Historial de envíos</h3>
+                    <div id="nl-send-history">
+                        <p style="color: var(--text-grey); font-size: 0.82rem; text-align: center; padding: 16px 0;">Sin envíos todavía</p>
                     </div>
                 </div>
             </section>
@@ -2495,36 +2244,295 @@
         if (activeEl) activeEl.textContent = active;
     }
 
-    // Newsletter admin functions
-    function filterNewsletterArticles() {
-        const search = (document.getElementById('nl-search').value || '').toLowerCase();
-        const catFilter = document.getElementById('nl-filter-category').value;
-        const statusFilter = document.getElementById('nl-filter-status').value;
-        const rows = document.querySelectorAll('#nl-articles-body tr');
-        rows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            const cat = row.dataset.cat || '';
-            const status = row.dataset.status || '';
-            const matchSearch = !search || text.includes(search);
-            const matchCat = catFilter === 'all' || cat === catFilter;
-            const matchStatus = statusFilter === 'all' || status === statusFilter;
-            row.style.display = (matchSearch && matchCat && matchStatus) ? '' : 'none';
-        });
+    // ═══ Newsletter Subscribers ═══
+    async function loadSubscribers() {
+        var list = document.getElementById('subscribers-list');
+        var countEl = document.getElementById('subscriber-count');
+        if (!list) return;
+
+        try {
+            var { data: subs, error } = await _supabase
+                .from('newsletter_subscribers')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            if (countEl) countEl.textContent = (subs || []).length;
+
+            if (!subs || subs.length === 0) {
+                list.innerHTML = '<div style="text-align:center;padding:24px 0"><div style="font-size:1.5rem;margin-bottom:6px">📭</div><p style="color:var(--text-grey);font-size:0.8rem">No hay suscriptores todavía</p></div>';
+                return;
+            }
+
+            list.innerHTML = subs.map(function(s) {
+                var d = new Date(s.created_at);
+                var dateStr = d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+                return '<div style="padding:10px 14px;border-radius:10px;border:1px solid var(--border-color);background:var(--bg-secondary);display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">' +
+                    '<div style="flex:1;min-width:0">' +
+                    '<div style="font-size:0.82rem;font-weight:600">' + (s.name || 'Sin nombre') + '</div>' +
+                    '<div style="font-size:0.72rem;color:var(--text-grey)">' + s.email + ' · ' + dateStr + '</div>' +
+                    '</div>' +
+                    '<button onclick="deleteSubscriber(\'' + s.id + '\')" style="background:none;border:none;cursor:pointer;font-size:0.85rem;opacity:0.5;transition:opacity 0.2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">🗑️</button>' +
+                    '</div>';
+            }).join('');
+        } catch(err) {
+            list.innerHTML = '<p style="color:#ff3b30;font-size:0.82rem">Error: ' + err.message + '</p>';
+        }
     }
 
-    function triggerNewsletterSend() {
-        const btn = document.getElementById('btn-send-newsletter');
-        btn.textContent = '⏳ Enviando...';
-        btn.disabled = true;
-        setTimeout(() => {
-            btn.textContent = '✅ ¡Enviado!';
-            btn.style.background = '#34c759';
-            setTimeout(() => {
-                btn.textContent = '🚀 Lanzar Envío';
-                btn.style.background = '#af52de';
-                btn.disabled = false;
-            }, 3000);
-        }, 2000);
+    async function addNewsletterSubscriber() {
+        var nameInput = document.getElementById('nl-sub-name');
+        var emailInput = document.getElementById('nl-sub-email');
+        var email = (emailInput.value || '').trim();
+        var name = (nameInput.value || '').trim();
+
+        if (!email || !email.includes('@')) {
+            alert('Introduce un email válido');
+            return;
+        }
+
+        try {
+            var { error } = await _supabase.from('newsletter_subscribers').insert({
+                name: name || null,
+                email: email,
+                created_at: new Date().toISOString()
+            });
+            if (error) throw error;
+            nameInput.value = '';
+            emailInput.value = '';
+            loadSubscribers();
+        } catch(e) {
+            alert('Error: ' + e.message);
+        }
+    }
+
+    async function deleteSubscriber(id) {
+        if (!confirm('¿Eliminar este suscriptor?')) return;
+        try {
+            await _supabase.from('newsletter_subscribers').delete().eq('id', id);
+            loadSubscribers();
+        } catch(e) {
+            console.log('Error:', e);
+        }
+    }
+
+    // ═══ Newsletter Config & Send ═══
+    var NL_DAY_NAMES = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+
+    async function loadNewsletterConfig() {
+        try {
+            var { data } = await _supabase.from('newsletter_config').select('*').limit(1).single();
+            if (data) {
+                document.getElementById('nl-send-day').value = data.send_day || '1';
+                document.getElementById('nl-send-time').value = data.send_time || '10:00';
+                if (data.last_sent_at) {
+                    var d = new Date(data.last_sent_at);
+                    document.getElementById('nl-last-sent').textContent = d.toLocaleDateString('es-ES', {day:'numeric',month:'long',year:'numeric'}) + ' · ' + d.toLocaleTimeString('es-ES', {hour:'2-digit',minute:'2-digit'});
+                    document.getElementById('nl-last-sent').style.color = '#34c759';
+                }
+                updateNextSend(parseInt(data.send_day || '1'), data.send_time || '10:00');
+            }
+        } catch(e) {
+            // Config doesn't exist yet, use defaults
+            updateNextSend(1, '10:00');
+        }
+        loadPendingArticles();
+        loadSendHistory();
+    }
+
+    function updateNextSend(dayOfWeek, timeStr) {
+        var now = new Date();
+        var next = new Date(now);
+        var diff = dayOfWeek - now.getDay();
+        if (diff < 0) diff += 7;
+        if (diff === 0) {
+            var parts = timeStr.split(':');
+            var sendToday = new Date(now);
+            sendToday.setHours(parseInt(parts[0]), parseInt(parts[1]), 0, 0);
+            if (now >= sendToday) diff = 7;
+        }
+        next.setDate(next.getDate() + diff);
+        var el = document.getElementById('nl-next-send');
+        if (el) el.textContent = NL_DAY_NAMES[next.getDay()] + ', ' + next.toLocaleDateString('es-ES', {day:'numeric',month:'long'}) + ' · ' + (diff === 0 ? 'Hoy ' : '') + timeStr;
+    }
+
+    async function saveNewsletterConfig() {
+        var day = document.getElementById('nl-send-day').value;
+        var time = document.getElementById('nl-send-time').value;
+
+        try {
+            // Upsert config (single row)
+            var { data: existing } = await _supabase.from('newsletter_config').select('id').limit(1);
+            if (existing && existing.length > 0) {
+                await _supabase.from('newsletter_config').update({ send_day: parseInt(day), send_time: time }).eq('id', existing[0].id);
+            } else {
+                await _supabase.from('newsletter_config').insert({ send_day: parseInt(day), send_time: time });
+            }
+            updateNextSend(parseInt(day), time);
+            alert('✅ Programación guardada');
+        } catch(e) {
+            alert('Error: ' + e.message);
+        }
+    }
+
+    async function loadPendingArticles() {
+        var container = document.getElementById('nl-pending-articles');
+        var countEl = document.getElementById('nl-pending-count');
+        if (!container) return;
+
+        try {
+            var lastSent = null;
+            try {
+                var { data: config } = await _supabase.from('newsletter_config').select('last_sent_at').limit(1).single();
+                if (config && config.last_sent_at) lastSent = config.last_sent_at;
+            } catch(e) {}
+
+            var query = _supabase.from('articles').select('id, title, tag, created_at, image').eq('published', true).order('created_at', { ascending: false });
+            if (lastSent) {
+                query = query.gt('created_at', lastSent);
+            }
+
+            var { data: articles, error } = await query;
+            if (error) throw error;
+
+            if (countEl) countEl.textContent = (articles || []).length;
+
+            if (!articles || articles.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:20px 0"><div style="font-size:1.5rem;margin-bottom:6px">✅</div><p style="color:var(--text-grey);font-size:0.82rem">No hay artículos pendientes de envío</p></div>';
+                return;
+            }
+
+            var selectAll = document.getElementById('nl-select-all');
+            if (selectAll) selectAll.checked = true;
+
+            container.innerHTML = articles.map(function(a) {
+                var d = new Date(a.created_at);
+                return '<div style="padding:12px 16px;border-radius:12px;border:1px solid var(--border-color);background:var(--bg-secondary);display:flex;align-items:center;gap:12px">' +
+                    '<input type="checkbox" class="nl-article-check" value="' + a.id + '" checked onchange="updateNlSelectedCount()" style="accent-color:#34c759;width:16px;height:16px;flex-shrink:0;cursor:pointer">' +
+                    '<div style="width:40px;height:40px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="' + (a.image || '') + '" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display=\'none\'"></div>' +
+                    '<div style="flex:1;min-width:0">' +
+                    '<div style="font-size:0.82rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + a.title + '</div>' +
+                    '<div style="font-size:0.7rem;color:var(--text-grey)">' + (a.tag || '') + ' · ' + d.toLocaleDateString('es-ES', {day:'numeric', month:'short'}) + '</div>' +
+                    '</div>' +
+                    '<span style="font-size:0.72rem;color:#34c759;font-weight:500;white-space:nowrap">Pendiente</span>' +
+                    '</div>';
+            }).join('');
+        } catch(err) {
+            container.innerHTML = '<p style="color:#ff3b30;font-size:0.82rem;text-align:center;padding:16px 0">' + err.message + '</p>';
+        }
+    }
+
+    function toggleSelectAllArticles(checked) {
+        document.querySelectorAll('.nl-article-check').forEach(function(cb) {
+            cb.checked = checked;
+        });
+        updateNlSelectedCount();
+    }
+
+    function updateNlSelectedCount() {
+        var all = document.querySelectorAll('.nl-article-check');
+        var checked = document.querySelectorAll('.nl-article-check:checked');
+        var countEl = document.getElementById('nl-pending-count');
+        var selectAll = document.getElementById('nl-select-all');
+        if (countEl) countEl.textContent = checked.length + '/' + all.length;
+        if (selectAll) selectAll.checked = (checked.length === all.length);
+    }
+
+    function getSelectedArticleIds() {
+        var ids = [];
+        document.querySelectorAll('.nl-article-check:checked').forEach(function(cb) {
+            ids.push(cb.value);
+        });
+        return ids;
+    }
+
+    async function loadSendHistory() {
+        var container = document.getElementById('nl-send-history');
+        if (!container) return;
+
+        try {
+            var { data: history, error } = await _supabase.from('newsletter_sends').select('*').order('sent_at', { ascending: false }).limit(10);
+            if (error) throw error;
+
+            if (!history || history.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-grey);font-size:0.82rem;text-align:center;padding:16px 0">Sin envíos todavía</p>';
+                return;
+            }
+
+            container.innerHTML = history.map(function(h) {
+                var d = new Date(h.sent_at);
+                return '<div style="padding:12px 16px;border-radius:12px;border:1px solid var(--border-color);background:var(--bg-secondary);display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
+                    '<div>' +
+                    '<div style="font-size:0.82rem;font-weight:600">📨 Newsletter enviada</div>' +
+                    '<div style="font-size:0.7rem;color:var(--text-grey)">' + d.toLocaleDateString('es-ES', {day:'numeric',month:'long',year:'numeric'}) + ' · ' + d.toLocaleTimeString('es-ES', {hour:'2-digit',minute:'2-digit'}) + '</div>' +
+                    '</div>' +
+                    '<div style="text-align:right">' +
+                    '<div style="font-size:0.82rem;font-weight:700">' + (h.articles_count || 0) + ' arts.</div>' +
+                    '<div style="font-size:0.7rem;color:var(--text-grey)">' + (h.subscribers_count || 0) + ' subs.</div>' +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+        } catch(err) {
+            container.innerHTML = '<p style="color:var(--text-grey);font-size:0.82rem;text-align:center;padding:16px 0">Sin envíos todavía</p>';
+        }
+    }
+
+    async function sendNewsletterNow() {
+        var articleIds = getSelectedArticleIds();
+        if (articleIds.length === 0) {
+            alert('Selecciona al menos un artículo para enviar');
+            return;
+        }
+
+        if (!confirm('¿Enviar newsletter con ' + articleIds.length + ' artículo(s) a todos los suscriptores?')) return;
+
+        try {
+            // Get subscribers
+            var { data: subs } = await _supabase.from('newsletter_subscribers').select('email, name');
+            if (!subs || subs.length === 0) {
+                alert('No hay suscriptores. Añade al menos uno antes de enviar.');
+                return;
+            }
+
+            // Get articles
+            var { data: articles } = await _supabase.from('articles').select('id, title, tag, description, slug, image').in('id', articleIds);
+
+            // Call API endpoint
+            var response = await fetch('/api/send-newsletter', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ subscribers: subs, articles: articles })
+            });
+
+            var result = await response.json();
+
+            if (response.ok) {
+                // Record the send
+                await _supabase.from('newsletter_sends').insert({
+                    articles_count: articles.length,
+                    subscribers_count: subs.length,
+                    article_ids: articleIds,
+                    sent_at: new Date().toISOString()
+                });
+
+                // Update last_sent_at in config
+                var { data: config } = await _supabase.from('newsletter_config').select('id').limit(1);
+                if (config && config.length > 0) {
+                    await _supabase.from('newsletter_config').update({ last_sent_at: new Date().toISOString() }).eq('id', config[0].id);
+                }
+
+                alert('✅ Newsletter enviada a ' + subs.length + ' suscriptores con ' + articles.length + ' artículos');
+                loadPendingArticles();
+                loadSendHistory();
+                loadNewsletterConfig();
+            } else {
+                alert('❌ Error: ' + (result.error || 'Error desconocido'));
+            }
+        } catch(e) {
+            alert('❌ Error de conexión: ' + e.message);
+            console.error(e);
+        }
     }
 
     // ═══ VIEW SWITCHER & CALENDAR ═══

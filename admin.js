@@ -147,6 +147,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 loadPaymentLinks();
                 loadStripeKeys();
                 fetchStripePayments();
+            } else if (target === 'section-newsletter') {
+                if (typeof loadSubscribers === 'function') loadSubscribers();
+                if (typeof loadNewsletterConfig === 'function') loadNewsletterConfig();
             }
         });
     });
