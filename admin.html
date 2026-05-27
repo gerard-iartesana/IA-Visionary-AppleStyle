@@ -1109,12 +1109,11 @@
                                     <div>
                                         <label style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Modelo Gemini</label>
                                         <select id="gemini-model-select" class="admin-select" style="width: 100%;">
-                                            <option value="gemini-2.0-flash" selected>Gemini 2.0 Flash (Recomendado / Ultra Rápido)</option>
-                                            <option value="gemini-2.0-pro-exp">Gemini 2.0 Pro Experimental</option>
-                                            <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                                            <option value="gemini-2.0-pro" selected>Gemini 2.0 Pro (Recomendado / Máxima Calidad)</option>
+                                            <option value="gemini-2.0-flash">Gemini 2.0 Flash (Ultra Rápido)</option>
                                             <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
-                                            <option value="gemini-1.5-flash">Gemini 1.5 Flash (Estándar)</option>
-                                            <option value="gemini-1.5-pro">Gemini 1.5 Pro (Completo/Creativo)</option>
+                                            <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                                            <option value="gemini-1.5-pro">Gemini 1.5 Pro (Legacy)</option>
                                         </select>
                                     </div>
                                 </div>
@@ -1231,18 +1230,16 @@
 
                                     <!-- Mode Select Tabs -->
                                     <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px;">
-                                        <button type="button" id="media-tab-images" onclick="switchMediaAssistantTab('images')" class="btn-action" style="flex: 1; font-size: 0.75rem; padding: 6px 12px; background: rgba(0, 113, 227, 0.15); border: 1px solid rgba(0, 113, 227, 0.3); font-weight: 600; cursor: pointer;">Opción A: 3x Fotos de IA</button>
+                                        <button type="button" id="media-tab-images" onclick="switchMediaAssistantTab('images')" class="btn-action" style="flex: 1; font-size: 0.75rem; padding: 6px 12px; background: rgba(0, 113, 227, 0.15); border: 1px solid rgba(0, 113, 227, 0.3); font-weight: 600; cursor: pointer;">Opción A: Foto de IA</button>
                                         <button type="button" id="media-tab-videos" onclick="switchMediaAssistantTab('videos')" class="btn-action" style="flex: 1; font-size: 0.75rem; padding: 6px 12px; background: transparent; border: 1px solid transparent; cursor: pointer;">Opción B: Vídeo Loop IA</button>
                                     </div>
 
                                     <!-- Image Results Container -->
                                     <div id="media-images-container" style="display: block;">
-                                        <p style="font-size: 0.7rem; color: var(--text-grey); margin-bottom: 12px; text-align: center;">Haz clic en "Generar" para crear 3 opciones de fotos artísticas y selecciona tu favorita para tu artículo.</p>
+                                        <p style="font-size: 0.7rem; color: var(--text-grey); margin-bottom: 12px; text-align: center;">Haz clic en "Generar" para crear una foto artística de alta calidad con IA, la cual se aplicará automáticamente.</p>
                                         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;" id="media-images-grid">
-                                            <!-- Placeholders -->
-                                            <div style="background: rgba(255,255,255,0.01); aspect-ratio: 16/10; border: 1px dashed rgba(255,255,255,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--text-grey);">📷</div>
-                                            <div style="background: rgba(255,255,255,0.01); aspect-ratio: 16/10; border: 1px dashed rgba(255,255,255,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--text-grey);">📷</div>
-                                            <div style="background: rgba(255,255,255,0.01); aspect-ratio: 16/10; border: 1px dashed rgba(255,255,255,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--text-grey);">📷</div>
+                                            <!-- Placeholder for a single card spanning all 3 columns -->
+                                            <div style="background: rgba(255,255,255,0.01); aspect-ratio: 16/10; border: 1px dashed rgba(255,255,255,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--text-grey); grid-column: span 3;">📷</div>
                                         </div>
                                     </div>
 
@@ -4379,67 +4376,50 @@ Devuelve ÚNICAMENTE un objeto JSON que cumpla ESTRICTAMENTE con este esquema:
             const grid = document.getElementById('media-images-grid');
             grid.innerHTML = '';
             
-            // Define 3 unique art styles
-            const styles = [
-                {
-                    name: 'Estilo Apple Vector',
-                    promptSuffix: ', minimalist vector icon design, vibrant glowing gradients, dark futuristic background, premium clean tech style, extremely aesthetic',
-                    seed: 101
-                },
-                {
-                    name: 'Foto Realista 3D',
-                    promptSuffix: ', realistic high-detailed tech photo, cinematic studio light, volumetric reflections, dark background, futuristic machinery, 8k',
-                    seed: 202
-                },
-                {
-                    name: 'Ilustración Cyberpunk',
-                    promptSuffix: ', high quality digital art concept illustration, smooth lines, flowing cybernetic data waves, abstract technology art, clean',
-                    seed: 303
-                }
-            ];
+            // Generate a single high-quality photo
+            const finalPrompt = prompt + ', realistic high-detailed tech photo, cinematic studio light, dark minimal background, futuristic style, premium aesthetic, 8k';
+            const encodedPrompt = encodeURIComponent(finalPrompt);
+            const seed = Math.floor(Math.random() * 1000000);
+            const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=800&height=500&nologo=true&seed=${seed}`;
             
-            styles.forEach((styleObj, i) => {
-                const finalPrompt = prompt + styleObj.promptSuffix;
-                const encodedPrompt = encodeURIComponent(finalPrompt);
-                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=640&height=400&nologo=true&seed=${styleObj.seed}`;
-                
-                // Create card container
-                const card = document.createElement('div');
-                card.className = 'media-option-card';
-                card.style = 'position: relative; background: rgba(255,255,255,0.02); aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.25s ease; display: flex; align-items: center; justify-content: center;';
-                card.setAttribute('onclick', `selectMediaImage("${imageUrl}", this)`);
-                
-                // Loader placeholder
-                const placeholder = document.createElement('div');
-                placeholder.style = 'position: absolute; font-size: 0.7rem; color: var(--text-grey); display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 1;';
-                placeholder.innerHTML = `<span>⏳ Generando...</span><span style="font-size: 0.55rem; opacity: 0.7;">${styleObj.name}</span>`;
-                card.appendChild(placeholder);
-                
-                // The actual image
-                const img = document.createElement('img');
-                img.src = imageUrl;
-                img.style = 'width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; z-index: 2;';
-                img.onload = () => {
-                    placeholder.style.display = 'none';
-                    img.style.opacity = '1';
-                };
-                img.onerror = () => {
-                    placeholder.innerHTML = '❌ Error';
-                };
-                card.appendChild(img);
-                
-                // Badge overlay
-                const badge = document.createElement('div');
-                badge.style = 'position: absolute; bottom: 6px; left: 6px; background: rgba(0,0,0,0.65); padding: 3px 8px; border-radius: 5px; font-size: 0.55rem; color: #fff; z-index: 3; font-weight: 500; pointer-events: none; border: 1px solid rgba(255,255,255,0.05);';
-                badge.innerText = styleObj.name;
-                card.appendChild(badge);
-                
-                grid.appendChild(card);
-            });
+            // Create card container for a single image spanning the full width
+            const card = document.createElement('div');
+            card.className = 'media-option-card';
+            card.style = 'position: relative; background: rgba(255,255,255,0.02); aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.25s ease; display: flex; align-items: center; justify-content: center; grid-column: span 3;';
+            card.setAttribute('onclick', `selectMediaImage("${imageUrl}", this)`);
+            
+            // Loader placeholder
+            const placeholder = document.createElement('div');
+            placeholder.style = 'position: absolute; font-size: 0.8rem; color: var(--text-grey); display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 1;';
+            placeholder.innerHTML = `<span>⏳ Generando foto con IA...</span>`;
+            card.appendChild(placeholder);
+            
+            // The actual image
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.style = 'width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; z-index: 2;';
+            img.onload = () => {
+                placeholder.style.display = 'none';
+                img.style.opacity = '1';
+                // Auto-select this generated image for convenience!
+                selectMediaImage(imageUrl, card);
+            };
+            img.onerror = () => {
+                placeholder.innerHTML = '❌ Error de generación';
+            };
+            card.appendChild(img);
+            
+            // Badge overlay
+            const badge = document.createElement('div');
+            badge.style = 'position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.65); padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; color: #fff; z-index: 3; font-weight: 500; pointer-events: none; border: 1px solid rgba(255,255,255,0.05);';
+            badge.innerText = 'Foto IA Generada';
+            card.appendChild(badge);
+            
+            grid.appendChild(card);
             
             setTimeout(() => {
                 if (loader) loader.style.display = 'none';
-                showToast('🤖 ¡3 opciones de fotos IA generadas con éxito!', 4000);
+                showToast('🤖 ¡Foto IA generada con éxito!', 4000);
             }, 3000);
         } else {
             // Videos option
