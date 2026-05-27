@@ -4190,19 +4190,35 @@ Devuelve ÚNICAMENTE un objeto JSON que cumpla ESTRICTAMENTE con este esquema:
             console.error('Error in Gemini generation:', e);
             log('❌ ERROR: ' + e.message, '#ff3b30');
             
-            if (e.message.includes('API key not valid') || e.message.includes('API_KEY_INVALID')) {
+            if (e.message.includes('expired') || e.message.includes('expired the API key')) {
+                log('💡 API Key Expirada / Caducada:', '#ff9500');
+                log('👉 Al activar o modificar la facturación (Billing) de tu cuenta de Google Cloud, Google invalida temporalmente las claves creadas previamente.', '#ff9500');
+                log('👉 SOLUCIÓN: Entra en Google AI Studio (https://aistudio.google.com), haz clic en "Get API key", genera una NUEVA API Key en tu proyecto activo con facturación, e introdúcela en tu panel.', '#0071e3');
+                
+                statusEl.innerText = '● CLAVE EXPIRADA';
+                statusEl.style.color = '#ff9500';
+                alert('La API Key de Gemini ha expirado.\n\nTras habilitar la facturación (Billing), Google suele desactivar las claves anteriores. Por favor, ve a Google AI Studio (https://aistudio.google.com), genera una NUEVA API Key e introdúcela en el panel de control.');
+            } else if (e.message.includes('API key not valid') || e.message.includes('API_KEY_INVALID')) {
                 log('💡 Sugerencia: La API Key de Gemini que has guardado no es válida o ha caducado.', '#ff9500');
                 log('👉 Por favor, ve a https://aistudio.google.com para generar una clave gratuita válida.', '#0071e3');
+                
+                statusEl.innerText = '● CLAVE INVÁLIDA';
+                statusEl.style.color = '#ff3b30';
+                alert('Error en la generación con IA: Clave de API no válida.\n\nVerifica tu API Key de Gemini o genera una nueva en Google AI Studio.');
             } else if (e.message.includes('429') || e.message.includes('quota') || e.message.includes('Quota exceeded') || e.message.includes('RESOURCE_EXHAUSTED')) {
                 log('💡 Restricción Europea / Quota Detectada:', '#ff9500');
                 log('👉 Por políticas de privacidad y servicio, Google bloquea la cuota del "Plan Gratuito" (límite 0) para usuarios en España y la Unión Europea (EEA).', '#ff9500');
                 log('👉 SOLUCIÓN: Accede a Google AI Studio (https://aistudio.google.com), ve a "Billing" y vincula una tarjeta para activar el plan "Pay-as-you-go" (Pago por uso).', '#0071e3');
                 log('👉 Nota: Gemini 2.0 Flash es extremadamente económico ($0.075 por millón de tokens). Generar un boletín completo te costará menos de €0.0001 (una milésima de céntimo).', '#34c759');
+                
+                statusEl.innerText = '● ERROR DE CUOTA';
+                statusEl.style.color = '#ff9500';
+                alert('Error de API Gemini (429): Quota Exceeded.\n\nEn España y la Unión Europea, Google no permite el uso de la API en el plan gratuito (límite 0). Para que funcione tu API Key, debes activar la facturación ("Pay-as-you-go") en Google AI Studio (https://aistudio.google.com). Es extremadamente barato (cuesta menos de una milésima de céntimo de euro por artículo).');
+            } else {
+                statusEl.innerText = '● ERROR';
+                statusEl.style.color = '#ff3b30';
+                alert('Error en la generación con IA: ' + e.message + '\n\nVerifica tu API Key de Gemini o revisa la consola de depuración del agente.');
             }
-            
-            statusEl.innerText = '● ERROR DE CUOTA';
-            statusEl.style.color = '#ff9500';
-            alert('Error de API Gemini (429): Quota Exceeded.\n\nEn España y la Unión Europea, Google no permite el uso de la API en el plan gratuito (límite 0). Para que funcione tu API Key, debes activar la facturación ("Pay-as-you-go") en Google AI Studio (https://aistudio.google.com). Es extremadamente barato (cuesta menos de una milésima de céntimo de euro por artículo).');
         }
     }
     
