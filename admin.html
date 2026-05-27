@@ -166,6 +166,10 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
                 Automatizaciones
             </div>
+            <div class="sidebar-item" data-target="section-newsletter">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                Creador Newsletter
+            </div>
 
             <div class="sidebar-item" data-target="section-logs" style="margin-top: auto; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
@@ -1043,6 +1047,283 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: NEWSLETTER -->
+            <section id="section-newsletter" class="admin-content-area">
+                <header class="admin-header" style="padding-top: 0; display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h1 style="display: flex; align-items: center; gap: 12px;">📬 Creador de Newsletter
+                            <span style="font-size: 0.6rem; background: rgba(0,113,227,0.15); color: #0071e3; padding: 4px 10px; border-radius: 12px; font-weight: 600;">Gemini 3.5 Co-pilot</span>
+                        </h1>
+                        <p style="color: var(--text-grey);">Genera artículos impactantes con inteligencia artificial y gestiona tus suscriptores en Supabase.</p>
+                    </div>
+                    <a href="newsletter.html" target="_blank" class="btn-action" style="text-decoration: none; display: flex; align-items: center; gap: 8px; white-space: nowrap;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        Ver Newsletter Pública
+                    </a>
+                </header>
+
+                <!-- Stats Overview -->
+                <div class="stats-grid" style="margin-bottom: 30px;">
+                    <div class="stat-card">
+                        <span class="stat-label">Suscriptores Totales</span>
+                        <h2 id="nl-subscribers-count" style="color: var(--accent-blue);">0</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Artículos Publicados</span>
+                        <h2 id="nl-published-count" class="text-green">0</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Borradores</span>
+                        <h2 id="nl-drafts-count" style="color: #ff9500;">0</h2>
+                    </div>
+                </div>
+
+                <!-- Tabs Container -->
+                <div class="tabs-container" style="display: flex; gap: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 30px;">
+                    <button class="tab-btn active" id="btn-nl-tab-write" onclick="switchNewsletterTab('write')" style="background: rgba(255,255,255,0.06); border: 1px solid var(--border-color); color: var(--text-white); font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 12px; font-size: 0.85rem; font-family: inherit; transition: all 0.3s;">🤖 Redactor con IA Co-pilot</button>
+                    <button class="tab-btn" id="btn-nl-tab-subscribers" onclick="switchNewsletterTab('subscribers')" style="background: transparent; border: 1px solid transparent; color: var(--text-grey); font-weight: 500; cursor: pointer; padding: 8px 16px; border-radius: 12px; font-size: 0.85rem; font-family: inherit; transition: all 0.3s;">👥 Suscriptores de Newsletter</button>
+                    <button class="tab-btn" id="btn-nl-tab-articles" onclick="switchNewsletterTab('articles')" style="background: transparent; border: 1px solid transparent; color: var(--text-grey); font-weight: 500; cursor: pointer; padding: 8px 16px; border-radius: 12px; font-size: 0.85rem; font-family: inherit; transition: all 0.3s;">📝 Historial de Artículos</button>
+                </div>
+
+                <!-- TABS CONTENT PANES -->
+                
+                <!-- Pane 1: IA REDACTOR -->
+                <div class="nl-tab-pane" id="nl-pane-write" style="display: block;">
+                    <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px;">
+                        
+                        <!-- Form and Editor Column -->
+                        <div>
+                            <!-- AI Co-pilot Box -->
+                            <div style="background: linear-gradient(135deg, rgba(0, 113, 227, 0.05), rgba(175, 82, 222, 0.05)); border: 1px solid rgba(0, 113, 227, 0.15); padding: 24px; border-radius: 20px; margin-bottom: 24px; position: relative;">
+                                <h3 style="font-size: 1.05rem; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">🤖 1. Configurar Copiloto Inteligente</h3>
+                                
+                                <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 16px; margin-bottom: 16px;">
+                                    <div>
+                                        <label style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">API Key de Gemini</label>
+                                        <input type="password" id="gemini-api-key" class="admin-select" style="width: 100%; font-family: monospace; font-size: 0.8rem;" placeholder="Introduce tu Gemini API Key..." onchange="saveGeminiKey(this.value)">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Modelo Gemini</label>
+                                        <select id="gemini-model-select" class="admin-select" style="width: 100%;">
+                                            <option value="gemini-1.5-flash">Gemini 1.5 Flash (Rápido/Estándar)</option>
+                                            <option value="gemini-1.5-pro">Gemini 1.5 Pro (Completo/Creativo)</option>
+                                            <option value="gemini-2.0-flash">Gemini 2.0 Flash (Último/Instantáneo)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <p style="font-size: 0.65rem; color: var(--text-grey); margin-top: -10px; margin-bottom: 16px;">💡 Tu clave se almacena únicamente en tu navegador de forma segura. Obtén una gratis en <a href="https://aistudio.google.com" target="_blank" style="color: var(--accent-blue);">Google AI Studio</a>.</p>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                                    <div>
+                                        <label style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Tipo de Contenido</label>
+                                        <select id="nl-generation-type" class="admin-select" style="width: 100%;" onchange="togglePromoInputs(this.value)">
+                                            <option value="world-news">🌍 Noticias de IA en el Mundo</option>
+                                            <option value="promo-course">📣 Novedad / Lanzamiento Curso Propio</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Tono de Redacción</label>
+                                        <select id="nl-generation-tone" class="admin-select" style="width: 100%;">
+                                            <option value="apple">Apple Style (Minimalista, Conciso, Premium)</option>
+                                            <option value="professional">Profesional Tecnológico (Analítico, Experto)</option>
+                                            <option value="friendly">Didáctico y Cercano (Fácil de entender)</option>
+                                            <option value="formal">Riguroso e Informativo (Prensa)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div style="margin-bottom: 16px;">
+                                    <label style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Tema o Noticia de Interés</label>
+                                    <input type="text" id="nl-generation-topic" class="admin-select" style="width: 100%; cursor: text;" placeholder="Ej. El lanzamiento de Claude 3.5 Sonnet / Nuevo curso de n8n para PYMEs...">
+                                </div>
+
+                                <!-- Dynamic Promo Inputs -->
+                                <div id="nl-promo-fields" style="display: none; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 16px;">
+                                    <div style="margin-bottom: 12px;">
+                                        <label style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 6px; text-transform: uppercase;">Detalles del Producto / Curso / Novedad</label>
+                                        <textarea id="nl-generation-details" class="admin-select" style="width: 100%; height: 70px; resize: vertical; cursor: text; padding: 10px; font-family: inherit;" placeholder="Ej. Duración 4 horas, 15 plantillas de n8n, 100% práctico, oferta de lanzamiento 0€ en vez de 159€..."></textarea>
+                                    </div>
+                                </div>
+
+                                <button class="btn-save-legal" onclick="generateNewsletterWithAI()" style="width: 100%; font-size: 0.9rem; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; background: var(--accent-blue);">
+                                    <span>🤖 Generar Borrador con Gemini Co-pilot</span>
+                                </button>
+                                
+                                <!-- AI Agent Console -->
+                                <div id="ai-agent-console" style="display: none; margin-top: 16px; background: #000000; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 16px; font-family: monospace; font-size: 0.75rem; color: #34c759;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px;">
+                                        <span style="color: var(--text-grey);">AGENTE IA CONSOLE</span>
+                                        <span id="console-status" style="animation: pulse-dot 1.5s infinite;">● PROCESANDO</span>
+                                    </div>
+                                    <div id="console-logs" style="max-height: 100px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;">
+                                        <div>&gt; Agente activado...</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Markdown Article Editor -->
+                            <div style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 24px; border-radius: 20px;">
+                                <h3 style="font-size: 1.05rem; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+                                    <span>📝 2. Editor del Artículo</span>
+                                    <span id="editor-active-id" style="font-size: 0.7rem; background: rgba(255,255,255,0.06); color: var(--text-grey); padding: 4px 10px; border-radius: 8px; font-weight: 500; display: none;">Editando ID: <span></span></span>
+                                </h3>
+
+                                <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 16px; margin-bottom: 16px;">
+                                    <div>
+                                        <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">Título del Artículo</label>
+                                        <input type="text" id="nl-art-title" class="admin-select" style="width: 100%; cursor: text;" placeholder="Título impactante..." oninput="updateNewsletterPreview()">
+                                    </div>
+                                    <div>
+                                        <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">Categoría</label>
+                                        <select id="nl-art-category" class="admin-select" style="width: 100%;" onchange="updateNewsletterPreview()">
+                                            <option value="ia">🤖 Inteligencia Artificial</option>
+                                            <option value="negocio">💼 Negocio Digital</option>
+                                            <option value="tutorial">📚 Tutorial Práctico</option>
+                                            <option value="noticia">📰 Noticia del Sector</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div style="margin-bottom: 16px;">
+                                    <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">Subtítulo / Resumen corto (aparece en la lista)</label>
+                                    <input type="text" id="nl-art-subtitle" class="admin-select" style="width: 100%; cursor: text;" placeholder="Resumen corto de 2 líneas..." oninput="updateNewsletterPreview()">
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 16px; margin-bottom: 16px;">
+                                    <div>
+                                        <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">URL de la Imagen del Artículo</label>
+                                        <input type="text" id="nl-art-image" class="admin-select" style="width: 100%; cursor: text;" placeholder="img/newsletter/tu-imagen.png" oninput="updateNewsletterPreview()">
+                                    </div>
+                                    <div>
+                                        <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">Tiempo de lectura</label>
+                                        <input type="text" id="nl-art-readtime" class="admin-select" style="width: 100%; cursor: text;" placeholder="Ej. 5 min" oninput="updateNewsletterPreview()">
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                                    <div>
+                                        <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">Ruta / Slug único (Ej. gpt5-futuro-negocio)</label>
+                                        <div style="display: flex; gap: 8px;">
+                                            <input type="text" id="nl-art-slug" class="admin-select" style="width: 100%; cursor: text; font-family: monospace; font-size: 0.8rem;" placeholder="slug-unico">
+                                            <button class="btn-action" onclick="autoSlugifyNewsletter()" style="padding: 0 12px; font-size: 0.75rem;">Autogenerar</button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">Meta Descripción (SEO)</label>
+                                        <input type="text" id="nl-art-metadesc" class="admin-select" style="width: 100%; cursor: text;" placeholder="Descripción para buscadores...">
+                                    </div>
+                                </div>
+
+                                <div style="margin-bottom: 24px;">
+                                    <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">Contenido del Artículo (Markdown)</label>
+                                    <textarea id="nl-art-content" class="admin-select" style="width: 100%; height: 280px; resize: vertical; font-family: monospace; font-size: 0.85rem; line-height: 1.6; cursor: text; padding: 12px;" placeholder="# Tu encabezado principal&#10;&#10;Escribe aquí en formato markdown..." oninput="updateNewsletterPreview()"></textarea>
+                                </div>
+
+                                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                                    <button id="btn-nl-reset" class="btn-action" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-grey);" onclick="resetNewsletterEditor()">Limpiar</button>
+                                    <button class="btn-action" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-white);" onclick="saveNewsletterArticle('borrador')">💾 Guardar Borrador</button>
+                                    <button class="btn-save-legal" style="background: #34c759; color: white;" onclick="saveNewsletterArticle('publicado')">🚀 Publicar en la Web</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Live Preview Column -->
+                        <div>
+                            <div style="position: sticky; top: 100px;">
+                                <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">👁️ Live Previsualización</h3>
+                                
+                                <p style="font-size: 0.75rem; color: var(--text-grey); margin-bottom: 12px;">Así se verá la tarjeta del artículo en la lista de tu web pública:</p>
+                                
+                                <!-- Card Preview (simulating iadebarrio styles) -->
+                                <div style="background: #1d1d1f; border: 1px solid var(--border-color); border-radius: 24px; overflow: hidden; max-width: 360px; margin-bottom: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.3);">
+                                    <div id="preview-card-img-wrapper" style="width: 100%; aspect-ratio: 16/10; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--border-color);">
+                                        <img id="preview-card-img" src="" alt="Vista previa de imagen" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                                        <div id="preview-card-img-placeholder" style="font-size: 2.5rem; opacity: 0.1;">📰</div>
+                                    </div>
+                                    <div style="padding: 24px;">
+                                        <span id="preview-card-tag" class="news-tag tag-ia" style="display: inline-block; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; padding: 5px 12px; border-radius: 20px; margin-bottom: 12px; background: rgba(0,113,227,0.15); color: #0071e3;">IA</span>
+                                        <h3 id="preview-card-title" style="font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; line-height: 1.3; color: var(--text-white);">Título del Artículo</h3>
+                                        <p id="preview-card-subtitle" style="font-size: 0.85rem; color: var(--text-grey); line-height: 1.5; margin-bottom: 16px;">Subtítulo o descripción breve del artículo generado...</p>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-grey);">
+                                            <span id="preview-card-meta">27 May 2026 · 5 min</span>
+                                            <span style="color: var(--accent-blue); font-weight: 500;">Leer más →</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Pane 2: SUSCRIPTORES -->
+                <div class="nl-tab-pane" id="nl-pane-subscribers" style="display: none;">
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 24px; border-radius: 20px;">
+                        
+                        <!-- Search and Manual Insert -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+                            <div>
+                                <h3 style="font-size: 1.05rem; font-weight: 600; margin-bottom: 4px;">Listado de Suscriptores</h3>
+                                <p style="color: var(--text-grey); font-size: 0.8rem; margin: 0;">Lista de correos registrados en la lista de espera de la Academia y la Newsletter.</p>
+                            </div>
+                            
+                            <!-- Inline Form: Manual subscriber addition -->
+                            <form id="new-subscriber-form" onsubmit="return addSubscriberManual(event)" style="display: flex; gap: 8px; align-items: center;">
+                                <input type="text" id="new-sub-name-manual" class="admin-select" style="padding: 10px 14px; font-size: 0.82rem; min-width: 140px; cursor: text;" placeholder="Nombre (Opcional)">
+                                <input type="email" id="new-sub-email-manual" class="admin-select" style="padding: 10px 14px; font-size: 0.82rem; min-width: 200px; cursor: text;" placeholder="correo@ejemplo.com" required>
+                                <button type="submit" class="btn-save-legal" style="background: var(--accent-blue); color: white; padding: 10px 16px; margin: 0; font-size: 0.82rem;">➕ Añadir</button>
+                            </form>
+                        </div>
+
+                        <!-- Table Wrapper -->
+                        <div class="table-wrapper">
+                            <table class="leads-table">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha Registro</th>
+                                        <th>Nombre</th>
+                                        <th>Correo Electrónico</th>
+                                        <th style="width: 80px; text-align: center;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subscribers-table-body">
+                                    <tr>
+                                        <td colspan="4" class="table-loading">Cargando suscriptores de Supabase...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pane 3: HISTORIAL DE ARTÍCULOS -->
+                <div class="nl-tab-pane" id="nl-pane-articles" style="display: none;">
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 24px; border-radius: 20px;">
+                        <h3 style="font-size: 1.05rem; font-weight: 600; margin-bottom: 20px;">Artículos Creados</h3>
+                        
+                        <div class="table-wrapper">
+                            <table class="leads-table">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Título</th>
+                                        <th>Slug</th>
+                                        <th>Categoría</th>
+                                        <th>Estado</th>
+                                        <th style="width: 140px; text-align: center;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="articles-table-body">
+                                    <tr>
+                                        <td colspan="6" class="table-loading">Cargando historial de Supabase...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -3229,6 +3510,672 @@
         row.style.transition = 'opacity 0.3s';
         setTimeout(() => row.remove(), 300);
     }
+
+    // ====== PESTAÑA NEWSLETTER & AI CO-PILOT LOGIC ======
+    
+    // 1. Switch tabs inside newsletter section
+    function switchNewsletterTab(tabId) {
+        // Toggle view panels
+        document.getElementById('nl-pane-write').style.display = tabId === 'write' ? 'block' : 'none';
+        document.getElementById('nl-pane-subscribers').style.display = tabId === 'subscribers' ? 'block' : 'none';
+        document.getElementById('nl-pane-articles').style.display = tabId === 'articles' ? 'block' : 'none';
+        
+        // Toggle tab button states
+        const btnWrite = document.getElementById('btn-nl-tab-write');
+        const btnSubs = document.getElementById('btn-nl-tab-subscribers');
+        const btnArts = document.getElementById('btn-nl-tab-articles');
+        
+        [btnWrite, btnSubs, btnArts].forEach(btn => {
+            if (btn) {
+                btn.style.background = 'transparent';
+                btn.style.borderColor = 'transparent';
+                btn.style.color = 'var(--text-grey)';
+                btn.style.fontWeight = '500';
+            }
+        });
+        
+        const activeBtn = document.getElementById(`btn-nl-tab-${tabId}`);
+        if (activeBtn) {
+            activeBtn.style.background = 'rgba(255,255,255,0.06)';
+            activeBtn.style.borderColor = 'var(--border-color)';
+            activeBtn.style.color = 'var(--text-white)';
+            activeBtn.style.fontWeight = '600';
+        }
+        
+        // Trigger loads
+        if (tabId === 'subscribers') {
+            loadSubscribers();
+        } else if (tabId === 'articles') {
+            loadNewsletterArticles();
+        }
+    }
+    
+    // Show/hide promo details
+    function togglePromoInputs(type) {
+        const promoFields = document.getElementById('nl-promo-fields');
+        if (promoFields) {
+            promoFields.style.display = type === 'promo-course' ? 'block' : 'none';
+        }
+    }
+    
+    // Save API key
+    function saveGeminiKey(val) {
+        localStorage.setItem('gemini_api_key', val.trim());
+        showToast('✓ Gemini API Key guardada localmente de forma segura', 3000);
+    }
+    
+    // Init key input on load
+    document.addEventListener('DOMContentLoaded', () => {
+        const keyInput = document.getElementById('gemini-api-key');
+        if (keyInput) {
+            keyInput.value = localStorage.getItem('gemini_api_key') || '';
+        }
+        // Load stats on startup
+        setTimeout(updateNewsletterStats, 1500);
+    });
+    
+    // Auto-slugify based on title input
+    function autoSlugifyNewsletter() {
+        const title = document.getElementById('nl-art-title').value;
+        if (!title) return showToast('⚠️ Escribe un título primero', 3000);
+        
+        const slug = title.toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "") // remove accents
+            .replace(/[^a-z0-9\s-]/g, "")    // remove special chars
+            .replace(/\s+/g, "-")            // space to -
+            .replace(/-+/g, "-")             // multiple - to single
+            .replace(/^-+|-+$/g, "");        // trim -
+            
+        document.getElementById('nl-art-slug').value = slug;
+        updateNewsletterPreview();
+    }
+    
+    // Reset editor
+    function resetNewsletterEditor() {
+        document.getElementById('nl-art-title').value = '';
+        document.getElementById('nl-art-subtitle').value = '';
+        document.getElementById('nl-art-category').value = 'ia';
+        document.getElementById('nl-art-image').value = '';
+        document.getElementById('nl-art-readtime').value = '';
+        document.getElementById('nl-art-slug').value = '';
+        document.getElementById('nl-art-metadesc').value = '';
+        document.getElementById('nl-art-content').value = '';
+        
+        const activeIdEl = document.getElementById('editor-active-id');
+        if (activeIdEl) {
+            activeIdEl.style.display = 'none';
+            activeIdEl.querySelector('span').innerText = '';
+        }
+        
+        updateNewsletterPreview();
+        showToast('Editor reseteado', 2000);
+    }
+    
+    // Update live preview
+    function updateNewsletterPreview() {
+        const title = document.getElementById('nl-art-title').value || 'Título del Artículo';
+        const subtitle = document.getElementById('nl-art-subtitle').value || 'Subtítulo o descripción breve del artículo generado...';
+        const image = document.getElementById('nl-art-image').value;
+        const category = document.getElementById('nl-art-category').value;
+        const readTime = document.getElementById('nl-art-readtime').value || '5 min';
+        
+        // Update text
+        document.getElementById('preview-card-title').innerText = title;
+        document.getElementById('preview-card-subtitle').innerText = subtitle;
+        document.getElementById('preview-card-meta').innerText = `${new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })} · ${readTime}`;
+        
+        // Update category tag
+        const tag = document.getElementById('preview-card-tag');
+        if (tag) {
+            tag.innerText = category.toUpperCase();
+            if (category === 'ia') {
+                tag.style.background = 'rgba(0,113,227,0.15)';
+                tag.style.color = '#0071e3';
+            } else if (category === 'negocio') {
+                tag.style.background = 'rgba(52,199,89,0.15)';
+                tag.style.color = '#34c759';
+            } else if (category === 'tutorial') {
+                tag.style.background = 'rgba(175,82,222,0.15)';
+                tag.style.color = '#af52de';
+            } else if (category === 'noticia') {
+                tag.style.background = 'rgba(255,149,0,0.15)';
+                tag.style.color = '#ff9500';
+            }
+        }
+        
+        // Update image
+        const img = document.getElementById('preview-card-img');
+        const placeholder = document.getElementById('preview-card-img-placeholder');
+        if (image) {
+            img.src = image;
+            img.style.display = 'block';
+            if (placeholder) placeholder.style.display = 'none';
+        } else {
+            img.style.display = 'none';
+            if (placeholder) placeholder.style.display = 'block';
+        }
+    }
+    
+    // Update dashboard newsletter counts
+    async function updateNewsletterStats() {
+        try {
+            // Count subscribers
+            const { count: subsCount, error: err1 } = await _supabase
+                .from('newsletter_subscribers')
+                .select('*', { count: 'exact', head: true });
+                
+            // Count published articles
+            const { count: pubCount, error: err2 } = await _supabase
+                .from('articles')
+                .select('*', { count: 'exact', head: true })
+                .eq('status', 'publicado');
+                
+            // Count drafts
+            const { count: draftCount, error: err3 } = await _supabase
+                .from('articles')
+                .select('*', { count: 'exact', head: true })
+                .eq('status', 'borrador');
+                
+            if (!err1 && subsCount !== null) document.getElementById('nl-subscribers-count').innerText = subsCount;
+            if (!err2 && pubCount !== null) document.getElementById('nl-published-count').innerText = pubCount;
+            if (!err3 && draftCount !== null) document.getElementById('nl-drafts-count').innerText = draftCount;
+        } catch (e) {
+            console.warn('Error fetching newsletter stats:', e);
+        }
+    }
+    
+    // Load Subscribers List from Supabase
+    async function loadSubscribers() {
+        const body = document.getElementById('subscribers-table-body');
+        if (!body) return;
+        
+        body.innerHTML = '<tr><td colspan="4" class="table-loading">Cargando suscriptores de Supabase...</td></tr>';
+        
+        try {
+            const { data, error } = await _supabase
+                .from('newsletter_subscribers')
+                .select('*')
+                .order('created_at', { ascending: false });
+                
+            if (error) throw error;
+            
+            if (!data || data.length === 0) {
+                body.innerHTML = '<tr><td colspan="4" class="table-loading">No hay suscriptores registrados aún.</td></tr>';
+                return;
+            }
+            
+            body.innerHTML = '';
+            data.forEach(sub => {
+                const date = new Date(sub.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="color: var(--text-grey); font-size: 0.8rem;">${date}</td>
+                    <td style="font-weight: 500; color: var(--text-white);">${sub.name || '-'}</td>
+                    <td><span style="background: rgba(255,255,255,0.04); padding: 4px 10px; border-radius: 6px; font-family: monospace; font-size: 0.85rem; border: 1px solid var(--border-color);">${sub.email}</span></td>
+                    <td style="text-align: center;">
+                        <button type="button" class="btn-lead-action btn-delete" style="width: 28px; height: 28px; padding:0; display:inline-flex; align-items:center; justify-content:center;" onclick="deleteSubscriber('${sub.id}', '${sub.email}')" title="Eliminar Suscriptor">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </button>
+                    </td>
+                `;
+                body.appendChild(row);
+            });
+            
+            updateNewsletterStats();
+        } catch (e) {
+            console.error('Error loading subscribers:', e);
+            body.innerHTML = `<tr><td colspan="4" class="table-loading" style="color: #ff3b30;">❌ Error al conectar con Supabase: ${e.message}</td></tr>`;
+        }
+    }
+    
+    // Add manual subscriber
+    async function addSubscriberManual(e) {
+        e.preventDefault();
+        const nameInput = document.getElementById('new-sub-name-manual');
+        const emailInput = document.getElementById('new-sub-email-manual');
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        
+        if (!email) return false;
+        
+        try {
+            const { error } = await _supabase
+                .from('newsletter_subscribers')
+                .insert({
+                    name: name || null,
+                    email: email,
+                    created_at: new Date().toISOString()
+                });
+                
+            if (error) {
+                if (error.message && (error.message.includes('unique') || error.message.includes('duplicate'))) {
+                    alert('⚠️ Este email ya está registrado en la newsletter.');
+                } else {
+                    throw error;
+                }
+            } else {
+                nameInput.value = '';
+                emailInput.value = '';
+                showToast('✓ Suscriptor añadido correctamente', 3000);
+                loadSubscribers();
+                await addLog('Suscriptor Añadido', `Se ha añadido manualmente el suscriptor: ${email}`);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Error al añadir suscriptor: ' + err.message);
+        }
+        
+        return false;
+    }
+    
+    // Delete subscriber
+    async function deleteSubscriber(id, email) {
+        if (!confirm(`¿Vas a eliminar a ${email} de la lista de suscriptores?`)) return;
+        
+        try {
+            const { error } = await _supabase
+                .from('newsletter_subscribers')
+                .delete()
+                .eq('id', id);
+                
+            if (error) throw error;
+            
+            showToast('✓ Suscriptor eliminado', 3000);
+            loadSubscribers();
+            await addLog('Suscriptor Eliminado', `Se ha borrado el suscriptor: ${email}`);
+        } catch (e) {
+            alert('Error al eliminar suscriptor: ' + e.message);
+        }
+    }
+    
+    // Load articles list from Supabase
+    async function loadNewsletterArticles() {
+        const body = document.getElementById('articles-table-body');
+        if (!body) return;
+        
+        body.innerHTML = '<tr><td colspan="6" class="table-loading">Cargando historial de Supabase...</td></tr>';
+        
+        try {
+            const { data, error } = await _supabase
+                .from('articles')
+                .select('id, title, slug, category, status, created_at')
+                .order('created_at', { ascending: false });
+                
+            if (error) throw error;
+            
+            if (!data || data.length === 0) {
+                body.innerHTML = '<tr><td colspan="6" class="table-loading">No hay artículos registrados aún.</td></tr>';
+                return;
+            }
+            
+            body.innerHTML = '';
+            data.forEach(art => {
+                const date = new Date(art.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+                const row = document.createElement('tr');
+                const isPublished = art.status === 'publicado';
+                const statusBadge = isPublished 
+                    ? `<span style="font-size: 0.7rem; background: rgba(52,199,89,0.15); color: #34c759; padding: 4px 10px; border-radius: 12px; font-weight: 600;">🚀 PUBLICADO</span>`
+                    : `<span style="font-size: 0.7rem; background: rgba(255,149,0,0.15); color: #ff9500; padding: 4px 10px; border-radius: 12px; font-weight: 600;">📝 BORRADOR</span>`;
+                
+                row.innerHTML = `
+                    <td style="color: var(--text-grey); font-size: 0.8rem;">${date}</td>
+                    <td style="font-weight: 600; color: var(--text-white); font-size: 0.85rem;">${art.title}</td>
+                    <td><span style="font-family: monospace; font-size: 0.78rem; color: var(--text-grey);">${art.slug}</span></td>
+                    <td><span style="font-size: 0.75rem; background: rgba(128,128,128,0.1); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-color); color: var(--text-white);">${art.category.toUpperCase()}</span></td>
+                    <td>${statusBadge}</td>
+                    <td style="text-align: center;">
+                        <div style="display: flex; gap: 6px; justify-content: center;">
+                            <button type="button" class="btn-lead-action" style="width: 28px; height: 28px; padding:0; display:inline-flex; align-items:center; justify-content:center; background: rgba(0,113,227,0.1); color: var(--accent-blue); border-color: rgba(0,113,227,0.2);" onclick="editNewsletterArticle('${art.id}')" title="Editar Artículo">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            </button>
+                            <button type="button" class="btn-lead-action btn-delete" style="width: 28px; height: 28px; padding:0; display:inline-flex; align-items:center; justify-content:center;" onclick="deleteNewsletterArticle('${art.id}', '${art.title.replace(/'/g, "\\'")}')" title="Eliminar Artículo">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                body.appendChild(row);
+            });
+            
+            updateNewsletterStats();
+        } catch (e) {
+            console.error('Error loading articles:', e);
+            body.innerHTML = `<tr><td colspan="6" class="table-loading" style="color: #ff3b30;">❌ Error al conectar con Supabase: ${e.message}</td></tr>`;
+        }
+    }
+    
+    // Save or update article in Supabase
+    async function saveNewsletterArticle(status) {
+        const title = document.getElementById('nl-art-title').value.trim();
+        const subtitle = document.getElementById('nl-art-subtitle').value.trim();
+        const category = document.getElementById('nl-art-category').value;
+        const image = document.getElementById('nl-art-image').value.trim();
+        const readTime = document.getElementById('nl-art-readtime').value.trim() || '5 min';
+        const slug = document.getElementById('nl-art-slug').value.trim();
+        const metaDesc = document.getElementById('nl-art-metadesc').value.trim();
+        const content = document.getElementById('nl-art-content').value.trim();
+        
+        if (!title || !slug || !content) {
+            return alert('⚠️ Los campos Título, Slug y Contenido son totalmente requeridos.');
+        }
+        
+        const activeIdEl = document.getElementById('editor-active-id');
+        const editingId = activeIdEl && activeIdEl.style.display === 'block' ? activeIdEl.querySelector('span').innerText : null;
+        
+        const articleObj = {
+            title,
+            subtitle: subtitle || null,
+            category,
+            image_url: image || null,
+            read_time: readTime,
+            slug,
+            meta_title: `${title} | IA de Barrio`,
+            meta_description: metaDesc || subtitle || null,
+            content,
+            status,
+            updated_at: new Date().toISOString()
+        };
+        
+        if (status === 'publicado') {
+            articleObj.published_at = new Date().toISOString();
+        }
+        
+        if (editingId) {
+            articleObj.id = editingId;
+        } else {
+            articleObj.created_at = new Date().toISOString();
+        }
+        
+        try {
+            const { error } = await _supabase
+                .from('articles')
+                .upsert(articleObj);
+                
+            if (error) throw error;
+            
+            showToast(status === 'publicado' ? '🚀 ¡Artículo publicado en la web con éxito!' : '💾 Borrador guardado correctamente', 4000);
+            
+            // Log action
+            await addLog(
+                editingId ? 'Artículo Editado' : 'Artículo Creado', 
+                `Se ha ${editingId ? 'actualizado' : 'creado'} el artículo "${title}" en estado: ${status}`
+            );
+            
+            // Clean up and switch tabs
+            resetNewsletterEditor();
+            switchNewsletterTab('articles');
+        } catch (e) {
+            console.error('Error saving article:', e);
+            alert('Error al guardar el artículo: ' + e.message);
+        }
+    }
+    
+    // Edit article
+    async function editNewsletterArticle(id) {
+        try {
+            const { data, error } = await _supabase
+                .from('articles')
+                .select('*')
+                .eq('id', id)
+                .single();
+                
+            if (error) throw error;
+            
+            // Load in inputs
+            document.getElementById('nl-art-title').value = data.title || '';
+            document.getElementById('nl-art-subtitle').value = data.subtitle || '';
+            document.getElementById('nl-art-category').value = data.category || 'ia';
+            document.getElementById('nl-art-image').value = data.image_url || '';
+            document.getElementById('nl-art-readtime').value = data.read_time || '';
+            document.getElementById('nl-art-slug').value = data.slug || '';
+            document.getElementById('nl-art-metadesc').value = data.meta_description || '';
+            document.getElementById('nl-art-content').value = data.content || '';
+            
+            // Set active ID
+            const activeIdEl = document.getElementById('editor-active-id');
+            if (activeIdEl) {
+                activeIdEl.style.display = 'block';
+                activeIdEl.querySelector('span').innerText = data.id;
+            }
+            
+            updateNewsletterPreview();
+            
+            // Switch to Redactor tab
+            document.getElementById('nl-pane-write').style.display = 'block';
+            document.getElementById('nl-pane-subscribers').style.display = 'none';
+            document.getElementById('nl-pane-articles').style.display = 'none';
+            
+            // Sychronize tab buttons
+            const btnWrite = document.getElementById('btn-nl-tab-write');
+            const btnSubs = document.getElementById('btn-nl-tab-subscribers');
+            const btnArts = document.getElementById('btn-nl-tab-articles');
+            [btnWrite, btnSubs, btnArts].forEach(btn => {
+                if (btn) {
+                    btn.style.background = 'transparent';
+                    btn.style.borderColor = 'transparent';
+                    btn.style.color = 'var(--text-grey)';
+                }
+            });
+            if (btnWrite) {
+                btnWrite.style.background = 'rgba(255,255,255,0.06)';
+                btnWrite.style.borderColor = 'var(--border-color)';
+                btnWrite.style.color = 'var(--text-white)';
+            }
+            
+            showToast('📝 Artículo cargado en el editor', 2000);
+        } catch (e) {
+            alert('Error al cargar artículo para editar: ' + e.message);
+        }
+    }
+    
+    // Delete article from Supabase
+    async function deleteNewsletterArticle(id, title) {
+        if (!confirm(`¿Estás completamente seguro de eliminar permanentemente el artículo "${title}"?\nEsta acción no se puede deshacer.`)) return;
+        
+        try {
+            const { error } = await _supabase
+                .from('articles')
+                .delete()
+                .eq('id', id);
+                
+            if (error) throw error;
+            
+            showToast('✓ Artículo eliminado permanentemente', 3000);
+            loadNewsletterArticles();
+            await addLog('Artículo Eliminado', `Se ha borrado el artículo: ${title}`);
+        } catch (e) {
+            alert('Error al eliminar artículo: ' + e.message);
+        }
+    }
+    
+    // Core AI Co-pilot generative logic using Gemini!
+    async function generateNewsletterWithAI() {
+        const topic = document.getElementById('nl-generation-topic').value.trim();
+        const type = document.getElementById('nl-generation-type').value;
+        const tone = document.getElementById('nl-generation-tone').value;
+        const model = document.getElementById('gemini-model-select').value;
+        const key = localStorage.getItem('gemini_api_key') || document.getElementById('gemini-api-key').value.trim();
+        
+        if (!topic) {
+            return alert('⚠️ Por favor, introduce un tema o noticia de interés primero.');
+        }
+        
+        const consoleEl = document.getElementById('ai-agent-console');
+        const logsEl = document.getElementById('console-logs');
+        const statusEl = document.getElementById('console-status');
+        
+        // Show console
+        consoleEl.style.display = 'block';
+        logsEl.innerHTML = '';
+        statusEl.innerText = '● PROCESANDO';
+        statusEl.style.color = '#34c759';
+        
+        function log(msg, color = '#34c759') {
+            const entry = document.createElement('div');
+            entry.innerHTML = `<span style="color: var(--text-grey);">&gt;</span> <span style="color: ${color}">${msg}</span>`;
+            logsEl.appendChild(entry);
+            logsEl.scrollTop = logsEl.scrollHeight;
+        }
+        
+        log('Iniciando Agente Copiloto de IA...');
+        
+        // IF NO KEY, PROVIDE A PREMIUM PRE-MADE DRAFT AS PREVIEW
+        if (!key) {
+            log('⚠️ No se ha proporcionado una API Key de Gemini.', '#ff9500');
+            log('💡 Cargando borrador de demostración estructurado...', '#ff9500');
+            
+            setTimeout(() => {
+                log('Analizando tema: "' + topic + '"...', '#5ac8fa');
+            }, 800);
+            
+            setTimeout(() => {
+                log('Simulando redacción estilo Apple: "' + tone.toUpperCase() + '"...', '#af52de');
+            }, 1800);
+            
+            setTimeout(() => {
+                log('Optimizando palabras clave, slug y descripciones SEO...', '#ffcc00');
+            }, 2800);
+            
+            setTimeout(() => {
+                // Populate rich mock data based on type
+                let mockData = {};
+                if (type === 'promo-course') {
+                    mockData = {
+                        title: 'Lanzamiento: Nuevo Curso de ' + topic,
+                        subtitle: 'Aprende a dominar las últimas técnicas paso a paso y pon tu negocio digital en piloto automático sin programar.',
+                        slug: 'lanzamiento-curso-' + topic.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+                        category: 'tutorial',
+                        read_time: '6 min',
+                        meta_title: 'Curso de ' + topic + ' | Preventa Exclusiva',
+                        meta_description: 'Apúntate al nuevo curso de IA de Barrio y domina los procesos avanzados sin código.',
+                        content: `# Lanzamiento Especial: Nuevo Curso de ${topic}\n\nEn **IA de Barrio** creemos firmemente que la tecnología no debe ser un obstáculo para los profesionales y los negocios locales. Por eso, nos alegra presentar oficialmente nuestro nuevo programa formativo avanzado centrado en **${topic}**.\n\nEste curso ha sido diseñado desde cero pensando en la aplicación real e inmediata. Sin tecnicismos complejos, sin código enrevesado, 100% enfocado en resultados.\n\n## Lo que vas a aprender en este programa:\n\n1. **Fundamentos e Integración:** Conoce las bases teóricas indispensables y cómo conectar tus herramientas existentes en menos de 10 minutos.\n2. **Automatizaciones Avanzadas:** Configura flujos en piloto automático que realicen tareas repetitivas (facturación, atención, leads) por ti 24/7.\n3. **Agentes Autónomos:** Despliega bots inteligentes capaces de tomar decisiones estructuradas e interactuar con tus clientes.\n\n## Detalles Exclusivos de Lanzamiento:\n\n* **Formato:** Clases cortas en vídeo, paso a paso, con guías descargables.\n* **Plantillas listas:** Copia y pega más de 15 workflows de n8n prediseñados.\n* **Soporte continuo:** Canal de Slack privado para resolver cualquier duda con el equipo de IA de Barrio.\n* **Oferta de lanzamiento:** Consigue acceso inmediato a **0€** (valorado originalmente en 159€) apuntándote hoy mismo a nuestra lista de espera.\n\n> "La automatización con IA ya no es una opción de futuro para las PYMEs — es la única manera de competir en el presente."\n\n¿Estás listo para dar el salto tecnológico? Apúntate ya en la lista de espera de la newsletter de IA de Barrio y sé el primero en recibir acceso exclusivo cuando abramos las puertas.`
+                    };
+                } else {
+                    mockData = {
+                        title: 'Análisis: El impacto de ' + topic,
+                        subtitle: 'Analizamos cómo los últimos movimientos en inteligencia artificial transformarán la productividad de las PYMEs y freelancers.',
+                        slug: 'analisis-impacto-' + topic.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+                        category: 'ia',
+                        read_time: '5 min',
+                        meta_title: 'Impacto de ' + topic + ' en Negocios',
+                        meta_description: 'Descubre qué implicaciones reales tiene este lanzamiento tecnológico en tu productividad.',
+                        content: `# Análisis: El impacto de ${topic} en el Negocio Real\n\nEl sector de la Inteligencia Artificial se mueve a una velocidad de vértigo. El reciente lanzamiento de **${topic}** representa un nuevo hito que redefine las reglas del juego tanto para grandes corporaciones como para autónomos y PYMEs locales.\n\nEn este análisis técnico pero cercano, desglosamos qué significa realmente esta novedad y cómo puedes prepararte para aprovecharla antes que tus competidores.\n\n## 1. ¿Qué cambia realmente?\n\nLa principal novedad de este hito reside en su capacidad de procesamiento y su eficiencia. Lo que antes requería complejos modelos dedicados o presupuestos inalcanzables, ahora es accesible a través de APIs de bajo coste y flujos de trabajo optimizados.\n\n* **Mayor Velocidad:** Tiempos de respuesta reducidos a la mitad.\n* **Eficiencia de Costes:** Reducción drástica del consumo computacional.\n* **Multimodalidad Avanzada:** Procesamiento simultáneo de texto, archivos, voz y datos estructurados.\n\n## 2. Implicaciones prácticas para tu negocio\n\nNo dejes que el ruido mediático te confunda. Para un negocio real, esta tecnología tiene tres aplicaciones muy claras:\n\n1. **Atención al Cliente Conversacional:** Soporte 24/7 capaz de gestionar agendas y responder correos con un nivel de personalización nunca antes visto.\n2. **Análisis de Datos en Segundos:** Sube tus facturas, excels de ventas o informes financieros y obtén auditorías instantáneas con IA.\n3. **Generación Automatizada de Contenido:** Redacción de reportes, descripciones y copys optimizados siguiendo la identidad de tu marca.\n\n## 3. ¿Cómo empezar?\n\nEl primer paso no es comprar la herramienta más cara, sino entender qué procesos de tu día a día te quitan tiempo útil. Comienza auditando tus flujos repetitivos y luego conecta la IA mediante herramientas de integración visual como n8n.\n\nSi quieres estar al día de estas novedades y recibir plantillas listas para usar en tu empresa, únete a la newsletter gratuita de **IA de Barrio**.`
+                    };
+                }
+                
+                // Load mock data
+                document.getElementById('nl-art-title').value = mockData.title;
+                document.getElementById('nl-art-subtitle').value = mockData.subtitle;
+                document.getElementById('nl-art-slug').value = mockData.slug;
+                document.getElementById('nl-art-category').value = mockData.category;
+                document.getElementById('nl-art-readtime').value = mockData.read_time;
+                document.getElementById('nl-art-metadesc').value = mockData.meta_description;
+                document.getElementById('nl-art-content').value = mockData.content;
+                
+                updateNewsletterPreview();
+                
+                log('✅ ¡Borrador de demostración cargado con éxito!', '#34c759');
+                log('📝 Revisa el editor y haz clic en "Guardar Borrador" o "Publicar en la Web"');
+                statusEl.innerText = '● DEMO COMPLETADA';
+                statusEl.style.color = '#ff9500';
+                
+                showToast('🤖 Borrador de demostración generado con éxito. Consigue una API Key de Gemini para generar en tiempo real.', 7000);
+            }, 3800);
+            
+            return;
+        }
+        
+        // DYNAMIC REAL-TIME API GENERATION
+        try {
+            log('Conectando con la API de Google Gemini (' + model + ')...', '#5ac8fa');
+            
+            const promptDetails = type === 'promo-course' 
+                ? `detalles específicos de nuestro lanzamiento: "${document.getElementById('nl-generation-details').value}"` 
+                : 'noticias globales y tendencias generales de la industria';
+                
+            const promptText = `Por favor, genera un artículo de newsletter completo basado en la siguiente solicitud:
+Tema: "${topic}"
+Tipo de contenido: ${type === 'promo-course' ? 'Promoción/Lanzamiento propio de IA de Barrio' : 'Noticias y Tendencias globales del sector tecnológico'}
+Detalles: ${promptDetails}
+Tono de redacción: ${tone} (especialmente si es 'apple', redacta con estilo minimalista, de alto valor, frases potentes pero cortas, sofisticado y directo, típico de la comunicación de Apple. Sin rodeos, sin superlativos ridículos como 'revolucionario' o 'espectacular' en exceso, sino centrado en beneficios prácticos reales).
+
+Devuelve ÚNICAMENTE un objeto JSON que cumpla ESTRICTAMENTE con este esquema:
+{
+  "title": "Un título corto y de gran impacto visual",
+  "subtitle": "Un subtítulo resumido de 1 o 2 líneas explicando el beneficio principal",
+  "slug": "un-slug-de-url-limpio-en-minusculas-separado-por-guiones",
+  "category": "ia", // estricto entre: "ia", "negocio", "tutorial", "noticia"
+  "read_time": "5 min", // estimado según la longitud del contenido
+  "meta_title": "Título SEO óptimo | IA de Barrio",
+  "meta_description": "Resumen de SEO de menos de 150 caracteres",
+  "content": "Contenido completo en formato Markdown redactado con un estilo impecable, usando títulos ##, negritas, listas ordenadas, blockquotes y consejos prácticos.",
+  "image_url": "img/newsletter/tu-slug.png"
+}`;
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+            
+            log('Redactando artículo estructurado en formato JSON...', '#af52de');
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{ text: promptText }]
+                    }],
+                    generationConfig: {
+                        responseMimeType: "application/json"
+                    }
+                })
+            });
+            
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(`Gemini API Error (${response.status}): ${errText}`);
+            }
+            
+            log('Procesando respuesta del Agente de IA...', '#ffcc00');
+            const data = await response.json();
+            
+            if (!data.candidates || data.candidates.length === 0) {
+                throw new Error('La API de Gemini no devolvió ningún candidato de generación.');
+            }
+            
+            const textResponse = data.candidates[0].content.parts[0].text;
+            const parsedData = JSON.parse(textResponse.trim());
+            
+            // Populate inputs
+            document.getElementById('nl-art-title').value = parsedData.title || '';
+            document.getElementById('nl-art-subtitle').value = parsedData.subtitle || '';
+            document.getElementById('nl-art-slug').value = parsedData.slug || '';
+            document.getElementById('nl-art-category').value = parsedData.category || 'ia';
+            document.getElementById('nl-art-readtime').value = parsedData.read_time || '5 min';
+            document.getElementById('nl-art-metadesc').value = parsedData.meta_description || '';
+            document.getElementById('nl-art-content').value = parsedData.content || '';
+            if (parsedData.image_url) {
+                document.getElementById('nl-art-image').value = parsedData.image_url;
+            }
+            
+            updateNewsletterPreview();
+            
+            log('✅ ¡Borrador generado en tiempo real con éxito!', '#34c759');
+            log('📝 Puedes revisar los campos, editar el Markdown y publicarlo.');
+            
+            statusEl.innerText = '● AGENTE LISTO';
+            statusEl.style.color = '#34c759';
+            
+            showToast('🤖 Artículo generado con éxito por tu Copiloto Gemini 3.5', 5000);
+        } catch (e) {
+            console.error('Error in Gemini generation:', e);
+            log('❌ ERROR: ' + e.message, '#ff3b30');
+            statusEl.innerText = '● ERROR';
+            statusEl.style.color = '#ff3b30';
+            alert('Error en la generación con IA: ' + e.message + '\n\nVerifica tu API Key o revisa la consola de depuración del agente.');
+        }
+    }
+    
+    // ====== FIN PESTAÑA NEWSLETTER LOGIC ======
     </script>
 
     <!-- Delete Confirmation Modal -->
