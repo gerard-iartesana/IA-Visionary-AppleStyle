@@ -3995,7 +3995,9 @@
         const type = document.getElementById('nl-generation-type').value;
         const tone = document.getElementById('nl-generation-tone').value;
         const model = document.getElementById('gemini-model-select').value;
-        const key = localStorage.getItem('gemini_api_key') || document.getElementById('gemini-api-key').value.trim();
+        
+        let key = localStorage.getItem('gemini_api_key') || document.getElementById('gemini-api-key').value;
+        if (key) key = key.trim();
         
         if (!topic) {
             return alert('⚠️ Por favor, introduce un tema o noticia de interés primero.');
@@ -4020,6 +4022,20 @@
         
         log('Iniciando Agente Copiloto de IA...');
         
+        // PRE-VALIDATION: Check if key is from another provider
+        if (key && !key.startsWith('AIzaSy')) {
+            statusEl.innerText = '● CLAVE NO VÁLIDA';
+            statusEl.style.color = '#ff3b30';
+            
+            log('❌ ERROR: API Key no válida para Google Gemini.', '#ff3b30');
+            log('💡 Nota: Tu clave empieza por "' + key.substring(0, 4) + '...". Las claves de Google Gemini siempre empiezan por "AIzaSy".', '#ff9500');
+            log('👉 Parece que has introducido una clave de otro proveedor (como OpenAI o Anthropic cuyas claves empiezan por "sk-").', '#ff9500');
+            log('👉 Consigue una clave gratuita de Google Gemini en: https://aistudio.google.com', '#0071e3');
+            
+            alert('⚠️ Clave de API no válida para Google Gemini.\n\nLas claves de Gemini empiezan por "AIzaSy". Tu clave actual parece pertenecer a otro proveedor (por ejemplo, OpenAI o Anthropic cuyas claves de API empiezan por "sk-").\n\nPor favor, obtén una clave de Gemini gratuita en Google AI Studio (https://aistudio.google.com) e introdúcela en el campo de configuración.');
+            return;
+        }
+        
         // IF NO KEY, PROVIDE A PREMIUM PRE-MADE DRAFT AS PREVIEW
         if (!key) {
             log('⚠️ No se ha proporcionado una API Key de Gemini.', '#ff9500');
@@ -4036,6 +4052,7 @@
             setTimeout(() => {
                 log('Optimizando palabras clave, slug y descripciones SEO...', '#ffcc00');
             }, 2800);
+
             
             setTimeout(() => {
                 // Populate rich mock data based on type
@@ -4169,9 +4186,15 @@ Devuelve ÚNICAMENTE un objeto JSON que cumpla ESTRICTAMENTE con este esquema:
         } catch (e) {
             console.error('Error in Gemini generation:', e);
             log('❌ ERROR: ' + e.message, '#ff3b30');
+            
+            if (e.message.includes('API key not valid') || e.message.includes('API_KEY_INVALID')) {
+                log('💡 Sugerencia: La API Key de Gemini que has guardado no es válida o ha caducado.', '#ff9500');
+                log('👉 Por favor, ve a https://aistudio.google.com para generar una clave gratuita válida.', '#0071e3');
+            }
+            
             statusEl.innerText = '● ERROR';
             statusEl.style.color = '#ff3b30';
-            alert('Error en la generación con IA: ' + e.message + '\n\nVerifica tu API Key o revisa la consola de depuración del agente.');
+            alert('Error en la generación con IA: ' + e.message + '\n\nVerifica tu API Key de Gemini o revisa la consola de depuración del agente.');
         }
     }
     
