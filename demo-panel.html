@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previsualización del Panel de Control | IA de Barrio</title>
+    <meta name="description" content="Previsualiza la interfaz de control inteligente para automatizaciones de IA de Barrio. Centraliza, monitoriza y gestiona tus agentes.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="landing_apple_unified.css?v=11.6">
+
+    <style>
+        /* Custom Styles for Dashboard Demo Page */
+        .demo-hero {
+            padding-top: 140px;
+            padding-bottom: 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glow-background {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0, 113, 227, 0.15) 0%, rgba(175, 82, 222, 0.05) 50%, transparent 100%);
+            filter: blur(80px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Mockup Container */
+        .mockup-wrapper {
+            max-width: 900px;
+            margin: 40px auto 80px;
+            padding: 0 20px;
+        }
+
+        .dashboard-mockup {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            padding: 12px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        [data-theme="light"] .dashboard-mockup {
+            background: rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-mockup:hover {
+            transform: translateY(-8px) scale(1.005);
+            border-color: rgba(0, 113, 227, 0.3);
+            box-shadow: 0 40px 100px rgba(0, 113, 227, 0.18);
+        }
+
+        /* Top Bar of the Mockup representing window chrome */
+        .mockup-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 16px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 12px;
+        }
+
+        [data-theme="light"] .mockup-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .window-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .window-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+
+        .window-title {
+            font-size: 0.75rem;
+            color: var(--text-grey);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .dashboard-img {
+            width: 100%;
+            border-radius: 16px;
+            display: block;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: opacity 0.5s;
+        }
+
+        [data-theme="light"] .dashboard-img {
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        /* Feature Cards */
+        .features-section {
+            padding-bottom: 80px;
+        }
+
+        .demo-features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .demo-feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            text-align: left;
+        }
+
+        .demo-feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(0, 113, 227, 0.08);
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+
+        .demo-feature-card h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .demo-feature-card p {
+            font-size: 0.88rem;
+            color: var(--text-grey);
+            line-height: 1.6;
+        }
+
+        /* Action Panel CTA */
+        .demo-cta-card {
+            background: linear-gradient(135deg, rgba(0,113,227,0.06), rgba(175,82,222,0.06));
+            border: 1px solid rgba(0,113,227,0.15);
+            border-radius: 28px;
+            padding: 60px 40px;
+            text-align: center;
+            max-width: 800px;
+            margin: 60px auto 40px;
+            position: relative;
+        }
+
+        .demo-cta-card h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .demo-cta-card p {
+            color: var(--text-grey);
+            margin-bottom: 32px;
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 580px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Badges */
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(52,199,89,0.12);
+            color: #34c759;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #34c759;
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @media (max-width: 768px) {
+            .demo-hero {
+                padding-top: 120px;
+            }
+
+            .demo-features-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .demo-cta-card {
+                padding: 40px 20px;
+            }
+
+            .demo-cta-card h3 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <!-- Scroll Progress Indicator -->
+    <div class="scroll-progress" id="scroll-progress-bar"></div>
+
+    <!-- Nav Bar -->
+    <nav class="apple-nav">
+        <div class="container nav-content">
+            <div class="logo"><a href="index.html" style="color: inherit; text-decoration: none;">IA<span>deBarrio</span></a></div>
+            
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="mobile-menu-toggle" aria-label="Abrir menú">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-open"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-close"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+
+            <div class="nav-links" id="apple-nav-links">
+                <a href="index.html#problemas" class="nav-link">Problemas</a>
+                <a href="index.html#solucion" class="nav-link">Solución</a>
+                <a href="index.html#precios" class="nav-link">Precios</a>
+                <a href="automatizaciones.html" class="nav-link">Automatizaciones</a>
+                <div class="nav-actions">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Cambiar tema"></button>
+                    <a href="index.html" class="btn-apple-buy" style="text-decoration: none;">Volver al Inicio</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="demo-hero">
+            <div class="glow-background"></div>
+            <div class="live-badge">
+                <span class="live-dot"></span> Demostración en vivo
+            </div>
+            <h1>Tu panel de control.<br><span style="color: var(--accent-blue);">Todo bajo tu mando.</span></h1>
+            <p class="hero-sub" style="max-width: 650px; margin: 20px auto 30px;">
+                Previsualiza cómo luce la interfaz de administración que creamos para cada uno de nuestros clientes. Un centro de mandos simplificado, interactivo y en tiempo real.
+            </p>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <a href="https://calendar.app.google/AXbMKyYz93KqsY5B7" class="btn-apple-primary" style="text-decoration: none;">Reservar Sesión Gratis</a>
+                <a href="automatizaciones.html" class="btn-apple-secondary" style="text-decoration: none;">← Volver a Automatizaciones</a>
+            </div>
+        </section>
+
+        <!-- Interactive Mockup Showcase -->
+        <section class="mockup-wrapper">
+            <div class="dashboard-mockup">
+                <div class="mockup-header">
+                    <div class="window-dots">
+                        <div class="window-dot dot-red"></div>
+                        <div class="window-dot dot-yellow"></div>
+                        <div class="window-dot dot-green"></div>
+                    </div>
+                    <div class="window-title">admin.iadebarrio.com — Panel de Automatizaciones</div>
+                    <div style="width: 42px;"></div> <!-- spacer to balance dots -->
+                </div>
+                <img src="images/demo_dashboard.png" alt="Mockup de la interfaz del panel de control de automatizaciones e IA de Barrio" class="dashboard-img" loading="eager">
+            </div>
+        </section>
+
+        <!-- Feature Columns Section -->
+        <section class="features-section">
+            <header class="section-intro" style="text-align: center;">
+                <h2>Un centro de operaciones diseñado para ti.</h2>
+                <p style="max-width: 600px; margin: 0 auto;">Controla y escala tu negocio digital con la máxima sencillez, sin tecnicismos complejos.</p>
+            </header>
+
+            <div class="demo-features-grid">
+                <!-- Feature 1 -->
+                <div class="demo-feature-card">
+                    <div class="feature-icon-wrapper">📊</div>
+                    <h3>Monitorización Inteligente</h3>
+                    <p>Visualiza en tiempo real cuántas horas de trabajo ahorras mensualmente, el estado de tus leads y el volumen de tareas que tus agentes autónomos ejecutan en segundo plano.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="demo-feature-card">
+                    <div class="feature-icon-wrapper">⚙️</div>
+                    <h3>Gestión en un Clic</h3>
+                    <p>Activa, desactiva o ajusta la configuración de tus flujos de trabajo creados con n8n e IA. Administra credenciales seguras e integraciones desde un panel visual intuitivo.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="demo-feature-card">
+                    <div class="feature-icon-wrapper">🛡️</div>
+                    <h3>Auditoría y Soporte 24/7</h3>
+                    <p>Accede de forma simplificada a los logs de ejecución de cada automatización. Si ocurre un cambio inesperado en una API externa, el panel te alerta para solucionarlo rápidamente.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Card -->
+        <section class="demo-cta-card">
+            <h3>¿Listo para poner tu negocio en piloto automático?</h3>
+            <p>
+                Analizamos tus flujos de trabajo actuales y construimos un panel de control a medida adaptado al 100% a tus necesidades específicas.
+            </p>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <a href="https://calendar.app.google/AXbMKyYz93KqsY5B7" class="btn-apple-primary" style="text-decoration: none; font-size: 1rem; padding: 18px 40px;">Agendar Sesión Gratis →</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="apple-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">IA<span>deBarrio</span></div>
+                    <p class="footer-desc">Inteligencia Artificial para negocios reales. Automatización, formación y consultoría desde Menorca.</p>
+                    <p style="font-size: 0.75rem;">© 2026 IA de Barrio. Hecho con ❤️ desde Menorca.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Servicios</h4>
+                    <a href="servicios.html">Consultoría IA</a>
+                    <a href="automatizaciones.html">Automatizaciones</a>
+                    <a href="agentes-ia.html">Agentes de IA</a>
+                    <a href="aplicaciones.html">Aplicaciones</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Aprender</h4>
+                    <a href="academia.html">Academia IA</a>
+                    <a href="conocimientos.html">Conocimientos</a>
+                    <a href="newsletter.html">Newsletter</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Empresa</h4>
+                    <a href="login.html">Admin</a>
+                    <a href="inversion.html">Inversión</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>IA de Barrio — Inteligencia Artificial para negocios reales</span>
+                <div>
+                    <a href="privacidad.html">Privacidad</a>
+                    <a href="cookies.html">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Main JS -->
+    <script src="landing_apple.js?v=11.4"></script>
+</body>
+</html>
