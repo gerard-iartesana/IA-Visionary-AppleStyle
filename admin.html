@@ -1260,18 +1260,6 @@
                                                 <video src="https://assets.mixkit.co/videos/preview/mixkit-holographic-projection-of-a-human-face-41768-large.mp4" muted loop style="width: 100%; height: 100%; object-fit: cover;" onmouseover="this.play()" onmouseout="this.pause()"></video>
                                                 <div style="position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.55rem; color: #fff; pointer-events: none;">👤 Holograma</div>
                                             </div>
-                                            <div onclick="selectMediaVideo('https://assets.mixkit.co/videos/preview/mixkit-data-center-server-racks-flashing-lights-42283-large.mp4', this)" style="position: relative; background: #000; aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s; margin-top: 6px;">
-                                                <video src="https://assets.mixkit.co/videos/preview/mixkit-data-center-server-racks-flashing-lights-42283-large.mp4" muted loop style="width: 100%; height: 100%; object-fit: cover;" onmouseover="this.play()" onmouseout="this.pause()"></video>
-                                                <div style="position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.55rem; color: #fff; pointer-events: none;">🖥️ Servidores</div>
-                                            </div>
-                                            <div onclick="selectMediaVideo('https://assets.mixkit.co/videos/preview/mixkit-technological-particles-looping-background-41766-large.mp4', this)" style="position: relative; background: #000; aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s; margin-top: 6px;">
-                                                <video src="https://assets.mixkit.co/videos/preview/mixkit-technological-particles-looping-background-41766-large.mp4" muted loop style="width: 100%; height: 100%; object-fit: cover;" onmouseover="this.play()" onmouseout="this.pause()"></video>
-                                                <div style="position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.55rem; color: #fff; pointer-events: none;">✨ Partículas</div>
-                                            </div>
-                                            <div onclick="selectMediaVideo('https://assets.mixkit.co/videos/preview/mixkit-typing-on-a-futuristic-holographic-keyboard-41772-large.mp4', this)" style="position: relative; background: #000; aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s; margin-top: 6px;">
-                                                <video src="https://assets.mixkit.co/videos/preview/mixkit-typing-on-a-futuristic-holographic-keyboard-41772-large.mp4" muted loop style="width: 100%; height: 100%; object-fit: cover;" onmouseover="this.play()" onmouseout="this.pause()"></video>
-                                                <div style="position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.55rem; color: #fff; pointer-events: none;">⌨️ Teclado IA</div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -4392,54 +4380,97 @@ REGLAS DE ORO CRÍTICAS PARA EL CAMPO \"content\" (SI NO SE CUMPLEN, LA PÁGINA 
             const grid = document.getElementById('media-images-grid');
             grid.innerHTML = '';
             
-            // Generate a single high-quality photo
-            const finalPrompt = prompt + ', realistic high-detailed tech photo, cinematic studio light, dark minimal background, futuristic style, premium aesthetic, 8k';
-            const encodedPrompt = encodeURIComponent(finalPrompt);
-            const seed = Math.floor(Math.random() * 1000000);
-            const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=800&height=500&nologo=true&seed=${seed}`;
+            // Generate 6 high-quality photos with different modern styles
+            const styles = [
+                {
+                    name: 'Editorial Minimalista (Apple)',
+                    suffix: ', realistic high-detailed tech photo, shallow depth of field, warm cinematic studio lighting, premium materials (glass, metal), dark minimalist elegant background, premium aesthetic, 8k'
+                },
+                {
+                    name: 'Holograma Cyberpunk (Sci-Fi)',
+                    suffix: ', futuristic neon hologram, glowing cyan and magenta digital accents, abstract cybernetic data flows, clean dark background, futuristic octane render'
+                },
+                {
+                    name: 'Ilustración SaaS (Plana Premium)',
+                    suffix: ', modern premium SaaS technology flat vector illustration, sleek corporate art style, harmonious soft pastel color palette, clean aesthetic'
+                },
+                {
+                    name: 'Render 3D (Glassmorphism)',
+                    suffix: ', high-end isometric 3D clay and glass render, translucent frosted glass textures, soft isometric ambient lighting, modern aesthetic design'
+                },
+                {
+                    name: 'Retro-Futurista (Análogo)',
+                    suffix: ', vintage editorial tech magazine cover style, warm retro color grading, subtle film grain texture, organic premium composition, corporate-creative'
+                },
+                {
+                    name: 'Red Neuronal (Arte Abstracto)',
+                    suffix: ', abstract neural network and glowing data visualization, fluid organic code matrix waves, deep purple and blue ambient glowing lights, digital art'
+                }
+            ];
             
-            // Create card container for a single image spanning the full width
-            const card = document.createElement('div');
-            card.className = 'media-option-card';
-            card.style = 'position: relative; background: rgba(255,255,255,0.02); aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.25s ease; display: flex; align-items: center; justify-content: center; grid-column: span 3;';
-            card.setAttribute('onclick', `selectMediaImage("${imageUrl}", this)`);
-            
-            // Loader placeholder
-            const placeholder = document.createElement('div');
-            placeholder.style = 'position: absolute; font-size: 0.8rem; color: var(--text-grey); display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 1;';
-            placeholder.innerHTML = `<span>⏳ Generando foto con IA...</span>`;
-            card.appendChild(placeholder);
-            
-            // The actual image
-            const img = document.createElement('img');
-            img.src = imageUrl;
-            img.style = 'width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; z-index: 2;';
-            img.onload = () => {
-                placeholder.style.display = 'none';
-                img.style.opacity = '1';
-                // Auto-select this generated image for convenience!
-                selectMediaImage(imageUrl, card);
+            let loadedCount = 0;
+            const checkAllLoaded = () => {
+                loadedCount++;
+                if (loadedCount === 6) {
+                    if (loader) loader.style.display = 'none';
+                    showToast('🤖 ¡6 estilos de fotos generados con éxito!', 4000);
+                }
             };
-            img.onerror = () => {
-                placeholder.innerHTML = '❌ Error de generación';
-            };
-            card.appendChild(img);
             
-            // Badge overlay
-            const badge = document.createElement('div');
-            badge.style = 'position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.65); padding: 4px 10px; border-radius: 6px; font-size: 0.6rem; color: #fff; z-index: 3; font-weight: 500; pointer-events: none; border: 1px solid rgba(255,255,255,0.05);';
-            badge.innerText = 'Foto IA Generada';
-            card.appendChild(badge);
+            styles.forEach((styleObj, index) => {
+                const finalPrompt = prompt + styleObj.suffix;
+                const encodedPrompt = encodeURIComponent(finalPrompt);
+                const seed = Math.floor(Math.random() * 1000000) + index;
+                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=800&height=500&nologo=true&seed=${seed}`;
+                
+                // Create card container for each image (takes 1 column inside the 3-column grid)
+                const card = document.createElement('div');
+                card.className = 'media-option-card';
+                card.style = 'position: relative; background: rgba(255,255,255,0.02); aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.25s ease; display: flex; align-items: center; justify-content: center;';
+                card.setAttribute('onclick', `selectMediaImage("${imageUrl}", this)`);
+                
+                // Loader placeholder
+                const placeholder = document.createElement('div');
+                placeholder.style = 'position: absolute; font-size: 0.7rem; color: var(--text-grey); display: flex; flex-direction: column; align-items: center; text-align: center; padding: 10px; gap: 8px; z-index: 1;';
+                placeholder.innerHTML = `<span>⏳ Generando...</span>`;
+                card.appendChild(placeholder);
+                
+                // The actual image
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                img.style = 'width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; z-index: 2;';
+                img.onload = () => {
+                    placeholder.style.display = 'none';
+                    img.style.opacity = '1';
+                    
+                    // Auto-select the very first image that successfully loads!
+                    const activeCard = document.querySelector('#media-images-grid .media-option-card[style*="border-color: var(--accent-blue)"]');
+                    if (!activeCard) {
+                        selectMediaImage(imageUrl, card);
+                    }
+                    checkAllLoaded();
+                };
+                img.onerror = () => {
+                    placeholder.innerHTML = '❌ Error';
+                    checkAllLoaded();
+                };
+                card.appendChild(img);
+                
+                // Badge overlay
+                const badge = document.createElement('div');
+                badge.style = 'position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.75); padding: 4px 8px; border-radius: 6px; font-size: 0.55rem; color: #fff; z-index: 3; font-weight: 500; pointer-events: none; border: 1px solid rgba(255,255,255,0.05); max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
+                badge.innerText = styleObj.name;
+                card.appendChild(badge);
+                
+                grid.appendChild(card);
+            });
             
-            grid.appendChild(card);
-            
+            // Fallback timeout to clear loader in 12s in case of slow loads
             setTimeout(() => {
                 if (loader) loader.style.display = 'none';
-                showToast('🤖 ¡Foto IA generada con éxito!', 4000);
-            }, 3000);
+            }, 12000);
         } else {
             // Videos option
-            const grid = document.getElementById('media-videos-grid');
             if (loader) loader.style.display = 'none';
             showToast('🎥 Mostrando loops de vídeo premium optimizados', 3000);
         }
