@@ -1196,14 +1196,86 @@
                                     <input type="text" id="nl-art-subtitle" class="admin-select" style="width: 100%; cursor: text;" placeholder="Resumen corto de 2 líneas..." oninput="updateNewsletterPreview()">
                                 </div>
 
-                                <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 16px; margin-bottom: 16px;">
+                                <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 16px; margin-bottom: 8px;">
                                     <div>
-                                        <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">URL de la Imagen del Artículo</label>
-                                        <input type="text" id="nl-art-image" class="admin-select" style="width: 100%; cursor: text;" placeholder="img/newsletter/tu-imagen.png" oninput="updateNewsletterPreview()">
+                                        <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">URL de la Imagen o Vídeo del Artículo</label>
+                                        <input type="text" id="nl-art-image" class="admin-select" style="width: 100%; cursor: text; font-size: 0.8rem;" placeholder="img/newsletter/tu-imagen.png o enlace mp4..." oninput="updateNewsletterPreview()">
                                     </div>
                                     <div>
                                         <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">Tiempo de lectura</label>
                                         <input type="text" id="nl-art-readtime" class="admin-select" style="width: 100%; cursor: text;" placeholder="Ej. 5 min" oninput="updateNewsletterPreview()">
+                                    </div>
+                                </div>
+
+                                <!-- Button to open AI Media Assistant -->
+                                <div style="margin-bottom: 16px;">
+                                    <button type="button" class="btn-action" onclick="toggleMediaAssistant()" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; padding: 10px; background: rgba(0, 113, 227, 0.12); border: 1px solid rgba(0, 113, 227, 0.3); border-radius: 12px; cursor: pointer; transition: all 0.2s;">
+                                        <span>🎨</span> <b>Asistente de Multimedia IA (Generar Fotos / Vídeo)</b>
+                                    </button>
+                                </div>
+
+                                <!-- AI Media Assistant Panel -->
+                                <div id="media-assistant-panel" style="display: none; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 16px; margin-bottom: 20px; transition: all 0.3s ease;">
+                                    <h4 style="font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                                        <span>🖼️ Generador de Multimedia IA</span>
+                                        <span id="media-assistant-loader" style="display: none; font-size: 0.7rem; color: var(--accent-blue); font-weight: normal; animation: pulse-text 1.5s infinite;">Generando medios...</span>
+                                    </h4>
+                                    
+                                    <div style="margin-bottom: 16px;">
+                                        <label style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Prompt o Idea para las Fotos / Vídeo</label>
+                                        <div style="display: flex; gap: 8px;">
+                                            <input type="text" id="media-prompt-input" class="admin-select" style="width: 100%; font-size: 0.8rem;" placeholder="Ej. Un cerebro digital de luces de neon en oficina minimalista...">
+                                            <button type="button" class="btn-action" onclick="generateMediaFromAssistant()" style="padding: 0 16px; font-size: 0.8rem; background: var(--accent-blue); color: white; border: none; font-weight: 600; cursor: pointer;">Generar</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Mode Select Tabs -->
+                                    <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px;">
+                                        <button type="button" id="media-tab-images" onclick="switchMediaAssistantTab('images')" class="btn-action" style="flex: 1; font-size: 0.75rem; padding: 6px 12px; background: rgba(0, 113, 227, 0.15); border: 1px solid rgba(0, 113, 227, 0.3); font-weight: 600; cursor: pointer;">Opción A: 3x Fotos de IA</button>
+                                        <button type="button" id="media-tab-videos" onclick="switchMediaAssistantTab('videos')" class="btn-action" style="flex: 1; font-size: 0.75rem; padding: 6px 12px; background: transparent; border: 1px solid transparent; cursor: pointer;">Opción B: Vídeo Loop IA</button>
+                                    </div>
+
+                                    <!-- Image Results Container -->
+                                    <div id="media-images-container" style="display: block;">
+                                        <p style="font-size: 0.7rem; color: var(--text-grey); margin-bottom: 12px; text-align: center;">Haz clic en "Generar" para crear 3 opciones de fotos artísticas y selecciona tu favorita para tu artículo.</p>
+                                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;" id="media-images-grid">
+                                            <!-- Placeholders -->
+                                            <div style="background: rgba(255,255,255,0.01); aspect-ratio: 16/10; border: 1px dashed rgba(255,255,255,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--text-grey);">📷</div>
+                                            <div style="background: rgba(255,255,255,0.01); aspect-ratio: 16/10; border: 1px dashed rgba(255,255,255,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--text-grey);">📷</div>
+                                            <div style="background: rgba(255,255,255,0.01); aspect-ratio: 16/10; border: 1px dashed rgba(255,255,255,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--text-grey);">📷</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Video Results Container -->
+                                    <div id="media-videos-container" style="display: none;">
+                                        <p style="font-size: 0.7rem; color: var(--text-grey); margin-bottom: 12px; text-align: center;">Selecciona uno de los siguientes vídeos cinemáticos en bucle de alta calidad para darle vida al artículo:</p>
+                                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;" id="media-videos-grid">
+                                            <!-- Curated Video Loops -->
+                                            <div onclick="selectMediaVideo('https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-a-technological-brain-41764-large.mp4', this)" style="position: relative; background: #000; aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s;">
+                                                <video src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-a-technological-brain-41764-large.mp4" muted loop style="width: 100%; height: 100%; object-fit: cover;" onmouseover="this.play()" onmouseout="this.pause()"></video>
+                                                <div style="position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.55rem; color: #fff; pointer-events: none;">🧠 Cerebro IA</div>
+                                            </div>
+                                            <div onclick="selectMediaVideo('https://assets.mixkit.co/videos/preview/mixkit-circuit-board-pattern-scanning-40171-large.mp4', this)" style="position: relative; background: #000; aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s;">
+                                                <video src="https://assets.mixkit.co/videos/preview/mixkit-circuit-board-pattern-scanning-40171-large.mp4" muted loop style="width: 100%; height: 100%; object-fit: cover;" onmouseover="this.play()" onmouseout="this.pause()"></video>
+                                                <div style="position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.55rem; color: #fff; pointer-events: none;">⚡ Circuitos</div>
+                                            </div>
+                                            <div onclick="selectMediaVideo('https://assets.mixkit.co/videos/preview/mixkit-holographic-projection-of-a-human-face-41768-large.mp4', this)" style="position: relative; background: #000; aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s;">
+                                                <video src="https://assets.mixkit.co/videos/preview/mixkit-holographic-projection-of-a-human-face-41768-large.mp4" muted loop style="width: 100%; height: 100%; object-fit: cover;" onmouseover="this.play()" onmouseout="this.pause()"></video>
+                                                <div style="position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.55rem; color: #fff; pointer-events: none;">👤 Holograma</div>
+                                            </div>
+                                            <div onclick="selectMediaVideo('https://assets.mixkit.co/videos/preview/mixkit-data-center-server-racks-flashing-lights-42283-large.mp4', this)" style="position: relative; background: #000; aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s; margin-top: 6px;">
+                                                <video src="https://assets.mixkit.co/videos/preview/mixkit-data-center-server-racks-flashing-lights-42283-large.mp4" muted loop style="width: 100%; height: 100%; object-fit: cover;" onmouseover="this.play()" onmouseout="this.pause()"></video>
+                                                <div style="position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.55rem; color: #fff; pointer-events: none;">🖥️ Servidores</div>
+                                            </div>
+                                            <div onclick="selectMediaVideo('https://assets.mixkit.co/videos/preview/mixkit-technological-particles-looping-background-41766-large.mp4', this)" style="position: relative; background: #000; aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s; margin-top: 6px;">
+                                                <video src="https://assets.mixkit.co/videos/preview/mixkit-technological-particles-looping-background-41766-large.mp4" muted loop style="width: 100%; height: 100%; object-fit: cover;" onmouseover="this.play()" onmouseout="this.pause()"></video>
+                                                <div style="position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.55rem; color: #fff; pointer-events: none;">✨ Partículas</div>
+                                            </div>
+                                            <div onclick="selectMediaVideo('https://assets.mixkit.co/videos/preview/mixkit-typing-on-a-futuristic-holographic-keyboard-41772-large.mp4', this)" style="position: relative; background: #000; aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s; margin-top: 6px;">
+                                                <video src="https://assets.mixkit.co/videos/preview/mixkit-typing-on-a-futuristic-holographic-keyboard-41772-large.mp4" muted loop style="width: 100%; height: 100%; object-fit: cover;" onmouseover="this.play()" onmouseout="this.pause()"></video>
+                                                <div style="position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.55rem; color: #fff; pointer-events: none;">⌨️ Teclado IA</div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1243,8 +1315,9 @@
                                 
                                 <!-- Card Preview (simulating iadebarrio styles) -->
                                 <div style="background: #1d1d1f; border: 1px solid var(--border-color); border-radius: 24px; overflow: hidden; max-width: 360px; margin-bottom: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.3);">
-                                    <div id="preview-card-img-wrapper" style="width: 100%; aspect-ratio: 16/10; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--border-color);">
+                                    <div id="preview-card-img-wrapper" style="width: 100%; aspect-ratio: 16/10; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--border-color); overflow: hidden;">
                                         <img id="preview-card-img" src="" alt="Vista previa de imagen" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                                        <video id="preview-card-video" src="" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; display: none;"></video>
                                         <div id="preview-card-img-placeholder" style="font-size: 2.5rem; opacity: 0.1;">📰</div>
                                     </div>
                                     <div style="padding: 24px;">
@@ -3647,15 +3720,36 @@
             }
         }
         
-        // Update image
+        // Update image/video preview
         const img = document.getElementById('preview-card-img');
+        const video = document.getElementById('preview-card-video');
         const placeholder = document.getElementById('preview-card-img-placeholder');
+        
         if (image) {
-            img.src = image;
-            img.style.display = 'block';
+            const isVideo = image.endsWith('.mp4') || image.includes('video') || image.includes('mixkit.co');
+            if (isVideo) {
+                if (video) {
+                    video.src = image;
+                    video.style.display = 'block';
+                }
+                if (img) img.style.display = 'none';
+            } else {
+                if (img) {
+                    img.src = image;
+                    img.style.display = 'block';
+                }
+                if (video) {
+                    video.style.display = 'none';
+                    video.src = '';
+                }
+            }
             if (placeholder) placeholder.style.display = 'none';
         } else {
-            img.style.display = 'none';
+            if (img) img.style.display = 'none';
+            if (video) {
+                video.style.display = 'none';
+                video.src = '';
+            }
             if (placeholder) placeholder.style.display = 'block';
         }
     }
@@ -4222,6 +4316,175 @@ Devuelve ÚNICAMENTE un objeto JSON que cumpla ESTRICTAMENTE con este esquema:
         }
     }
     
+    // ====== MULTIMEDIA IA ASSISTANT LOGIC ======
+    let activeMediaTab = 'images';
+
+    function toggleMediaAssistant() {
+        const panel = document.getElementById('media-assistant-panel');
+        if (!panel) return;
+        const isHidden = panel.style.display === 'none';
+        panel.style.display = isHidden ? 'block' : 'none';
+        
+        // If opening and prompt is empty, pre-fill with current article title
+        if (isHidden) {
+            const promptInput = document.getElementById('media-prompt-input');
+            const titleInput = document.getElementById('nl-art-title');
+            if (promptInput && titleInput && !promptInput.value.trim()) {
+                promptInput.value = titleInput.value.trim();
+            }
+        }
+    }
+
+    function switchMediaAssistantTab(tab) {
+        activeMediaTab = tab;
+        const tabImages = document.getElementById('media-tab-images');
+        const tabVideos = document.getElementById('media-tab-videos');
+        const containerImages = document.getElementById('media-images-container');
+        const containerVideos = document.getElementById('media-videos-container');
+        
+        if (tab === 'images') {
+            tabImages.style.background = 'rgba(0, 113, 227, 0.15)';
+            tabImages.style.borderColor = 'rgba(0, 113, 227, 0.3)';
+            tabImages.style.fontWeight = '600';
+            
+            tabVideos.style.background = 'transparent';
+            tabVideos.style.borderColor = 'transparent';
+            tabVideos.style.fontWeight = 'normal';
+            
+            containerImages.style.display = 'block';
+            containerVideos.style.display = 'none';
+        } else {
+            tabVideos.style.background = 'rgba(0, 113, 227, 0.15)';
+            tabVideos.style.borderColor = 'rgba(0, 113, 227, 0.3)';
+            tabVideos.style.fontWeight = '600';
+            
+            tabImages.style.background = 'transparent';
+            tabImages.style.borderColor = 'transparent';
+            tabImages.style.fontWeight = 'normal';
+            
+            containerImages.style.display = 'none';
+            containerVideos.style.display = 'block';
+        }
+    }
+
+    function generateMediaFromAssistant() {
+        const promptInput = document.getElementById('media-prompt-input');
+        const titleInput = document.getElementById('nl-art-title');
+        let prompt = promptInput.value.trim() || titleInput.value.trim() || 'tecnologia ia de barrio';
+        
+        const loader = document.getElementById('media-assistant-loader');
+        if (loader) loader.style.display = 'inline';
+        
+        if (activeMediaTab === 'images') {
+            const grid = document.getElementById('media-images-grid');
+            grid.innerHTML = '';
+            
+            // Define 3 unique art styles
+            const styles = [
+                {
+                    name: 'Estilo Apple Vector',
+                    promptSuffix: ', minimalist vector icon design, vibrant glowing gradients, dark futuristic background, premium clean tech style, extremely aesthetic',
+                    seed: 101
+                },
+                {
+                    name: 'Foto Realista 3D',
+                    promptSuffix: ', realistic high-detailed tech photo, cinematic studio light, volumetric reflections, dark background, futuristic machinery, 8k',
+                    seed: 202
+                },
+                {
+                    name: 'Ilustración Cyberpunk',
+                    promptSuffix: ', high quality digital art concept illustration, smooth lines, flowing cybernetic data waves, abstract technology art, clean',
+                    seed: 303
+                }
+            ];
+            
+            styles.forEach((styleObj, i) => {
+                const finalPrompt = prompt + styleObj.promptSuffix;
+                const encodedPrompt = encodeURIComponent(finalPrompt);
+                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=640&height=400&nologo=true&seed=${styleObj.seed}`;
+                
+                // Create card container
+                const card = document.createElement('div');
+                card.className = 'media-option-card';
+                card.style = 'position: relative; background: rgba(255,255,255,0.02); aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.25s ease; display: flex; align-items: center; justify-content: center;';
+                card.setAttribute('onclick', `selectMediaImage("${imageUrl}", this)`);
+                
+                // Loader placeholder
+                const placeholder = document.createElement('div');
+                placeholder.style = 'position: absolute; font-size: 0.7rem; color: var(--text-grey); display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 1;';
+                placeholder.innerHTML = `<span>⏳ Generando...</span><span style="font-size: 0.55rem; opacity: 0.7;">${styleObj.name}</span>`;
+                card.appendChild(placeholder);
+                
+                // The actual image
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                img.style = 'width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; z-index: 2;';
+                img.onload = () => {
+                    placeholder.style.display = 'none';
+                    img.style.opacity = '1';
+                };
+                img.onerror = () => {
+                    placeholder.innerHTML = '❌ Error';
+                };
+                card.appendChild(img);
+                
+                // Badge overlay
+                const badge = document.createElement('div');
+                badge.style = 'position: absolute; bottom: 6px; left: 6px; background: rgba(0,0,0,0.65); padding: 3px 8px; border-radius: 5px; font-size: 0.55rem; color: #fff; z-index: 3; font-weight: 500; pointer-events: none; border: 1px solid rgba(255,255,255,0.05);';
+                badge.innerText = styleObj.name;
+                card.appendChild(badge);
+                
+                grid.appendChild(card);
+            });
+            
+            setTimeout(() => {
+                if (loader) loader.style.display = 'none';
+                showToast('🤖 ¡3 opciones de fotos IA generadas con éxito!', 4000);
+            }, 3000);
+        } else {
+            // Videos option
+            const grid = document.getElementById('media-videos-grid');
+            if (loader) loader.style.display = 'none';
+            showToast('🎥 Mostrando loops de vídeo premium optimizados', 3000);
+        }
+    }
+
+    function selectMediaImage(url, element) {
+        // Remove active class from all card options
+        const cards = document.querySelectorAll('#media-images-grid .media-option-card');
+        cards.forEach(c => {
+            c.style.borderColor = 'rgba(255,255,255,0.08)';
+            c.style.boxShadow = 'none';
+        });
+        
+        // Highlight selected
+        element.style.borderColor = 'var(--accent-blue)';
+        element.style.boxShadow = '0 0 12px rgba(0, 113, 227, 0.4)';
+        
+        // Set inputs
+        document.getElementById('nl-art-image').value = url;
+        updateNewsletterPreview();
+        showToast('✓ Imagen seleccionada y aplicada a la previsualización', 3000);
+    }
+
+    function selectMediaVideo(url, element) {
+        // Remove active class from all video options
+        const containers = document.querySelectorAll('#media-videos-grid > div');
+        containers.forEach(c => {
+            c.style.borderColor = 'rgba(255,255,255,0.1)';
+            c.style.boxShadow = 'none';
+        });
+        
+        // Highlight selected
+        element.style.borderColor = 'var(--accent-blue)';
+        element.style.boxShadow = '0 0 12px rgba(0, 113, 227, 0.4)';
+        
+        // Set inputs
+        document.getElementById('nl-art-image').value = url;
+        updateNewsletterPreview();
+        showToast('✓ Vídeo loop seleccionado y aplicado a la previsualización', 3000);
+    }
+
     // ====== FIN PESTAÑA NEWSLETTER LOGIC ======
     </script>
 
