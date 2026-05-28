@@ -3937,7 +3937,11 @@
         const content = document.getElementById('nl-art-content').value.trim();
         
         if (!title || !slug || !content) {
-            return alert('⚠️ Los campos Título, Slug y Contenido son totalmente requeridos.');
+            const missing = [];
+            if (!title) missing.push('Título');
+            if (!slug) missing.push('Slug');
+            if (!content) missing.push('Contenido');
+            return alert('⚠️ Falta rellenar: ' + missing.join(', ') + '. Revisa estos campos antes de publicar.');
         }
         
         const activeIdEl = document.getElementById('editor-active-id');
@@ -4421,10 +4425,10 @@ REGLAS DE ORO CRÍTICAS PARA EL CAMPO \"content\" (SI NO SE CUMPLEN, LA PÁGINA 
             styles.forEach((styleObj, index) => {
                 // Inject unique random token INTO the prompt to force completely new images
                 const uniqueId = batchId + '-' + index + '-' + Math.floor(Math.random() * 99999);
-                const finalPrompt = prompt + styleObj.suffix + ', unique variation ' + uniqueId;
+                const finalPrompt = prompt + styleObj.suffix + ', variation ' + uniqueId;
                 const encodedPrompt = encodeURIComponent(finalPrompt);
                 const seed = batchId + index * 7919;
-                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1440&height=900&nologo=true&seed=${seed}&nofeed=true`;
+                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=640&nologo=true&seed=${seed}&nofeed=true&model=flux`;
                 
                 // Create card container for each image (takes 1 column inside the 3-column grid)
                 const card = document.createElement('div');
@@ -4441,14 +4445,17 @@ REGLAS DE ORO CRÍTICAS PARA EL CAMPO \"content\" (SI NO SE CUMPLEN, LA PÁGINA 
                 const img = document.createElement('img');
                 img.style = 'width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; z-index: 2;';
                 
-                // Curated premium tech fallbacks if Pollinations fails
-                const fallbacks = [
-                    'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
-                    'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80',
-                    'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=800&q=80',
-                    'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
-                    'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=800&q=80',
-                    'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80'
+                // Dynamic fallbacks using Unsplash source with random topic keywords
+                const unsplashTopics = ['artificial-intelligence', 'technology', 'futuristic', 'data-science', 'digital-art', 'cyberpunk'];
+                const fallbackTopic = unsplashTopics[index % unsplashTopics.length];
+                const fallbackUrl = `https://images.unsplash.com/photo-${1600000000000 + Math.floor(Math.random() * 100000000000)}?auto=format&fit=crop&w=1024&q=80`;
+                const staticFallbacks = [
+                    `https://source.unsplash.com/1024x640/?${fallbackTopic},tech&sig=${batchId + index}`,
+                    `https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1024&q=80`,
+                    `https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1024&q=80`,
+                    `https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=1024&q=80`,
+                    `https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1024&q=80`,
+                    `https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=1024&q=80`
                 ];
                 
                 img.onload = () => {
@@ -4464,14 +4471,21 @@ REGLAS DE ORO CRÍTICAS PARA EL CAMPO \"content\" (SI NO SE CUMPLEN, LA PÁGINA 
                 };
                 
                 img.onerror = () => {
-                    // Try fallback Unsplash image
-                    const fallbackUrl = fallbacks[index % fallbacks.length];
-                    if (img.src !== fallbackUrl) {
-                        console.warn(`Pollinations failed for style ${styleObj.name}, applying premium Unsplash fallback.`);
-                        img.src = fallbackUrl;
+                    // Try Unsplash source fallback (different each time via sig param)
+                    const fb = staticFallbacks[0];
+                    if (img.src !== fb && !img.dataset.triedFallback) {
+                        console.warn(`Pollinations failed for style ${styleObj.name}, trying fallback.`);
+                        img.dataset.triedFallback = 'true';
+                        img.src = fb;
                     } else {
-                        placeholder.innerHTML = '❌ Error';
-                        checkAllLoaded();
+                        // Use static fallback
+                        const staticFb = staticFallbacks[index + 1] || staticFallbacks[1];
+                        if (img.src !== staticFb) {
+                            img.src = staticFb;
+                        } else {
+                            placeholder.innerHTML = '❌ Error';
+                            checkAllLoaded();
+                        }
                     }
                 };
                 
@@ -4493,7 +4507,7 @@ REGLAS DE ORO CRÍTICAS PARA EL CAMPO \"content\" (SI NO SE CUMPLEN, LA PÁGINA 
                 // Stagger loading using setTimeout to prevent rate limit blocks
                 setTimeout(() => {
                     img.src = imageUrl;
-                }, index * 500);
+                }, index * 1500);
             });
             
             // Fallback timeout to clear loader in 20s in case of slow loads (higher res = slower)
