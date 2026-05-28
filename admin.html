@@ -4016,6 +4016,8 @@
             document.getElementById('nl-art-metadesc').value = data.meta_description || '';
             document.getElementById('nl-art-content').value = data.content || '';
             
+            console.log('[EditArticle] Loaded content length:', (data.content || '').length, 'chars');
+            
             // Set active ID
             const activeIdEl = document.getElementById('editor-active-id');
             if (activeIdEl) {
@@ -4047,7 +4049,17 @@
                 btnWrite.style.color = 'var(--text-white)';
             }
             
-            showToast('📝 Artículo cargado en el editor', 2000);
+            // Scroll content textarea into view
+            setTimeout(() => {
+                const contentEl = document.getElementById('nl-art-content');
+                if (contentEl) contentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+            
+            if (!data.content) {
+                showToast('⚠️ Este artículo no tiene contenido guardado en la base de datos. Escríbelo antes de publicar.', 5000);
+            } else {
+                showToast('📝 Artículo cargado en el editor — contenido incluido', 2000);
+            }
         } catch (e) {
             alert('Error al cargar artículo para editar: ' + e.message);
         }
@@ -4382,138 +4394,124 @@ REGLAS DE ORO CRÍTICAS PARA EL CAMPO \"content\" (SI NO SE CUMPLEN, LA PÁGINA 
             const grid = document.getElementById('media-images-grid');
             grid.innerHTML = '';
             
-            // Generate 6 high-quality photos with different modern styles
+            // Get Gemini API key
+            const key = localStorage.getItem('gemini_api_key') || document.getElementById('gemini-api-key').value;
+            if (!key) {
+                if (loader) loader.style.display = 'none';
+                return alert('⚠️ Introduce tu Gemini API Key en el panel del Copiloto IA para generar imágenes.');
+            }
+            
+            // 6 styles for variation
             const styles = [
-                {
-                    name: 'Editorial Minimalista (Apple)',
-                    suffix: ', realistic high-detailed tech photo, shallow depth of field, warm cinematic studio lighting, premium materials (glass, metal), dark minimalist elegant background, premium aesthetic, 8k'
-                },
-                {
-                    name: 'Holograma Cyberpunk (Sci-Fi)',
-                    suffix: ', futuristic neon hologram, glowing cyan and magenta digital accents, abstract cybernetic data flows, clean dark background, futuristic octane render'
-                },
-                {
-                    name: 'Ilustración SaaS (Plana Premium)',
-                    suffix: ', modern premium SaaS technology flat vector illustration, sleek corporate art style, harmonious soft pastel color palette, clean aesthetic'
-                },
-                {
-                    name: 'Render 3D (Glassmorphism)',
-                    suffix: ', high-end isometric 3D clay and glass render, translucent frosted glass textures, soft isometric ambient lighting, modern aesthetic design'
-                },
-                {
-                    name: 'Retro-Futurista (Análogo)',
-                    suffix: ', vintage editorial tech magazine cover style, warm retro color grading, subtle film grain texture, organic premium composition, corporate-creative'
-                },
-                {
-                    name: 'Red Neuronal (Arte Abstracto)',
-                    suffix: ', abstract neural network and glowing data visualization, fluid organic code matrix waves, deep purple and blue ambient glowing lights, digital art'
-                }
+                { name: 'Editorial Minimalista', suffix: ', clean minimalist editorial photo style, premium aesthetic, soft studio lighting, dark background' },
+                { name: 'Holograma Cyberpunk', suffix: ', futuristic neon holographic style, glowing cyan and magenta, cyberpunk dark background' },
+                { name: 'Ilustración SaaS', suffix: ', modern flat vector illustration style, soft pastel colors, clean corporate aesthetic' },
+                { name: 'Render 3D Glass', suffix: ', 3D isometric render with frosted glass textures, soft ambient lighting, modern design' },
+                { name: 'Retro-Futurista', suffix: ', vintage retro-futuristic magazine cover style, warm color grading, film grain' },
+                { name: 'Arte Abstracto', suffix: ', abstract digital art with neural network visualization, deep purple and blue glowing lights' }
             ];
             
-            let loadedCount = 0;
-            const checkAllLoaded = () => {
-                loadedCount++;
-                if (loadedCount === 6) {
-                    if (loader) loader.style.display = 'none';
-                    showToast('🤖 ¡6 estilos de fotos generados con éxito!', 4000);
-                }
-            };
-            
-            // Use timestamp to guarantee unique images every click
-            const batchId = Date.now();
-            
+            // Create 6 placeholder cards
             styles.forEach((styleObj, index) => {
-                // Inject unique random token INTO the prompt to force completely new images
-                const uniqueId = batchId + '-' + index + '-' + Math.floor(Math.random() * 99999);
-                const finalPrompt = prompt + styleObj.suffix + ', variation ' + uniqueId;
-                const encodedPrompt = encodeURIComponent(finalPrompt);
-                const seed = batchId + index * 7919;
-                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=640&nologo=true&seed=${seed}&nofeed=true&model=flux`;
-                
-                // Create card container for each image (takes 1 column inside the 3-column grid)
                 const card = document.createElement('div');
                 card.className = 'media-option-card';
+                card.dataset.index = index;
                 card.style = 'position: relative; background: rgba(255,255,255,0.02); aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.25s ease; display: flex; align-items: center; justify-content: center;';
                 
-                // Loader placeholder
                 const placeholder = document.createElement('div');
+                placeholder.className = 'img-placeholder';
                 placeholder.style = 'position: absolute; font-size: 0.7rem; color: var(--text-grey); display: flex; flex-direction: column; align-items: center; text-align: center; padding: 10px; gap: 8px; z-index: 1;';
-                placeholder.innerHTML = `<span>⏳ Generando...<br><small style="opacity:0.5">${styleObj.name}</small></span>`;
+                placeholder.innerHTML = `<span>⏳ Generando con Gemini...<br><small style="opacity:0.5">${styleObj.name}</small></span>`;
                 card.appendChild(placeholder);
                 
-                // The actual image
                 const img = document.createElement('img');
                 img.style = 'width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; z-index: 2;';
-                
-                // Dynamic fallbacks using Unsplash source with random topic keywords
-                const unsplashTopics = ['artificial-intelligence', 'technology', 'futuristic', 'data-science', 'digital-art', 'cyberpunk'];
-                const fallbackTopic = unsplashTopics[index % unsplashTopics.length];
-                const fallbackUrl = `https://images.unsplash.com/photo-${1600000000000 + Math.floor(Math.random() * 100000000000)}?auto=format&fit=crop&w=1024&q=80`;
-                const staticFallbacks = [
-                    `https://source.unsplash.com/1024x640/?${fallbackTopic},tech&sig=${batchId + index}`,
-                    `https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1024&q=80`,
-                    `https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1024&q=80`,
-                    `https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=1024&q=80`,
-                    `https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1024&q=80`,
-                    `https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=1024&q=80`
-                ];
-                
-                img.onload = () => {
-                    placeholder.style.display = 'none';
-                    img.style.opacity = '1';
-                    
-                    // Auto-select the very first image that successfully loads!
-                    const activeCard = document.querySelector('#media-images-grid .media-option-card[style*="border-color: var(--accent-blue)"]');
-                    if (!activeCard) {
-                        selectMediaImage(img.src, card);
-                    }
-                    checkAllLoaded();
-                };
-                
-                img.onerror = () => {
-                    // Try Unsplash source fallback (different each time via sig param)
-                    const fb = staticFallbacks[0];
-                    if (img.src !== fb && !img.dataset.triedFallback) {
-                        console.warn(`Pollinations failed for style ${styleObj.name}, trying fallback.`);
-                        img.dataset.triedFallback = 'true';
-                        img.src = fb;
-                    } else {
-                        // Use static fallback
-                        const staticFb = staticFallbacks[index + 1] || staticFallbacks[1];
-                        if (img.src !== staticFb) {
-                            img.src = staticFb;
-                        } else {
-                            placeholder.innerHTML = '❌ Error';
-                            checkAllLoaded();
-                        }
-                    }
-                };
-                
-                // Bind click event programmatically to avoid quote issues and match actual source (generated or fallback)
-                card.addEventListener('click', () => {
-                    selectMediaImage(img.src, card);
-                });
-                
+                img.className = 'generated-img';
                 card.appendChild(img);
                 
-                // Badge overlay
                 const badge = document.createElement('div');
                 badge.style = 'position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.75); padding: 4px 8px; border-radius: 6px; font-size: 0.55rem; color: #fff; z-index: 3; font-weight: 500; pointer-events: none; border: 1px solid rgba(255,255,255,0.05); max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
                 badge.innerText = styleObj.name;
                 card.appendChild(badge);
                 
-                grid.appendChild(card);
+                card.addEventListener('click', () => {
+                    if (img.src && img.style.opacity === '1') selectMediaImage(img.src, card);
+                });
                 
-                // Stagger loading using setTimeout to prevent rate limit blocks
-                setTimeout(() => {
-                    img.src = imageUrl;
-                }, index * 1500);
+                grid.appendChild(card);
             });
             
-            // Fallback timeout to clear loader in 20s in case of slow loads (higher res = slower)
-            setTimeout(() => {
-                if (loader) loader.style.display = 'none';
-            }, 20000);
+            // Generate images sequentially via Gemini API
+            const geminiModel = 'gemini-2.0-flash-preview-image-generation';
+            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${key}`;
+            let successCount = 0;
+            
+            for (let i = 0; i < styles.length; i++) {
+                const styleObj = styles[i];
+                const card = grid.children[i];
+                const img = card.querySelector('.generated-img');
+                const placeholder = card.querySelector('.img-placeholder');
+                
+                try {
+                    const imagePrompt = `Generate a high-quality, visually stunning image for an article about: ${prompt}. Style: ${styleObj.suffix}. The image should be professional, modern, and suitable as a hero banner for a tech/AI news website. Aspect ratio 16:10, landscape orientation.`;
+                    
+                    const resp = await fetch(geminiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: imagePrompt }] }],
+                            generationConfig: {
+                                responseModalities: ["IMAGE", "TEXT"],
+                                responseMimeType: "text/plain"
+                            }
+                        })
+                    });
+                    
+                    if (!resp.ok) {
+                        const errData = await resp.json().catch(() => ({}));
+                        throw new Error(errData?.error?.message || resp.statusText);
+                    }
+                    
+                    const data = await resp.json();
+                    
+                    // Find the image part in the response
+                    let imageFound = false;
+                    if (data.candidates && data.candidates[0]?.content?.parts) {
+                        for (const part of data.candidates[0].content.parts) {
+                            if (part.inlineData) {
+                                const blob = await fetch(`data:${part.inlineData.mimeType};base64,${part.inlineData.data}`).then(r => r.blob());
+                                const blobUrl = URL.createObjectURL(blob);
+                                img.src = blobUrl;
+                                img.style.opacity = '1';
+                                placeholder.style.display = 'none';
+                                imageFound = true;
+                                successCount++;
+                                
+                                // Auto-select the first successful image
+                                if (successCount === 1) {
+                                    selectMediaImage(blobUrl, card);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (!imageFound) {
+                        placeholder.innerHTML = '<span style="color:#ff9500">⚠️ Sin imagen</span>';
+                    }
+                    
+                } catch (err) {
+                    console.error(`Gemini image gen failed for style ${styleObj.name}:`, err);
+                    placeholder.innerHTML = `<span style="color:#ff3b30">❌ Error<br><small style="opacity:0.6">${err.message?.substring(0, 60) || 'Error'}</small></span>`;
+                }
+            }
+            
+            if (loader) loader.style.display = 'none';
+            if (successCount > 0) {
+                showToast(`🤖 ¡${successCount} fotos generadas con Gemini!`, 4000);
+            } else {
+                showToast('❌ No se pudieron generar imágenes. Revisa tu API Key.', 5000);
+            }
         } else {
             // Videos option — pick 3 random videos from curated pool
             const videoPool = [
@@ -4565,7 +4563,7 @@ REGLAS DE ORO CRÍTICAS PARA EL CAMPO \"content\" (SI NO SE CUMPLEN, LA PÁGINA 
         }
     }
 
-    function selectMediaImage(url, element) {
+    async function selectMediaImage(url, element) {
         // Remove active class from all card options
         const cards = document.querySelectorAll('#media-images-grid .media-option-card');
         cards.forEach(c => {
@@ -4577,10 +4575,43 @@ REGLAS DE ORO CRÍTICAS PARA EL CAMPO \"content\" (SI NO SE CUMPLEN, LA PÁGINA 
         element.style.borderColor = 'var(--accent-blue)';
         element.style.boxShadow = '0 0 12px rgba(0, 113, 227, 0.4)';
         
+        // If it's a blob URL (from Gemini), upload to Supabase Storage for a permanent URL
+        if (url.startsWith('blob:')) {
+            showToast('📤 Subiendo imagen a la nube...', 2000);
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const ext = blob.type.includes('png') ? 'png' : 'jpg';
+                const fileName = `gemini-${Date.now()}-${Math.floor(Math.random() * 9999)}.${ext}`;
+                
+                const { data, error } = await _supabase.storage
+                    .from('newsletter-images')
+                    .upload(fileName, blob, {
+                        cacheControl: '31536000',
+                        upsert: false,
+                        contentType: blob.type
+                    });
+                
+                if (error) throw error;
+                
+                const { data: urlData } = _supabase.storage
+                    .from('newsletter-images')
+                    .getPublicUrl(fileName);
+                
+                url = urlData.publicUrl;
+                showToast('✅ Imagen subida y aplicada correctamente', 3000);
+            } catch (err) {
+                console.error('Upload error:', err);
+                showToast('❌ Error al subir imagen: ' + err.message, 4000);
+                return;
+            }
+        } else {
+            showToast('✓ Imagen seleccionada y aplicada a la previsualización', 3000);
+        }
+        
         // Set inputs
         document.getElementById('nl-art-image').value = url;
         updateNewsletterPreview();
-        showToast('✓ Imagen seleccionada y aplicada a la previsualización', 3000);
     }
 
     function selectMediaVideo(url, element) {
