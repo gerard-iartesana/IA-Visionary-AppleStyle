@@ -3414,7 +3414,7 @@ REGLAS DEL CONTENIDO HTML:
             grid.appendChild(card);
         });
         
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-image-generation:generateContent?key=${key}`;
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${key}`;
         let successCount = 0;
         
         for (let i = 0; i < styles.length; i++) {
@@ -3540,12 +3540,12 @@ REGLAS DEL CONTENIDO HTML:
                 const videoPrompt = `${prompt}. ${videoStyles[i]}. 8 second loop, smooth, professional.`;
                 
                 // Step 1: Initiate video generation (long-running operation)
-                const initResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/veo-3.1-generate-preview:generateVideos?key=${key}`, {
+                const initResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/veo-3.1-generate-preview:predictLongRunning`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
                     body: JSON.stringify({
                         instances: [{ prompt: videoPrompt }],
-                        parameters: { aspectRatio: "16:9", durationSeconds: 8 }
+                        parameters: { sampleCount: 1, aspectRatio: "16:9", durationSeconds: 8 }
                     })
                 });
                 
@@ -3561,10 +3561,10 @@ REGLAS DEL CONTENIDO HTML:
                 
                 vh.innerHTML = `🎬 Procesando vídeo ${i+1}...<br><small style="opacity:0.5">Operación iniciada</small>`;
                 
-                // Step 2: Poll for completion (max 3 min)
+                // Step 2: Poll for completion (max 5 min)
                 let done = false;
                 let attempts = 0;
-                const maxAttempts = 36; // 36 * 5s = 3 minutes
+                const maxAttempts = 60; // 60 * 5s = 5 minutes
                 
                 while (!done && attempts < maxAttempts) {
                     await new Promise(r => setTimeout(r, 5000)); // Wait 5s between polls
@@ -3572,36 +3572,41 @@ REGLAS DEL CONTENIDO HTML:
                     
                     vh.innerHTML = `🎬 Procesando vídeo ${i+1}...<br><small style="opacity:0.5">Comprobando estado... (${attempts * 5}s)</small>`;
                     
-                    const pollResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/${opName}?key=${key}`);
+                    const pollResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/${opName}`, {
+                        headers: { 'x-goog-api-key': key }
+                    });
                     const pollData = await pollResp.json();
                     
                     if (pollData.done) {
                         done = true;
                         
-                        // Extract video from response
-                        const videoData = pollData.response?.predictions?.[0];
-                        if (videoData?.bytesBase64Encoded) {
-                            const mimeType = videoData.mimeType || 'video/mp4';
-                            const blob = await fetch(`data:${mimeType};base64,${videoData.bytesBase64Encoded}`).then(r => r.blob());
-                            
-                            // Upload to Supabase
-                            const fileName = `veo-${Date.now()}-${i}.mp4`;
-                            const { error: upErr } = await _supabase.storage.from('newsletter-images').upload(fileName, blob, { cacheControl: '31536000', contentType: mimeType });
-                            
-                            if (upErr) throw upErr;
-                            
-                            const { data: urlData } = _supabase.storage.from('newsletter-images').getPublicUrl(fileName);
-                            
-                            video.src = urlData.publicUrl;
+                        // Extract video from response - try multiple response paths
+                        const samples = pollData.response?.generateVideoResponse?.generatedSamples 
+                            || pollData.response?.predictions;
+                        const sample = samples?.[0];
+                        const videoUri = sample?.video?.uri || sample?.uri;
+                        const videoB64 = sample?.video?.bytesBase64Encoded || sample?.bytesBase64Encoded;
+                        
+                        if (videoUri) {
+                            video.src = videoUri;
                             video.style.opacity = '1';
                             video.play().catch(() => {});
                             vh.style.display = 'none';
                             successCount++;
-                            
                             if (successCount === 1) nlSelectVideo(card);
-                        } else if (pollData.response?.predictions?.[0]?.uri) {
-                            // Some responses return a URI instead
-                            video.src = pollData.response.predictions[0].uri;
+                        } else if (videoB64) {
+                            const mimeType = sample?.video?.mimeType || sample?.mimeType || 'video/mp4';
+                            const blob = await fetch(`data:${mimeType};base64,${videoB64}`).then(r => r.blob());
+                            
+                            // Upload to Supabase
+                            const fileName = `veo-${Date.now()}-${i}.mp4`;
+                            const { error: upErr } = await _supabase.storage.from('newsletter-images').upload(fileName, blob, { cacheControl: '31536000', contentType: mimeType });
+                            if (!upErr) {
+                                const { data: urlData } = _supabase.storage.from('newsletter-images').getPublicUrl(fileName);
+                                video.src = urlData.publicUrl;
+                            } else {
+                                video.src = URL.createObjectURL(blob);
+                            }
                             video.style.opacity = '1';
                             video.play().catch(() => {});
                             vh.style.display = 'none';
