@@ -3276,42 +3276,33 @@ REGLAS DEL CONTENIDO HTML:
         try {
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
             
-            nlLog('📝 Redactando artículo estructurado en formato JSON...', '#af52de');
+            // Only 2.5+ models support google_search grounding
+            const supportsSearch = model.startsWith('gemini-2.5') || model.startsWith('gemini-3');
+            
+            const requestBody = {
+                contents: [{ parts: [{ text: promptText }] }]
+            };
+            
+            if (supportsSearch) {
+                requestBody.tools = [{ google_search: {} }];
+                nlLog('🌐 Usando búsqueda web con ' + model + '...', '#0071e3');
+            } else {
+                requestBody.generationConfig = { responseMimeType: "application/json" };
+                nlLog('📝 Generando con ' + model + ' (sin búsqueda web)...', '#ff9500');
+            }
+            
+            nlLog('📝 Redactando artículo...', '#af52de');
             
             const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: promptText }] }],
-                    tools: [{ google_search: {} }]
-                })
+                body: JSON.stringify(requestBody)
             });
             
             if (!response.ok) {
                 const errData = await response.json().catch(() => ({}));
                 const errMsg = errData?.error?.message || response.statusText;
                 nlLog('❌ ERROR: ' + errMsg, '#ff3b30');
-                
-                // If grounding fails, retry without search
-                if (errMsg.includes('google_search') || errMsg.includes('tools')) {
-                    nlLog('⚠️ Reintentando sin búsqueda web...', '#ff9500');
-                    const retryResp = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ parts: [{ text: promptText }] }],
-                            generationConfig: { responseMimeType: "application/json" }
-                        })
-                    });
-                    if (!retryResp.ok) throw new Error('Retry failed: ' + retryResp.statusText);
-                    const retryData = await retryResp.json();
-                    const retryText = retryData.candidates?.[0]?.content?.parts?.[0]?.text;
-                    if (retryText) {
-                        nlFillFromJSON(retryText);
-                        nlLog('✅ Artículo generado (sin búsqueda web)', '#34c759');
-                        return;
-                    }
-                }
                 throw new Error(errMsg);
             }
             
@@ -3334,12 +3325,42 @@ REGLAS DEL CONTENIDO HTML:
     }
 
     function nlFillFromJSON(text) {
+        let d = null;
         try {
-            // Clean JSON from markdown code blocks if present
+            // Try 1: Direct JSON parse
             let clean = text.trim();
             if (clean.startsWith('```')) clean = clean.replace(/^```json?\n?/, '').replace(/\n?```$/, '');
-            const d = JSON.parse(clean);
-            
+            d = JSON.parse(clean);
+        } catch (e1) {
+            // Try 2: Extract JSON from mixed text (grounded search responses)
+            try {
+                const jsonMatch = text.match(/\{[\s\S]*"title"[\s\S]*"content"[\s\S]*\}/);
+                if (jsonMatch) {
+                    d = JSON.parse(jsonMatch[0]);
+                }
+            } catch (e2) {
+                // Try 3: Extract individual fields with regex
+                nlLog('⚠️ JSON parse failed, extracting fields manually...', '#ff9500');
+                const getField = (name) => {
+                    const m = text.match(new RegExp('"' + name + '"\\s*:\\s*"((?:[^"\\\\]|\\\\.)*)"'));
+                    return m ? m[1].replace(/\\\\/g, '\\').replace(/\\"/g, '"') : '';
+                };
+                d = {
+                    title: getField('title'),
+                    subtitle: getField('subtitle'),
+                    slug: getField('slug'),
+                    category: getField('category'),
+                    read_time: getField('read_time'),
+                    meta_description: getField('meta_description')
+                };
+                // Content field is usually multi-line, extract differently
+                const contentMatch = text.match(/"content"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+                if (contentMatch) d.content = contentMatch[1].replace(/\\"/g, '"').replace(/\\n/g, '\n');
+                else d.content = text; // fallback: put entire text as content
+            }
+        }
+        
+        if (d) {
             if (d.title) document.getElementById('nl-title').value = d.title;
             if (d.subtitle) document.getElementById('nl-subtitle').value = d.subtitle;
             if (d.slug) document.getElementById('nl-slug').value = d.slug;
@@ -3349,12 +3370,10 @@ REGLAS DEL CONTENIDO HTML:
             if (d.content) document.getElementById('nl-content').value = d.content;
             if (d.image_url) document.getElementById('nl-image').value = d.image_url;
             
-            // Auto-fill photo prompt with title
+            // Auto-fill photo/video prompts
             if (d.title) document.getElementById('nl-photo-prompt').value = d.title;
             if (d.title) document.getElementById('nl-video-prompt').value = d.title;
-        } catch (e) {
-            nlLog('⚠️ Error parseando JSON, intentando extracción manual...', '#ff9500');
-            // If JSON parsing fails, put raw text in content
+        } else {
             document.getElementById('nl-content').value = text;
         }
     }
@@ -3395,7 +3414,7 @@ REGLAS DEL CONTENIDO HTML:
             grid.appendChild(card);
         });
         
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${key}`;
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-image-generation:generateContent?key=${key}`;
         let successCount = 0;
         
         for (let i = 0; i < styles.length; i++) {
@@ -3521,7 +3540,7 @@ REGLAS DEL CONTENIDO HTML:
                 const videoPrompt = `${prompt}. ${videoStyles[i]}. 8 second loop, smooth, professional.`;
                 
                 // Step 1: Initiate video generation (long-running operation)
-                const initResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/veo-3.1-generate-preview:predictLongRunning?key=${key}`, {
+                const initResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/veo-3.1-generate-preview:generateVideos?key=${key}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
