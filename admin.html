@@ -4419,10 +4419,12 @@ REGLAS DE ORO CRÍTICAS PARA EL CAMPO \"content\" (SI NO SE CUMPLEN, LA PÁGINA 
             const batchId = Date.now();
             
             styles.forEach((styleObj, index) => {
-                const finalPrompt = prompt + styleObj.suffix;
+                // Inject unique random token INTO the prompt to force completely new images
+                const uniqueId = batchId + '-' + index + '-' + Math.floor(Math.random() * 99999);
+                const finalPrompt = prompt + styleObj.suffix + ', unique variation ' + uniqueId;
                 const encodedPrompt = encodeURIComponent(finalPrompt);
-                const seed = batchId + index * 7919; // prime offset per style
-                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1440&height=900&nologo=true&seed=${seed}&t=${batchId}`;
+                const seed = batchId + index * 7919;
+                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1440&height=900&nologo=true&seed=${seed}&nofeed=true`;
                 
                 // Create card container for each image (takes 1 column inside the 3-column grid)
                 const card = document.createElement('div');
@@ -4512,9 +4514,12 @@ REGLAS DE ORO CRÍTICAS PARA EL CAMPO \"content\" (SI NO SE CUMPLEN, LA PÁGINA 
                 { url: 'https://videos.pexels.com/video-files/4625518/4625518-uhd_2560_1440_30fps.mp4', label: '🔬 Microscopio' }
             ];
             
-            // Shuffle and pick 3
-            const shuffled = videoPool.sort(() => Math.random() - 0.5);
-            const picked = shuffled.slice(0, 3);
+            // Fisher-Yates shuffle for truly random order
+            for (let i = videoPool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [videoPool[i], videoPool[j]] = [videoPool[j], videoPool[i]];
+            }
+            const picked = videoPool.slice(0, 3);
             
             const videoGrid = document.getElementById('media-videos-grid');
             videoGrid.innerHTML = '';
