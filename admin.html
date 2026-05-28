@@ -4415,11 +4415,14 @@ REGLAS DE ORO CRÍTICAS PARA EL CAMPO \"content\" (SI NO SE CUMPLEN, LA PÁGINA 
                 }
             };
             
+            // Use timestamp to guarantee unique images every click
+            const batchId = Date.now();
+            
             styles.forEach((styleObj, index) => {
                 const finalPrompt = prompt + styleObj.suffix;
                 const encodedPrompt = encodeURIComponent(finalPrompt);
-                const seed = Math.floor(Math.random() * 1000000) + index;
-                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1440&height=900&nologo=true&seed=${seed}`;
+                const seed = batchId + index * 7919; // prime offset per style
+                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1440&height=900&nologo=true&seed=${seed}&t=${batchId}`;
                 
                 // Create card container for each image (takes 1 column inside the 3-column grid)
                 const card = document.createElement('div');
@@ -4429,7 +4432,7 @@ REGLAS DE ORO CRÍTICAS PARA EL CAMPO \"content\" (SI NO SE CUMPLEN, LA PÁGINA 
                 // Loader placeholder
                 const placeholder = document.createElement('div');
                 placeholder.style = 'position: absolute; font-size: 0.7rem; color: var(--text-grey); display: flex; flex-direction: column; align-items: center; text-align: center; padding: 10px; gap: 8px; z-index: 1;';
-                placeholder.innerHTML = `<span>⏳ Generando...</span>`;
+                placeholder.innerHTML = `<span>⏳ Generando...<br><small style="opacity:0.5">${styleObj.name}</small></span>`;
                 card.appendChild(placeholder);
                 
                 // The actual image
@@ -4488,17 +4491,58 @@ REGLAS DE ORO CRÍTICAS PARA EL CAMPO \"content\" (SI NO SE CUMPLEN, LA PÁGINA 
                 // Stagger loading using setTimeout to prevent rate limit blocks
                 setTimeout(() => {
                     img.src = imageUrl;
-                }, index * 400);
+                }, index * 500);
             });
             
-            // Fallback timeout to clear loader in 12s in case of slow loads
+            // Fallback timeout to clear loader in 20s in case of slow loads (higher res = slower)
             setTimeout(() => {
                 if (loader) loader.style.display = 'none';
-            }, 12000);
+            }, 20000);
         } else {
-            // Videos option
+            // Videos option — pick 3 random videos from curated pool
+            const videoPool = [
+                { url: 'https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_30fps.mp4', label: '🧠 Datos IA' },
+                { url: 'https://videos.pexels.com/video-files/6963744/6963744-uhd_2732_1440_25fps.mp4', label: '⚡ Tech Abstracto' },
+                { url: 'https://videos.pexels.com/video-files/5532772/5532772-uhd_2560_1440_25fps.mp4', label: '🌐 Red Global' },
+                { url: 'https://videos.pexels.com/video-files/3141208/3141208-uhd_2560_1440_25fps.mp4', label: '💎 Partículas' },
+                { url: 'https://videos.pexels.com/video-files/3130284/3130284-uhd_2560_1440_30fps.mp4', label: '🔮 Ondas Digitales' },
+                { url: 'https://videos.pexels.com/video-files/5377700/5377700-uhd_2560_1440_25fps.mp4', label: '🤖 Robot IA' },
+                { url: 'https://videos.pexels.com/video-files/5472421/5472421-uhd_2560_1440_25fps.mp4', label: '📊 Holograma Data' },
+                { url: 'https://videos.pexels.com/video-files/6981411/6981411-uhd_2732_1440_25fps.mp4', label: '🌌 Cosmos Tech' },
+                { url: 'https://videos.pexels.com/video-files/4625518/4625518-uhd_2560_1440_30fps.mp4', label: '🔬 Microscopio' }
+            ];
+            
+            // Shuffle and pick 3
+            const shuffled = videoPool.sort(() => Math.random() - 0.5);
+            const picked = shuffled.slice(0, 3);
+            
+            const videoGrid = document.getElementById('media-videos-grid');
+            videoGrid.innerHTML = '';
+            
+            picked.forEach(v => {
+                const container = document.createElement('div');
+                container.style = 'position: relative; background: #000; aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s;';
+                container.addEventListener('click', () => selectMediaVideo(v.url, container));
+                
+                const video = document.createElement('video');
+                video.src = v.url;
+                video.autoplay = true;
+                video.loop = true;
+                video.muted = true;
+                video.playsInline = true;
+                video.style = 'width: 100%; height: 100%; object-fit: cover;';
+                container.appendChild(video);
+                
+                const badge = document.createElement('div');
+                badge.style = 'position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.55rem; color: #fff; pointer-events: none;';
+                badge.textContent = v.label;
+                container.appendChild(badge);
+                
+                videoGrid.appendChild(container);
+            });
+            
             if (loader) loader.style.display = 'none';
-            showToast('🎥 Mostrando loops de vídeo premium optimizados', 3000);
+            showToast('🎥 3 vídeos aleatorios generados — haz clic para seleccionar', 3000);
         }
     }
 
