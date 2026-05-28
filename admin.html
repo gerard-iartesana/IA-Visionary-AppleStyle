@@ -1053,341 +1053,199 @@
 
             <!-- Section: NEWSLETTER -->
             <section id="section-newsletter" class="admin-content-area">
-                <header class="admin-header" style="padding-top: 0; display: flex; justify-content: space-between; align-items: flex-start;">
-                    <div>
-                        <h1 style="display: flex; align-items: center; gap: 12px;">📬 Creador de Newsletter
-                            <span style="font-size: 0.6rem; background: rgba(0,113,227,0.15); color: #0071e3; padding: 4px 10px; border-radius: 12px; font-weight: 600;">Gemini 2.0 Pro Co-pilot</span>
-                        </h1>
-                        <p style="color: var(--text-grey);">Genera artículos impactantes con inteligencia artificial y gestiona tus suscriptores en Supabase.</p>
-                    </div>
-                    <a href="newsletter.html" target="_blank" class="btn-action" style="text-decoration: none; display: flex; align-items: center; gap: 8px; white-space: nowrap;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                        Ver Newsletter Pública
-                    </a>
+                <header class="admin-header" style="padding-top: 0;">
+                    <h1 style="display: flex; align-items: center; gap: 12px;">📬 Newsletter IA
+                        <span style="font-size: 0.6rem; background: rgba(0,113,227,0.15); color: #0071e3; padding: 4px 10px; border-radius: 12px; font-weight: 600;">3 Agentes IA</span>
+                    </h1>
+                    <p style="color: var(--text-grey); font-size: 0.85rem; max-width: 600px;">Crea noticias con IA, genera fotos y vídeos, y gestiona tus suscriptores.</p>
                 </header>
 
-                <!-- Stats Overview -->
-                <div class="stats-grid" style="margin-bottom: 30px;">
-                    <div class="stat-card">
-                        <span class="stat-label">Suscriptores Totales</span>
-                        <h2 id="nl-subscribers-count" style="color: var(--accent-blue);">0</h2>
+                <!-- Stats Row -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px;">
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; text-align: center;">
+                        <div id="nl-stat-subscribers" style="font-size: 1.8rem; font-weight: 700; background: linear-gradient(135deg, #0071e3, #af52de); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">0</div>
+                        <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 4px;">Suscriptores</div>
                     </div>
-                    <div class="stat-card">
-                        <span class="stat-label">Artículos Publicados</span>
-                        <h2 id="nl-published-count" class="text-green">0</h2>
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; text-align: center;">
+                        <div id="nl-stat-published" style="font-size: 1.8rem; font-weight: 700; background: linear-gradient(135deg, #34c759, #30d158); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">0</div>
+                        <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 4px;">Publicados</div>
                     </div>
-                    <div class="stat-card">
-                        <span class="stat-label">Borradores</span>
-                        <h2 id="nl-drafts-count" style="color: #ff9500;">0</h2>
-                    </div>
-                </div>
-
-                <!-- Tabs Container -->
-                <div class="tabs-container" style="display: flex; gap: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 30px;">
-                    <button class="tab-btn active" id="btn-nl-tab-write" onclick="switchNewsletterTab('write')" style="background: rgba(255,255,255,0.06); border: 1px solid var(--border-color); color: var(--text-white); font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 12px; font-size: 0.85rem; font-family: inherit; transition: all 0.3s;">🤖 Redactor con IA Co-pilot</button>
-                    <button class="tab-btn" id="btn-nl-tab-subscribers" onclick="switchNewsletterTab('subscribers')" style="background: transparent; border: 1px solid transparent; color: var(--text-grey); font-weight: 500; cursor: pointer; padding: 8px 16px; border-radius: 12px; font-size: 0.85rem; font-family: inherit; transition: all 0.3s;">👥 Suscriptores de Newsletter</button>
-                    <button class="tab-btn" id="btn-nl-tab-articles" onclick="switchNewsletterTab('articles')" style="background: transparent; border: 1px solid transparent; color: var(--text-grey); font-weight: 500; cursor: pointer; padding: 8px 16px; border-radius: 12px; font-size: 0.85rem; font-family: inherit; transition: all 0.3s;">📝 Historial de Artículos</button>
-                </div>
-
-                <!-- TABS CONTENT PANES -->
-                
-                <!-- Pane 1: IA REDACTOR -->
-                <div class="nl-tab-pane" id="nl-pane-write" style="display: block;">
-                    <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px;">
-                        
-                        <!-- Form and Editor Column -->
-                        <div>
-                            <!-- AI Co-pilot Box -->
-                            <div style="background: linear-gradient(135deg, rgba(0, 113, 227, 0.05), rgba(175, 82, 222, 0.05)); border: 1px solid rgba(0, 113, 227, 0.15); padding: 24px; border-radius: 20px; margin-bottom: 24px; position: relative;">
-                                <h3 style="font-size: 1.05rem; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">🤖 1. Configurar Copiloto Inteligente</h3>
-                                
-                                <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 16px; margin-bottom: 16px;">
-                                    <div>
-                                        <label style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">API Key de Gemini</label>
-                                        <input type="password" id="gemini-api-key" class="admin-select" style="width: 100%; font-family: monospace; font-size: 0.8rem;" placeholder="Introduce tu Gemini API Key..." onchange="saveGeminiKey(this.value)">
-                                    </div>
-                                    <div>
-                                        <label style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Modelo Gemini</label>
-                                        <select id="gemini-model-select" class="admin-select" style="width: 100%;">
-                                            <option value="gemini-2.0-pro" selected>Gemini 2.0 Pro (Recomendado / Máxima Calidad)</option>
-                                            <option value="gemini-2.5-flash">Gemini 2.5 Flash (Rápido)</option>
-                                            <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <p style="font-size: 0.65rem; color: var(--text-grey); margin-top: -10px; margin-bottom: 16px;">💡 Tu clave se almacena únicamente en tu navegador de forma segura. Obtén una gratis en <a href="https://aistudio.google.com" target="_blank" style="color: var(--accent-blue);">Google AI Studio</a>.</p>
-
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-                                    <div>
-                                        <label style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Tipo de Contenido</label>
-                                        <select id="nl-generation-type" class="admin-select" style="width: 100%;" onchange="togglePromoInputs(this.value)">
-                                            <option value="world-news">🌍 Noticias de IA en el Mundo</option>
-                                            <option value="promo-course">📣 Novedad / Lanzamiento Curso Propio</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Tono de Redacción</label>
-                                        <select id="nl-generation-tone" class="admin-select" style="width: 100%;">
-                                            <option value="apple">Apple Style (Minimalista, Conciso, Premium)</option>
-                                            <option value="professional">Profesional Tecnológico (Analítico, Experto)</option>
-                                            <option value="friendly">Didáctico y Cercano (Fácil de entender)</option>
-                                            <option value="formal">Riguroso e Informativo (Prensa)</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div style="margin-bottom: 16px;">
-                                    <label style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Tema o Noticia de Interés</label>
-                                    <input type="text" id="nl-generation-topic" class="admin-select" style="width: 100%; cursor: text;" placeholder="Ej. El lanzamiento de Claude 3.5 Sonnet / Nuevo curso de n8n para PYMEs...">
-                                </div>
-
-                                <!-- Dynamic Promo Inputs -->
-                                <div id="nl-promo-fields" style="display: none; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 16px;">
-                                    <div style="margin-bottom: 12px;">
-                                        <label style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 6px; text-transform: uppercase;">Detalles del Producto / Curso / Novedad</label>
-                                        <textarea id="nl-generation-details" class="admin-select" style="width: 100%; height: 70px; resize: vertical; cursor: text; padding: 10px; font-family: inherit;" placeholder="Ej. Duración 4 horas, 15 plantillas de n8n, 100% práctico, oferta de lanzamiento 0€ en vez de 159€..."></textarea>
-                                    </div>
-                                </div>
-
-                                <button class="btn-save-legal" onclick="generateNewsletterWithAI()" style="width: 100%; font-size: 0.9rem; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; background: var(--accent-blue);">
-                                    <span>🤖 Generar Borrador con Gemini Co-pilot</span>
-                                </button>
-                                
-                                <!-- AI Agent Console -->
-                                <div id="ai-agent-console" style="display: none; margin-top: 16px; background: #000000; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 16px; font-family: monospace; font-size: 0.75rem; color: #34c759;">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px;">
-                                        <span style="color: var(--text-grey);">AGENTE IA CONSOLE</span>
-                                        <span id="console-status" style="animation: pulse-dot 1.5s infinite;">● PROCESANDO</span>
-                                    </div>
-                                    <div id="console-logs" style="max-height: 100px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;">
-                                        <div>&gt; Agente activado...</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Markdown Article Editor -->
-                            <div style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 24px; border-radius: 20px;">
-                                <h3 style="font-size: 1.05rem; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
-                                    <span>📝 2. Editor del Artículo</span>
-                                    <span id="editor-active-id" style="font-size: 0.7rem; background: rgba(255,255,255,0.06); color: var(--text-grey); padding: 4px 10px; border-radius: 8px; font-weight: 500; display: none;">Editando ID: <span></span></span>
-                                </h3>
-
-                                <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 16px; margin-bottom: 16px;">
-                                    <div>
-                                        <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">Título del Artículo</label>
-                                        <input type="text" id="nl-art-title" class="admin-select" style="width: 100%; cursor: text;" placeholder="Título impactante..." oninput="updateNewsletterPreview()">
-                                    </div>
-                                    <div>
-                                        <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">Categoría</label>
-                                        <select id="nl-art-category" class="admin-select" style="width: 100%;" onchange="updateNewsletterPreview()">
-                                            <option value="ia">🤖 Inteligencia Artificial</option>
-                                            <option value="negocio">💼 Negocio Digital</option>
-                                            <option value="tutorial">📚 Tutorial Práctico</option>
-                                            <option value="noticia">📰 Noticia del Sector</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div style="margin-bottom: 16px;">
-                                    <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">Subtítulo / Resumen corto (aparece en la lista)</label>
-                                    <input type="text" id="nl-art-subtitle" class="admin-select" style="width: 100%; cursor: text;" placeholder="Resumen corto de 2 líneas..." oninput="updateNewsletterPreview()">
-                                </div>
-
-                                <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 16px; margin-bottom: 8px;">
-                                    <div>
-                                        <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">URL de la Imagen o Vídeo del Artículo</label>
-                                        <input type="text" id="nl-art-image" class="admin-select" style="width: 100%; cursor: text; font-size: 0.8rem;" placeholder="img/newsletter/tu-imagen.png o enlace mp4..." oninput="updateNewsletterPreview()">
-                                    </div>
-                                    <div>
-                                        <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">Tiempo de lectura</label>
-                                        <input type="text" id="nl-art-readtime" class="admin-select" style="width: 100%; cursor: text;" placeholder="Ej. 5 min" oninput="updateNewsletterPreview()">
-                                    </div>
-                                </div>
-
-                                <!-- Button to open AI Media Assistant -->
-                                <div style="margin-bottom: 16px;">
-                                    <button type="button" class="btn-action" onclick="toggleMediaAssistant()" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.8rem; padding: 10px; background: rgba(0, 113, 227, 0.12); border: 1px solid rgba(0, 113, 227, 0.3); border-radius: 12px; cursor: pointer; transition: all 0.2s;">
-                                        <span>🎨</span> <b>Asistente de Multimedia IA (Generar Fotos / Vídeo)</b>
-                                    </button>
-                                </div>
-
-                                <!-- AI Media Assistant Panel -->
-                                <div id="media-assistant-panel" style="display: none; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 16px; margin-bottom: 20px; transition: all 0.3s ease;">
-                                    <h4 style="font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
-                                        <span>🖼️ Generador de Multimedia IA</span>
-                                        <span id="media-assistant-loader" style="display: none; font-size: 0.7rem; color: var(--accent-blue); font-weight: normal; animation: pulse-text 1.5s infinite;">Generando medios...</span>
-                                    </h4>
-                                    
-                                    <div style="margin-bottom: 16px;">
-                                        <label style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Prompt o Idea para las Fotos / Vídeo</label>
-                                        <div style="display: flex; gap: 8px;">
-                                            <input type="text" id="media-prompt-input" class="admin-select" style="width: 100%; font-size: 0.8rem;" placeholder="Ej. Un cerebro digital de luces de neon en oficina minimalista...">
-                                            <button type="button" class="btn-action" onclick="generateMediaFromAssistant()" style="padding: 0 16px; font-size: 0.8rem; background: var(--accent-blue); color: white; border: none; font-weight: 600; cursor: pointer;">Generar</button>
-                                        </div>
-                                    </div>
-
-                                    <!-- Mode Select Tabs -->
-                                    <div style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px;">
-                                        <button type="button" id="media-tab-images" onclick="switchMediaAssistantTab('images')" class="btn-action" style="flex: 1; font-size: 0.75rem; padding: 6px 12px; background: rgba(0, 113, 227, 0.15); border: 1px solid rgba(0, 113, 227, 0.3); font-weight: 600; cursor: pointer;">Opción A: Foto de IA</button>
-                                        <button type="button" id="media-tab-videos" onclick="switchMediaAssistantTab('videos')" class="btn-action" style="flex: 1; font-size: 0.75rem; padding: 6px 12px; background: transparent; border: 1px solid transparent; cursor: pointer;">Opción B: Vídeo Loop IA</button>
-                                    </div>
-
-                                    <!-- Image Results Container -->
-                                    <div id="media-images-container" style="display: block;">
-                                        <p style="font-size: 0.7rem; color: var(--text-grey); margin-bottom: 12px; text-align: center;">Haz clic en "Generar" para crear una foto artística de alta calidad con IA, la cual se aplicará automáticamente.</p>
-                                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;" id="media-images-grid">
-                                            <!-- Placeholder for a single card spanning all 3 columns -->
-                                            <div style="background: rgba(255,255,255,0.01); aspect-ratio: 16/10; border: 1px dashed rgba(255,255,255,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--text-grey); grid-column: span 3;">📷</div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Video Results Container -->
-                                    <div id="media-videos-container" style="display: none;">
-                                        <p style="font-size: 0.7rem; color: var(--text-grey); margin-bottom: 12px; text-align: center;">Selecciona uno de los siguientes vídeos cinemáticos en bucle de alta calidad para darle vida al artículo:</p>
-                                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;" id="media-videos-grid">
-                                            <!-- Curated Video Loops from Pexels -->
-                                            <div onclick="selectMediaVideo('https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_30fps.mp4', this)" style="position: relative; background: #000; aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s;">
-                                                <video src="https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_30fps.mp4" playsinline autoplay loop muted referrerpolicy="no-referrer" style="width: 100%; height: 100%; object-fit: cover;"></video>
-                                                <div style="position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.55rem; color: #fff; pointer-events: none;">🧠 Datos IA</div>
-                                            </div>
-                                            <div onclick="selectMediaVideo('https://videos.pexels.com/video-files/6963744/6963744-uhd_2732_1440_25fps.mp4', this)" style="position: relative; background: #000; aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s;">
-                                                <video src="https://videos.pexels.com/video-files/6963744/6963744-uhd_2732_1440_25fps.mp4" playsinline autoplay loop muted referrerpolicy="no-referrer" style="width: 100%; height: 100%; object-fit: cover;"></video>
-                                                <div style="position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.55rem; color: #fff; pointer-events: none;">⚡ Tech Abstracto</div>
-                                            </div>
-                                            <div onclick="selectMediaVideo('https://videos.pexels.com/video-files/5532772/5532772-uhd_2560_1440_25fps.mp4', this)" style="position: relative; background: #000; aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s;">
-                                                <video src="https://videos.pexels.com/video-files/5532772/5532772-uhd_2560_1440_25fps.mp4" playsinline autoplay loop muted referrerpolicy="no-referrer" style="width: 100%; height: 100%; object-fit: cover;"></video>
-                                                <div style="position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.55rem; color: #fff; pointer-events: none;">🌐 Red Global</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-                                    <div>
-                                        <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">Ruta / Slug único (Ej. gpt5-futuro-negocio)</label>
-                                        <div style="display: flex; gap: 8px;">
-                                            <input type="text" id="nl-art-slug" class="admin-select" style="width: 100%; cursor: text; font-family: monospace; font-size: 0.8rem;" placeholder="slug-unico">
-                                            <button class="btn-action" onclick="autoSlugifyNewsletter()" style="padding: 0 12px; font-size: 0.75rem;">Autogenerar</button>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">Meta Descripción (SEO)</label>
-                                        <input type="text" id="nl-art-metadesc" class="admin-select" style="width: 100%; cursor: text;" placeholder="Descripción para buscadores...">
-                                    </div>
-                                </div>
-
-                                <div style="margin-bottom: 24px;">
-                                    <label class="editor-label" style="font-size: 0.75rem; color: var(--text-grey); display: block; margin-bottom: 6px;">Contenido del Artículo (Markdown)</label>
-                                    <textarea id="nl-art-content" class="admin-select" style="width: 100%; height: 280px; resize: vertical; font-family: monospace; font-size: 0.85rem; line-height: 1.6; cursor: text; padding: 12px;" placeholder="# Tu encabezado principal&#10;&#10;Escribe aquí en formato markdown..." oninput="updateNewsletterPreview()"></textarea>
-                                </div>
-
-                                <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                                    <button id="btn-nl-reset" class="btn-action" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-grey);" onclick="resetNewsletterEditor()">Limpiar</button>
-                                    <button class="btn-action" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-white);" onclick="saveNewsletterArticle('borrador')">💾 Guardar Borrador</button>
-                                    <button class="btn-save-legal" style="background: #34c759; color: white;" onclick="saveNewsletterArticle('publicado')">🚀 Publicar en la Web</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Live Preview Column -->
-                        <div>
-                            <div style="position: sticky; top: 100px;">
-                                <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">👁️ Live Previsualización</h3>
-                                
-                                <p style="font-size: 0.75rem; color: var(--text-grey); margin-bottom: 12px;">Así se verá la tarjeta del artículo en la lista de tu web pública:</p>
-                                
-                                <!-- Card Preview (simulating iadebarrio styles) -->
-                                <div style="background: #1d1d1f; border: 1px solid var(--border-color); border-radius: 24px; overflow: hidden; max-width: 360px; margin-bottom: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.3);">
-                                    <div id="preview-card-img-wrapper" style="width: 100%; aspect-ratio: 16/10; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--border-color); overflow: hidden;">
-                                        <img id="preview-card-img" src="" alt="Vista previa de imagen" style="width: 100%; height: 100%; object-fit: cover; display: none;">
-                                        <video id="preview-card-video" src="" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; display: none;"></video>
-                                        <div id="preview-card-img-placeholder" style="font-size: 2.5rem; opacity: 0.1;">📰</div>
-                                    </div>
-                                    <div style="padding: 24px;">
-                                        <span id="preview-card-tag" class="news-tag tag-ia" style="display: inline-block; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; padding: 5px 12px; border-radius: 20px; margin-bottom: 12px; background: rgba(0,113,227,0.15); color: #0071e3;">IA</span>
-                                        <h3 id="preview-card-title" style="font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; line-height: 1.3; color: var(--text-white);">Título del Artículo</h3>
-                                        <p id="preview-card-subtitle" style="font-size: 0.85rem; color: var(--text-grey); line-height: 1.5; margin-bottom: 16px;">Subtítulo o descripción breve del artículo generado...</p>
-                                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-grey);">
-                                            <span id="preview-card-meta">27 May 2026 · 5 min</span>
-                                            <span style="color: var(--accent-blue); font-weight: 500;">Leer más →</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; text-align: center;">
+                        <div id="nl-stat-drafts" style="font-size: 1.8rem; font-weight: 700; background: linear-gradient(135deg, #ff9500, #ff6b00); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">0</div>
+                        <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 4px;">Borradores</div>
                     </div>
                 </div>
 
-                <!-- Pane 2: SUSCRIPTORES -->
-                <div class="nl-tab-pane" id="nl-pane-subscribers" style="display: none;">
-                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 24px; border-radius: 20px;">
-                        
-                        <!-- Search and Manual Insert -->
-                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+                <!-- Tab Buttons -->
+                <div style="display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                    <button id="nl-tab-create" class="btn-action" onclick="nlSwitchTab('create')" style="padding: 10px 20px; font-size: 0.8rem; font-weight: 600; background: rgba(0,113,227,0.12); border: 1px solid rgba(0,113,227,0.3); border-radius: 10px; cursor: pointer; color: var(--accent-blue);">📝 Crear Noticia</button>
+                    <button id="nl-tab-leads" class="btn-action" onclick="nlSwitchTab('leads')" style="padding: 10px 20px; font-size: 0.8rem; font-weight: 500; background: transparent; border: 1px solid transparent; border-radius: 10px; cursor: pointer; color: var(--text-grey);">📊 Leads</button>
+                    <button id="nl-tab-articles" class="btn-action" onclick="nlSwitchTab('articles')" style="padding: 10px 20px; font-size: 0.8rem; font-weight: 500; background: transparent; border: 1px solid transparent; border-radius: 10px; cursor: pointer; color: var(--text-grey);">📰 Artículos</button>
+                </div>
+
+                <!-- ════════════════════════════════════════════ -->
+                <!-- TAB 1: CREAR NOTICIA                        -->
+                <!-- ════════════════════════════════════════════ -->
+                <div id="nl-pane-create" style="display: block;">
+
+                    <!-- Gemini API Key -->
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 16px; margin-bottom: 20px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: end;">
                             <div>
-                                <h3 style="font-size: 1.05rem; font-weight: 600; margin-bottom: 4px;">Listado de Suscriptores</h3>
-                                <p style="color: var(--text-grey); font-size: 0.8rem; margin: 0;">Lista de correos registrados en la lista de espera de la Academia y la Newsletter.</p>
+                                <label style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">🔑 Gemini API Key</label>
+                                <input type="password" id="gemini-api-key" class="admin-select" style="width: 100%; font-family: monospace; font-size: 0.8rem;" placeholder="AIzaSy..." onchange="localStorage.setItem('gemini_api_key', this.value)">
                             </div>
-                            
-                            <!-- Inline Form: Manual subscriber addition -->
-                            <form id="new-subscriber-form" onsubmit="return addSubscriberManual(event)" style="display: flex; gap: 8px; align-items: center;">
-                                <input type="text" id="new-sub-name-manual" class="admin-select" style="padding: 10px 14px; font-size: 0.82rem; min-width: 140px; cursor: text;" placeholder="Nombre (Opcional)">
-                                <input type="email" id="new-sub-email-manual" class="admin-select" style="padding: 10px 14px; font-size: 0.82rem; min-width: 200px; cursor: text;" placeholder="correo@ejemplo.com" required>
-                                <button type="submit" class="btn-save-legal" style="background: var(--accent-blue); color: white; padding: 10px 16px; margin: 0; font-size: 0.82rem;">➕ Añadir</button>
-                            </form>
+                            <div>
+                                <label style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">🤖 Modelo</label>
+                                <select id="gemini-model" class="admin-select" style="width: 100%;">
+                                    <option value="gemini-2.0-pro">Gemini 2.0 Pro (Recomendado)</option>
+                                    <option value="gemini-2.5-flash">Gemini 2.5 Flash (Rápido)</option>
+                                    <option value="gemini-2.5-pro">Gemini 2.5 Pro (Máxima calidad)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AGENT 1: REDACTOR IA -->
+                    <div style="background: var(--bg-card); border: 1px solid rgba(0,113,227,0.2); border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+                        <h3 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+                            <span style="background: rgba(0,113,227,0.12); padding: 6px 10px; border-radius: 10px;">🔍</span>
+                            Agente 1: Redactor IA
+                            <span style="font-size: 0.6rem; color: var(--text-grey); font-weight: 400; margin-left: auto;">Busca en internet + redacta el artículo</span>
+                        </h3>
+                        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                            <input type="text" id="nl-agent-topic" class="admin-select" style="flex: 1; font-size: 0.85rem;" placeholder="Ej: últimas noticias sobre agentes autónomos de IA en 2026">
+                            <button type="button" onclick="agentRedactor()" style="padding: 10px 24px; background: var(--accent-blue); color: white; border: none; border-radius: 10px; font-weight: 600; font-size: 0.8rem; cursor: pointer; white-space: nowrap; font-family: 'Inter', sans-serif;">🔍 Investigar y Redactar</button>
+                        </div>
+                        <div id="nl-agent-console" style="display: none; background: rgba(0,0,0,0.3); border-radius: 10px; padding: 12px; font-family: monospace; font-size: 0.7rem; color: #34c759; max-height: 150px; overflow-y: auto; line-height: 1.6;"></div>
+                    </div>
+
+                    <!-- EDITOR DE ARTÍCULO -->
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+                        <h3 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+                            ✏️ Editor del Artículo
+                            <span id="nl-editing-id" style="display: none; font-size: 0.6rem; color: var(--text-grey); font-weight: 400; margin-left: auto; background: rgba(255,149,0,0.1); padding: 4px 10px; border-radius: 8px;">Editando ID: <span></span></span>
+                        </h3>
+
+                        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 12px;">
+                            <div>
+                                <label class="editor-label" style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 4px;">Título</label>
+                                <input type="text" id="nl-title" class="admin-select" style="width: 100%;" placeholder="Título del artículo" oninput="nlAutoSlug()">
+                            </div>
+                            <div>
+                                <label class="editor-label" style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 4px;">Categoría</label>
+                                <select id="nl-category" class="admin-select" style="width: 100%;">
+                                    <option value="ia">🤖 Inteligencia Artificial</option>
+                                    <option value="negocio">💼 Negocio</option>
+                                    <option value="tutorial">📚 Tutorial</option>
+                                    <option value="noticia">📰 Noticia</option>
+                                </select>
+                            </div>
                         </div>
 
-                        <!-- Table Wrapper -->
-                        <div class="table-wrapper">
-                            <table class="leads-table">
-                                <thead>
-                                    <tr>
-                                        <th>Fecha Registro</th>
-                                        <th>Nombre</th>
-                                        <th>Correo Electrónico</th>
-                                        <th style="width: 80px; text-align: center;">Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="subscribers-table-body">
-                                    <tr>
-                                        <td colspan="4" class="table-loading">Cargando suscriptores de Supabase...</td>
-                                    </tr>
-                                </tbody>
+                        <div style="margin-bottom: 12px;">
+                            <label class="editor-label" style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 4px;">Subtítulo</label>
+                            <input type="text" id="nl-subtitle" class="admin-select" style="width: 100%;" placeholder="Breve resumen del artículo">
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 12px;">
+                            <div>
+                                <label class="editor-label" style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 4px;">URL de Imagen o Vídeo</label>
+                                <input type="text" id="nl-image" class="admin-select" style="width: 100%; font-family: monospace; font-size: 0.75rem;" placeholder="Se rellena automáticamente con los agentes">
+                            </div>
+                            <div>
+                                <label class="editor-label" style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 4px;">Tiempo de lectura</label>
+                                <input type="text" id="nl-readtime" class="admin-select" style="width: 100%;" placeholder="5 min">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                            <div>
+                                <label class="editor-label" style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 4px;">Slug</label>
+                                <input type="text" id="nl-slug" class="admin-select" style="width: 100%; font-family: monospace; font-size: 0.8rem;" placeholder="slug-unico">
+                            </div>
+                            <div>
+                                <label class="editor-label" style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 4px;">Meta Description</label>
+                                <input type="text" id="nl-metadesc" class="admin-select" style="width: 100%;" placeholder="Descripción SEO">
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 16px;">
+                            <label class="editor-label" style="font-size: 0.7rem; color: var(--text-grey); display: block; margin-bottom: 4px;">Contenido del Artículo (HTML)</label>
+                            <textarea id="nl-content" class="admin-select" style="width: 100%; height: 300px; resize: vertical; font-family: monospace; font-size: 0.8rem; line-height: 1.6; padding: 12px;" placeholder="El contenido HTML del artículo se generará automáticamente..."></textarea>
+                        </div>
+
+                        <!-- AGENT 2: FOTÓGRAFO IA -->
+                        <div style="border: 1px solid rgba(175,82,222,0.2); border-radius: 14px; padding: 16px; margin-bottom: 16px; background: rgba(175,82,222,0.03);">
+                            <h4 style="font-size: 0.8rem; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                                <span style="background: rgba(175,82,222,0.12); padding: 5px 8px; border-radius: 8px;">🖼️</span>
+                                Agente 2: Fotógrafo IA
+                                <span id="nl-photo-loader" style="display: none; font-size: 0.65rem; color: #af52de; font-weight: 400; animation: pulse 1.5s infinite;">Generando...</span>
+                            </h4>
+                            <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                                <input type="text" id="nl-photo-prompt" class="admin-select" style="flex: 1; font-size: 0.8rem;" placeholder="Prompt para la imagen (o se usa el título)">
+                                <button type="button" onclick="agentPhotographer()" style="padding: 8px 18px; background: #af52de; color: white; border: none; border-radius: 10px; font-weight: 600; font-size: 0.75rem; cursor: pointer; white-space: nowrap; font-family: 'Inter', sans-serif;">🖼️ Generar 6 Fotos</button>
+                            </div>
+                            <div id="nl-photo-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;"></div>
+                        </div>
+
+                        <!-- AGENT 3: VÍDEO IA -->
+                        <div style="border: 1px solid rgba(52,199,89,0.2); border-radius: 14px; padding: 16px; margin-bottom: 16px; background: rgba(52,199,89,0.03);">
+                            <h4 style="font-size: 0.8rem; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                                <span style="background: rgba(52,199,89,0.12); padding: 5px 8px; border-radius: 8px;">🎬</span>
+                                Agente 3: Vídeo IA
+                                <span id="nl-video-loader" style="display: none; font-size: 0.65rem; color: #34c759; font-weight: 400; animation: pulse 1.5s infinite;">Generando vídeo...</span>
+                            </h4>
+                            <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                                <input type="text" id="nl-video-prompt" class="admin-select" style="flex: 1; font-size: 0.8rem;" placeholder="Prompt para el vídeo (o se usa el título)">
+                                <button type="button" onclick="agentVideo()" style="padding: 8px 18px; background: #34c759; color: white; border: none; border-radius: 10px; font-weight: 600; font-size: 0.75rem; cursor: pointer; white-space: nowrap; font-family: 'Inter', sans-serif;">🎬 Generar 3 Vídeos</button>
+                            </div>
+                            <div id="nl-video-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;"></div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: 10px; justify-content: flex-end; padding-top: 12px; border-top: 1px solid var(--border-color);">
+                            <button type="button" onclick="nlResetEditor()" style="padding: 10px 20px; background: transparent; border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-grey); font-size: 0.8rem; cursor: pointer; font-family: 'Inter', sans-serif;">🗑️ Limpiar</button>
+                            <button type="button" onclick="nlSaveArticle('borrador')" style="padding: 10px 20px; background: rgba(255,149,0,0.12); border: 1px solid rgba(255,149,0,0.3); border-radius: 10px; color: #ff9500; font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;">💾 Guardar Borrador</button>
+                            <button type="button" onclick="nlSaveArticle('publicado')" style="padding: 10px 24px; background: var(--accent-blue); border: none; border-radius: 10px; color: white; font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;">🚀 Publicar en la Web</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ════════════════════════════════════════════ -->
+                <!-- TAB 2: LEADS                                -->
+                <!-- ════════════════════════════════════════════ -->
+                <div id="nl-pane-leads" style="display: none;">
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h3 style="font-size: 0.9rem; font-weight: 600;">📊 Suscriptores registrados</h3>
+                            <button onclick="nlExportLeads()" style="padding: 8px 16px; background: rgba(52,199,89,0.12); border: 1px solid rgba(52,199,89,0.3); border-radius: 10px; color: #34c759; font-size: 0.7rem; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;">📥 Exportar CSV</button>
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table class="admin-table" style="width: 100%;">
+                                <thead><tr><th>Fecha</th><th>Nombre</th><th>Email</th><th>Acciones</th></tr></thead>
+                                <tbody id="nl-leads-body"><tr><td colspan="4" class="table-loading">Cargando suscriptores...</td></tr></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- Pane 3: HISTORIAL DE ARTÍCULOS -->
-                <div class="nl-tab-pane" id="nl-pane-articles" style="display: none;">
-                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 24px; border-radius: 20px;">
-                        <h3 style="font-size: 1.05rem; font-weight: 600; margin-bottom: 20px;">Artículos Creados</h3>
-                        
-                        <div class="table-wrapper">
-                            <table class="leads-table">
-                                <thead>
-                                    <tr>
-                                        <th>Fecha</th>
-                                        <th>Título</th>
-                                        <th>Slug</th>
-                                        <th>Categoría</th>
-                                        <th>Estado</th>
-                                        <th style="width: 140px; text-align: center;">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="articles-table-body">
-                                    <tr>
-                                        <td colspan="6" class="table-loading">Cargando historial de Supabase...</td>
-                                    </tr>
-                                </tbody>
+                <!-- ════════════════════════════════════════════ -->
+                <!-- TAB 3: ARTÍCULOS                            -->
+                <!-- ════════════════════════════════════════════ -->
+                <div id="nl-pane-articles" style="display: none;">
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px;">
+                        <h3 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 16px;">📰 Todos los Artículos</h3>
+                        <div style="overflow-x: auto;">
+                            <table class="admin-table" style="width: 100%;">
+                                <thead><tr><th>Fecha</th><th>Título</th><th>Categoría</th><th>Estado</th><th>Acciones</th></tr></thead>
+                                <tbody id="nl-articles-body"><tr><td colspan="5" class="table-loading">Cargando artículos...</td></tr></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
+
             </section>
-
-
             <!-- Section: LOGS -->
             <section id="section-logs" class="admin-content-area">
                 <header class="admin-header" style="padding-top: 0;">
@@ -3242,1398 +3100,698 @@
         updateSeoScore();
     }
 
-    // ── Collect article data from editor ──
-    function collectArticleData(status) {
-        const title = document.getElementById('art-title').value;
-        if (!title) { alert('El título es obligatorio.'); return null; }
+    // ╔══════════════════════════════════════════════════════════╗
+    // ║  NEWSLETTER IA — 3 AGENTES (Redactor, Fotógrafo, Vídeo) ║
+    // ╚══════════════════════════════════════════════════════════╝
 
-        const subtitle = document.getElementById('art-subtitle').value || '';
-        const content = document.getElementById('art-content').innerHTML || '';
-        const category = document.getElementById('art-category').value || 'ia';
-        const pubDate = document.getElementById('art-date').value || null;
-        const author = document.getElementById('art-author').value || 'Gerard · IA de Barrio';
-        const slug = document.getElementById('art-slug').value ||
-            title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '').substring(0, 50);
-        const metaTitle = document.getElementById('art-meta-title').value || title;
-        const metaDesc = document.getElementById('art-meta-desc').value || subtitle;
-        const keywords = document.getElementById('art-keywords').value || '';
-        const altText = document.getElementById('art-alt-text') ? document.getElementById('art-alt-text').value : '';
-
-        // Estimate read time
-        const wordCount = content.replace(/<[^>]*>/g, '').split(/\s+/).filter(w => w).length;
-        const readTime = Math.max(1, Math.round(wordCount / 200)) + ' min';
-
-        // Image: use stored URL (from Supabase Storage upload or manual URL)
-        let imageUrl = '';
-        const storedUrl = document.getElementById('art-stored-image-url');
-        if (storedUrl && storedUrl.value) {
-            imageUrl = storedUrl.value;
-        } else {
-            // Fallback: try to get from preview img src
-            const previewImg = document.querySelector('#media-preview-area img');
-            if (previewImg) imageUrl = previewImg.src;
-        }
-
-        return {
-            title, subtitle, slug, content, category,
-            status: status,
-            image_url: imageUrl,
-            alt_text: altText,
-            author, read_time: readTime,
-            meta_title: metaTitle,
-            meta_description: metaDesc,
-            keywords,
-            published_at: status === 'publicado' ? (pubDate ? new Date(pubDate).toISOString() : new Date().toISOString()) : null,
-            updated_at: new Date().toISOString()
-        };
+    // ── Helpers ──
+    function nlGetKey() {
+        return localStorage.getItem('gemini_api_key') || document.getElementById('gemini-api-key')?.value || '';
+    }
+    function nlLog(msg, color = '#34c759') {
+        const c = document.getElementById('nl-agent-console');
+        if (!c) return;
+        c.style.display = 'block';
+        c.innerHTML += `<div style="color:${color}">▸ ${msg}</div>`;
+        c.scrollTop = c.scrollHeight;
     }
 
-    // ── Save article to Supabase ──
-    async function saveArticleToSupabase(articleData) {
-        try {
-            // Check if article with same slug already exists (update vs insert)
-            const { data: existing } = await _supabase
-                .from('articles').select('id').eq('slug', articleData.slug).maybeSingle();
-
-            let result;
-            if (existing) {
-                result = await _supabase.from('articles').update(articleData).eq('id', existing.id).select();
-            } else {
-                result = await _supabase.from('articles').insert([articleData]).select();
-            }
-
-            if (result.error) throw result.error;
-            return result.data[0];
-        } catch (err) {
-            console.error('Error guardando artículo:', err);
-            throw err;
-        }
-    }
-
-    // Publish
-    async function publishArticle() {
-        const data = collectArticleData('publicado');
-        if (!data) return;
-
-        const btn = event.target;
-        const origText = btn.innerHTML;
-        btn.innerHTML = '⏳ Publicando...';
-        btn.disabled = true;
-
-        try {
-            await saveArticleToSupabase(data);
-            alert('✅ Artículo "' + data.title + '" publicado correctamente.\n\nYa es visible en la página pública de Newsletter.');
-            closeArticleEditor();
-            // Refresh the articles table in admin
-            if (typeof loadAdminArticles === 'function') loadAdminArticles();
-        } catch (err) {
-            alert('❌ Error al publicar: ' + (err.message || err));
-        } finally {
-            btn.innerHTML = origText;
-            btn.disabled = false;
-        }
-    }
-
-    // Save Draft
-    async function saveArticleDraft() {
-        const data = collectArticleData('borrador');
-        if (!data) return;
-
-        const btn = event.target;
-        const origText = btn.innerHTML;
-        btn.innerHTML = '⏳ Guardando...';
-        btn.disabled = true;
-
-        try {
-            await saveArticleToSupabase(data);
-            alert('📝 Borrador "' + data.title + '" guardado correctamente.');
-            closeArticleEditor();
-            if (typeof loadAdminArticles === 'function') loadAdminArticles();
-        } catch (err) {
-            alert('❌ Error al guardar borrador: ' + (err.message || err));
-        } finally {
-            btn.innerHTML = origText;
-            btn.disabled = false;
-        }
-    }
-
-    // ── Load articles from Supabase into admin table ──
-    async function loadAdminArticles() {
-        try {
-            const { data, error } = await _supabase
-                .from('articles').select('*').order('created_at', { ascending: false });
-            if (error) throw error;
-            if (!data || data.length === 0) return;
-
-            const tbody = document.getElementById('nl-articles-body');
-            if (!tbody) return;
-
-            // Update stat
-            const totalEl = document.getElementById('nl-total-articles');
-            if (totalEl) totalEl.textContent = data.length;
-
-            // Clear existing rows and rebuild
-            tbody.innerHTML = '';
-            const catMeta = {
-                ia: { icon: '🤖', label: 'IA', bg: 'rgba(0,113,227,0.1)', color: '#0071e3' },
-                negocio: { icon: '💼', label: 'Negocio', bg: 'rgba(52,199,89,0.1)', color: '#34c759' },
-                tutorial: { icon: '📚', label: 'Tutorial', bg: 'rgba(255,149,0,0.1)', color: '#ff9500' },
-                noticia: { icon: '📰', label: 'Noticia', bg: 'rgba(175,82,222,0.1)', color: '#af52de' }
-            };
-            const statusMeta = {
-                publicado: { icon: '🟢', label: 'Publicado', bg: 'rgba(52,199,89,0.1)', color: '#34c759' },
-                borrador: { icon: '📝', label: 'Borrador', bg: 'rgba(255,149,0,0.1)', color: '#ff9500' },
-                programado: { icon: '⏰', label: 'Programado', bg: 'rgba(0,113,227,0.1)', color: '#0071e3' }
-            };
-
-            data.forEach(art => {
-                const cat = catMeta[art.category] || catMeta.ia;
-                const st = statusMeta[art.status] || statusMeta.borrador;
-                const dateStr = art.published_at ? new Date(art.published_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
-                const tr = document.createElement('tr');
-                tr.dataset.cat = art.category;
-                tr.dataset.status = art.status;
-                tr.innerHTML = `
-                    <td style="min-width: 200px;">
-                        <div style="font-weight: 600; font-size: 0.85rem;">${art.title}</div>
-                        <div style="font-size: 0.7rem; color: var(--text-grey); margin-top: 2px;">${art.subtitle || ''}</div>
-                    </td>
-                    <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: ${cat.bg}; color: ${cat.color};">${cat.icon} ${cat.label}</span></td>
-                    <td><span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; background: ${st.bg}; color: ${st.color};">${st.icon} ${st.label}</span></td>
-                    <td style="font-size: 0.8rem; color: var(--text-grey);">${dateStr}</td>
-                    <td style="font-size: 0.8rem; color: var(--text-grey);">${art.read_time || '—'}</td>
-                    <td>
-                        <div style="display: flex; gap: 6px;">
-                            <button class="btn-action" style="font-size: 0.65rem; padding: 4px 10px;" onclick="editSupabaseArticle('${art.id}')">✏️</button>
-                            <button class="btn-action" style="font-size: 0.65rem; padding: 4px 10px; border-color: rgba(255,59,48,0.3); color: #ff3b30;" onclick="deleteSupabaseArticle('${art.id}', this)">🗑️</button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        } catch (err) {
-            console.warn('No se pudo cargar artículos de Supabase (¿tabla no creada?):', err.message);
-        }
-    }
-
-    // ── Delete confirmation modal ──
-    let _pendingDeleteId = null;
-    let _pendingDeleteBtn = null;
-
-    function showDeleteModal(id, btn) {
-        _pendingDeleteId = id;
-        _pendingDeleteBtn = btn;
-        const modal = document.getElementById('delete-confirm-modal');
-        const titleEl = btn.closest('tr').querySelector('td div[style*="font-weight"]');
-        const title = titleEl ? titleEl.textContent : 'este artículo';
-        document.getElementById('delete-modal-title').textContent = '"' + title + '"';
-        modal.style.display = 'flex';
-        setTimeout(() => modal.style.opacity = '1', 10);
-    }
-
-    function hideDeleteModal() {
-        const modal = document.getElementById('delete-confirm-modal');
-        modal.style.opacity = '0';
-        setTimeout(() => { modal.style.display = 'none'; }, 200);
-        _pendingDeleteId = null;
-        _pendingDeleteBtn = null;
-    }
-
-    async function confirmDeleteArticle() {
-        const id = _pendingDeleteId;
-        const btn = _pendingDeleteBtn;
-        if (!id) return;
-
-        const confirmBtn = document.getElementById('delete-modal-confirm-btn');
-        confirmBtn.innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px;"></span> Eliminando...';
-        confirmBtn.disabled = true;
-
-        console.log('[DELETE] Eliminando artículo ID:', id);
-
-        try {
-            const { data: deleteData, error } = await _supabase
-                .from('articles').delete().eq('id', id).select();
-
-            console.log('[DELETE] Resultado:', { deleteData, error });
-
-            if (error) throw error;
-
-            if (!deleteData || deleteData.length === 0) {
-                console.warn('[DELETE] No se devolvieron filas eliminadas');
-                hideDeleteModal();
-                // Show inline error
-                showNotification('⚠️ No se pudo eliminar. Verifica permisos RLS.', 'warning');
-                confirmBtn.innerHTML = '🗑️ Sí, eliminar';
-                confirmBtn.disabled = false;
-                return;
-            }
-
-            // Success
-            hideDeleteModal();
-            showNotification('✅ Artículo eliminado correctamente', 'success');
-
-            if (btn) {
-                const row = btn.closest('tr');
-                row.style.opacity = '0';
-                row.style.transition = 'opacity 0.3s ease';
-                setTimeout(() => {
-                    row.remove();
-                    const totalEl = document.getElementById('nl-total-articles');
-                    if (totalEl) {
-                        const current = parseInt(totalEl.textContent) || 0;
-                        totalEl.textContent = Math.max(0, current - 1);
-                    }
-                }, 300);
-            }
-
-            console.log('[DELETE] ✅ Eliminado exitosamente');
-        } catch (err) {
-            console.error('[DELETE] Error:', err);
-            hideDeleteModal();
-            showNotification('❌ Error al eliminar: ' + err.message, 'error');
-        }
-
-        confirmBtn.innerHTML = '🗑️ Sí, eliminar';
-        confirmBtn.disabled = false;
-    }
-
-    // Notification toast
-    function showNotification(msg, type) {
-        let toast = document.getElementById('admin-toast');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'admin-toast';
-            toast.style.cssText = 'position:fixed;bottom:30px;right:30px;padding:14px 24px;border-radius:14px;font-size:0.85rem;font-weight:600;z-index:100000;opacity:0;transition:opacity 0.3s;font-family:Inter,sans-serif;max-width:400px;box-shadow:0 8px 32px rgba(0,0,0,0.3);';
-            document.body.appendChild(toast);
-        }
-        const colors = { success: '#34c759', error: '#ff3b30', warning: '#ff9500' };
-        toast.style.background = colors[type] || '#0071e3';
-        toast.style.color = 'white';
-        toast.textContent = msg;
-        toast.style.opacity = '1';
-        setTimeout(() => { toast.style.opacity = '0'; }, 3000);
-    }
-
-    // Keep backward compat: deleteSupabaseArticle now uses modal
-    function deleteSupabaseArticle(id, btn) {
-        showDeleteModal(id, btn);
-    }
-
-    // ── Edit existing article ──
-    async function editSupabaseArticle(id) {
-        try {
-            const { data: art, error } = await _supabase.from('articles').select('*').eq('id', id).single();
-            if (error) throw error;
-
-            openNewsEditor();
-            document.getElementById('editor-modal-title').textContent = 'Editar Noticia';
-            document.getElementById('art-title').value = art.title || '';
-            document.getElementById('art-subtitle').value = art.subtitle || '';
-            document.getElementById('art-content').innerHTML = art.content || '';
-            document.getElementById('art-category').value = art.category || 'ia';
-            document.getElementById('art-status').value = art.status || 'borrador';
-            document.getElementById('art-author').value = art.author || '';
-            document.getElementById('art-slug').value = art.slug || '';
-            if (document.getElementById('art-meta-title')) document.getElementById('art-meta-title').value = art.meta_title || '';
-            if (document.getElementById('art-meta-desc')) document.getElementById('art-meta-desc').value = art.meta_description || '';
-            if (document.getElementById('art-keywords')) document.getElementById('art-keywords').value = art.keywords || '';
-            if (art.published_at) {
-                document.getElementById('art-date').value = art.published_at.substring(0, 10);
-            }
-            updateWordCount();
-            updateSeoPreview();
-            updateSeoScore();
-        } catch (err) {
-            alert('❌ Error al cargar artículo: ' + err.message);
-        }
-    }
-
-    // Load articles on newsletter section init
-    document.addEventListener('DOMContentLoaded', function() {
-        // If we're on the newsletter section, load from Supabase
-        setTimeout(loadAdminArticles, 1000);
+    // ── Init: Load saved key ──
+    document.addEventListener('DOMContentLoaded', () => {
+        const saved = localStorage.getItem('gemini_api_key');
+        const input = document.getElementById('gemini-api-key');
+        if (saved && input) input.value = saved;
+        nlUpdateStats();
     });
 
-    function previewArticle() {
-        const title = document.getElementById('art-title').value || 'Sin título';
-        const content = document.getElementById('art-content').innerHTML || '<p>Sin contenido</p>';
-        const w = window.open('', '_blank', 'width=800,height=600');
-        w.document.write('<html><head><title>' + title + '</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"><style>body{font-family:Inter,sans-serif;max-width:700px;margin:40px auto;padding:20px;color:#1d1d1f;line-height:1.7;}h1{font-size:2rem;}h2{font-size:1.4rem;margin-top:32px;}p{margin:0 0 16px;}blockquote{border-left:3px solid #0071e3;padding-left:16px;color:#666;font-style:italic;}</style></head><body><h1>' + title + '</h1>' + content + '</body></html>');
-        w.document.close();
-    }
-
-    function deleteArticle(btn) {
-        const row = btn.closest('tr');
-        row.style.opacity = '0';
-        row.style.transition = 'opacity 0.3s';
-        setTimeout(() => row.remove(), 300);
-    }
-
-    // ====== PESTAÑA NEWSLETTER & AI CO-PILOT LOGIC ======
-    
-    // 1. Switch tabs inside newsletter section
-    function switchNewsletterTab(tabId) {
-        // Toggle view panels
-        document.getElementById('nl-pane-write').style.display = tabId === 'write' ? 'block' : 'none';
-        document.getElementById('nl-pane-subscribers').style.display = tabId === 'subscribers' ? 'block' : 'none';
-        document.getElementById('nl-pane-articles').style.display = tabId === 'articles' ? 'block' : 'none';
-        
-        // Toggle tab button states
-        const btnWrite = document.getElementById('btn-nl-tab-write');
-        const btnSubs = document.getElementById('btn-nl-tab-subscribers');
-        const btnArts = document.getElementById('btn-nl-tab-articles');
-        
-        [btnWrite, btnSubs, btnArts].forEach(btn => {
+    // ── Tab Switching ──
+    function nlSwitchTab(tab) {
+        ['create', 'leads', 'articles'].forEach(t => {
+            const pane = document.getElementById('nl-pane-' + t);
+            const btn = document.getElementById('nl-tab-' + t);
+            if (pane) pane.style.display = t === tab ? 'block' : 'none';
             if (btn) {
-                btn.style.background = 'transparent';
-                btn.style.borderColor = 'transparent';
-                btn.style.color = 'var(--text-grey)';
-                btn.style.fontWeight = '500';
+                btn.style.background = t === tab ? 'rgba(0,113,227,0.12)' : 'transparent';
+                btn.style.borderColor = t === tab ? 'rgba(0,113,227,0.3)' : 'transparent';
+                btn.style.color = t === tab ? 'var(--accent-blue)' : 'var(--text-grey)';
+                btn.style.fontWeight = t === tab ? '600' : '500';
             }
         });
-        
-        const activeBtn = document.getElementById(`btn-nl-tab-${tabId}`);
-        if (activeBtn) {
-            activeBtn.style.background = 'rgba(255,255,255,0.06)';
-            activeBtn.style.borderColor = 'var(--border-color)';
-            activeBtn.style.color = 'var(--text-white)';
-            activeBtn.style.fontWeight = '600';
-        }
-        
-        // Trigger loads
-        if (tabId === 'subscribers') {
-            loadSubscribers();
-        } else if (tabId === 'articles') {
-            loadNewsletterArticles();
-        }
+        if (tab === 'leads') nlLoadLeads();
+        if (tab === 'articles') nlLoadArticles();
     }
-    
-    // Show/hide promo details
-    function togglePromoInputs(type) {
-        const promoFields = document.getElementById('nl-promo-fields');
-        if (promoFields) {
-            promoFields.style.display = type === 'promo-course' ? 'block' : 'none';
-        }
+
+    // ── Stats ──
+    async function nlUpdateStats() {
+        try {
+            const { count: subCount } = await _supabase.from('newsletter_subscribers').select('*', { count: 'exact', head: true });
+            const { count: pubCount } = await _supabase.from('articles').select('*', { count: 'exact', head: true }).eq('status', 'publicado');
+            const { count: draftCount } = await _supabase.from('articles').select('*', { count: 'exact', head: true }).eq('status', 'borrador');
+            document.getElementById('nl-stat-subscribers').textContent = subCount || 0;
+            document.getElementById('nl-stat-published').textContent = pubCount || 0;
+            document.getElementById('nl-stat-drafts').textContent = draftCount || 0;
+        } catch(e) { console.error('Stats error:', e); }
     }
-    
-    // Save API key
-    function saveGeminiKey(val) {
-        localStorage.setItem('gemini_api_key', val.trim());
-        showToast('✓ Gemini API Key guardada localmente de forma segura', 3000);
-    }
-    
-    // Init key input on load
-    document.addEventListener('DOMContentLoaded', () => {
-        const keyInput = document.getElementById('gemini-api-key');
-        if (keyInput) {
-            keyInput.value = localStorage.getItem('gemini_api_key') || '';
-        }
-        // Load stats on startup
-        setTimeout(updateNewsletterStats, 1500);
-    });
-    
-    // Auto-slugify based on title input
-    function autoSlugifyNewsletter() {
-        const title = document.getElementById('nl-art-title').value;
-        if (!title) return showToast('⚠️ Escribe un título primero', 3000);
-        
+
+    // ── Auto-slug ──
+    function nlAutoSlug() {
+        const title = document.getElementById('nl-title').value;
+        if (!title) return;
         const slug = title.toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "") // remove accents
-            .replace(/[^a-z0-9\s-]/g, "")    // remove special chars
-            .replace(/\s+/g, "-")            // space to -
-            .replace(/-+/g, "-")             // multiple - to single
-            .replace(/^-+|-+$/g, "");        // trim -
-            
-        document.getElementById('nl-art-slug').value = slug;
-        updateNewsletterPreview();
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim();
+        document.getElementById('nl-slug').value = slug;
     }
-    
-    // Reset editor
-    function resetNewsletterEditor() {
-        document.getElementById('nl-art-title').value = '';
-        document.getElementById('nl-art-subtitle').value = '';
-        document.getElementById('nl-art-category').value = 'ia';
-        document.getElementById('nl-art-image').value = '';
-        document.getElementById('nl-art-readtime').value = '';
-        document.getElementById('nl-art-slug').value = '';
-        document.getElementById('nl-art-metadesc').value = '';
-        document.getElementById('nl-art-content').value = '';
-        
-        const activeIdEl = document.getElementById('editor-active-id');
-        if (activeIdEl) {
-            activeIdEl.style.display = 'none';
-            activeIdEl.querySelector('span').innerText = '';
-        }
-        
-        updateNewsletterPreview();
-        showToast('Editor reseteado', 2000);
+
+    // ── Reset Editor ──
+    function nlResetEditor() {
+        ['nl-title', 'nl-subtitle', 'nl-slug', 'nl-image', 'nl-readtime', 'nl-metadesc', 'nl-content', 'nl-agent-topic', 'nl-photo-prompt', 'nl-video-prompt'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        document.getElementById('nl-category').value = 'ia';
+        const editId = document.getElementById('nl-editing-id');
+        if (editId) { editId.style.display = 'none'; editId.querySelector('span').textContent = ''; }
+        document.getElementById('nl-photo-grid').innerHTML = '';
+        document.getElementById('nl-video-grid').innerHTML = '';
+        document.getElementById('nl-agent-console').innerHTML = '';
+        document.getElementById('nl-agent-console').style.display = 'none';
+        showToast('🗑️ Editor limpiado', 2000);
     }
-    
-    // Update live preview
-    function updateNewsletterPreview() {
-        const title = document.getElementById('nl-art-title').value || 'Título del Artículo';
-        const subtitle = document.getElementById('nl-art-subtitle').value || 'Subtítulo o descripción breve del artículo generado...';
-        const image = document.getElementById('nl-art-image').value;
-        const category = document.getElementById('nl-art-category').value;
-        const readTime = document.getElementById('nl-art-readtime').value || '5 min';
+
+    // ══════════════════════════════════════════
+    // AGENTE 1: REDACTOR IA (Gemini + Search)
+    // ══════════════════════════════════════════
+    async function agentRedactor() {
+        const topic = document.getElementById('nl-agent-topic').value.trim();
+        if (!topic) return alert('⚠️ Escribe un tema para investigar.');
         
-        // Update text
-        document.getElementById('preview-card-title').innerText = title;
-        document.getElementById('preview-card-subtitle').innerText = subtitle;
-        document.getElementById('preview-card-meta').innerText = `${new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })} · ${readTime}`;
+        const key = nlGetKey();
+        if (!key) return alert('⚠️ Introduce tu Gemini API Key primero.');
         
-        // Update category tag
-        const tag = document.getElementById('preview-card-tag');
-        if (tag) {
-            tag.innerText = category.toUpperCase();
-            if (category === 'ia') {
-                tag.style.background = 'rgba(0,113,227,0.15)';
-                tag.style.color = '#0071e3';
-            } else if (category === 'negocio') {
-                tag.style.background = 'rgba(52,199,89,0.15)';
-                tag.style.color = '#34c759';
-            } else if (category === 'tutorial') {
-                tag.style.background = 'rgba(175,82,222,0.15)';
-                tag.style.color = '#af52de';
-            } else if (category === 'noticia') {
-                tag.style.background = 'rgba(255,149,0,0.15)';
-                tag.style.color = '#ff9500';
-            }
-        }
+        const model = document.getElementById('gemini-model').value;
+        const consoleEl = document.getElementById('nl-agent-console');
+        consoleEl.innerHTML = '';
+        consoleEl.style.display = 'block';
         
-        // Update image/video preview
-        const img = document.getElementById('preview-card-img');
-        const video = document.getElementById('preview-card-video');
-        const placeholder = document.getElementById('preview-card-img-placeholder');
+        nlLog('🔍 Iniciando Agente Redactor IA...', '#0071e3');
+        nlLog(`📡 Conectando con Gemini (${model})...`, '#af52de');
+        nlLog('🌐 Buscando información en internet sobre: ' + topic, '#ff9500');
         
-        if (image) {
-            const isVideo = image.endsWith('.mp4') || image.includes('video') || image.includes('mixkit.co');
-            if (isVideo) {
-                if (video) {
-                    video.src = image;
-                    video.style.display = 'block';
-                }
-                if (img) img.style.display = 'none';
-            } else {
-                if (img) {
-                    img.src = image;
-                    img.style.display = 'block';
-                }
-                if (video) {
-                    video.style.display = 'none';
-                    video.src = '';
-                }
-            }
-            if (placeholder) placeholder.style.display = 'none';
-        } else {
-            if (img) img.style.display = 'none';
-            if (video) {
-                video.style.display = 'none';
-                video.src = '';
-            }
-            if (placeholder) placeholder.style.display = 'block';
-        }
-    }
-    
-    // Update dashboard newsletter counts
-    async function updateNewsletterStats() {
+        const promptText = `Eres un periodista experto en tecnología e inteligencia artificial. Tu tarea es investigar y redactar un artículo completo y profesional.
+
+TEMA A INVESTIGAR: "${topic}"
+
+INSTRUCCIONES:
+1. Busca la información más reciente y relevante sobre este tema en internet.
+2. Redacta un artículo completo, profesional y bien estructurado.
+3. El artículo debe tener entre 1500-2500 palabras.
+4. Devuelve la respuesta ESTRICTAMENTE en formato JSON con esta estructura exacta:
+
+{
+  "title": "Título atractivo del artículo",
+  "subtitle": "Subtítulo que resuma el artículo en una línea",
+  "slug": "slug-seo-optimizado",
+  "category": "ia",
+  "read_time": "X min",
+  "meta_title": "Título SEO",
+  "meta_description": "Descripción SEO de máximo 160 caracteres",
+  "content": "<div class=\\"toc\\"><h4>📑 Índice</h4><ol><li><a href=\\"#s1\\">Sección 1</a></li>...</ol></div><h2 id=\\"s1\\">Sección 1</h2><p>Contenido...</p>..."
+}
+
+REGLAS DEL CONTENIDO HTML:
+- Comenzar con un índice/TOC con la clase "toc"
+- Usar <h2 id="s1">, <h2 id="s2">, etc. para cada sección principal
+- Usar <h3> para subsecciones
+- Envolver párrafos en <p>
+- Usar <strong> solo para términos clave cortos (NO párrafos enteros)
+- Usar <blockquote> para citas destacadas
+- Usar <div class="info-box tip"> para consejos y <div class="info-box warning"> para avisos
+- Párrafos cortos (3-4 frases máximo)
+- NO usar <h1>
+- Incluir datos reales, cifras y fuentes cuando sea posible`;
+
         try {
-            // Count subscribers
-            const { count: subsCount, error: err1 } = await _supabase
-                .from('newsletter_subscribers')
-                .select('*', { count: 'exact', head: true });
-                
-            // Count published articles
-            const { count: pubCount, error: err2 } = await _supabase
-                .from('articles')
-                .select('*', { count: 'exact', head: true })
-                .eq('status', 'publicado');
-                
-            // Count drafts
-            const { count: draftCount, error: err3 } = await _supabase
-                .from('articles')
-                .select('*', { count: 'exact', head: true })
-                .eq('status', 'borrador');
-                
-            if (!err1 && subsCount !== null) document.getElementById('nl-subscribers-count').innerText = subsCount;
-            if (!err2 && pubCount !== null) document.getElementById('nl-published-count').innerText = pubCount;
-            if (!err3 && draftCount !== null) document.getElementById('nl-drafts-count').innerText = draftCount;
-        } catch (e) {
-            console.warn('Error fetching newsletter stats:', e);
-        }
-    }
-    
-    // Load Subscribers List from Supabase
-    async function loadSubscribers() {
-        const body = document.getElementById('subscribers-table-body');
-        if (!body) return;
-        
-        body.innerHTML = '<tr><td colspan="4" class="table-loading">Cargando suscriptores de Supabase...</td></tr>';
-        
-        try {
-            const { data, error } = await _supabase
-                .from('newsletter_subscribers')
-                .select('*')
-                .order('created_at', { ascending: false });
-                
-            if (error) throw error;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
             
-            if (!data || data.length === 0) {
-                body.innerHTML = '<tr><td colspan="4" class="table-loading">No hay suscriptores registrados aún.</td></tr>';
+            nlLog('📝 Redactando artículo estructurado en formato JSON...', '#af52de');
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: promptText }] }],
+                    generationConfig: { responseMimeType: "application/json" },
+                    tools: [{ google_search: {} }]
+                })
+            });
+            
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                const errMsg = errData?.error?.message || response.statusText;
+                nlLog('❌ ERROR: ' + errMsg, '#ff3b30');
+                
+                // If grounding fails, retry without search
+                if (errMsg.includes('google_search') || errMsg.includes('tools')) {
+                    nlLog('⚠️ Reintentando sin búsqueda web...', '#ff9500');
+                    const retryResp = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: promptText }] }],
+                            generationConfig: { responseMimeType: "application/json" }
+                        })
+                    });
+                    if (!retryResp.ok) throw new Error('Retry failed: ' + retryResp.statusText);
+                    const retryData = await retryResp.json();
+                    const retryText = retryData.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (retryText) {
+                        nlFillFromJSON(retryText);
+                        nlLog('✅ Artículo generado (sin búsqueda web)', '#34c759');
+                        return;
+                    }
+                }
+                throw new Error(errMsg);
+            }
+            
+            const data = await response.json();
+            const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            
+            if (!text) {
+                nlLog('❌ Respuesta vacía de Gemini', '#ff3b30');
                 return;
             }
             
-            body.innerHTML = '';
-            data.forEach(sub => {
-                const date = new Date(sub.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td style="color: var(--text-grey); font-size: 0.8rem;">${date}</td>
-                    <td style="font-weight: 500; color: var(--text-white);">${sub.name || '-'}</td>
-                    <td><span style="background: rgba(255,255,255,0.04); padding: 4px 10px; border-radius: 6px; font-family: monospace; font-size: 0.85rem; border: 1px solid var(--border-color);">${sub.email}</span></td>
-                    <td style="text-align: center;">
-                        <button type="button" class="btn-lead-action btn-delete" style="width: 28px; height: 28px; padding:0; display:inline-flex; align-items:center; justify-content:center;" onclick="deleteSubscriber('${sub.id}', '${sub.email}')" title="Eliminar Suscriptor">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        </button>
-                    </td>
-                `;
-                body.appendChild(row);
-            });
+            nlFillFromJSON(text);
+            nlLog('✅ ¡Artículo redactado con éxito!', '#34c759');
+            showToast('🤖 Artículo generado por el Agente Redactor', 4000);
             
-            updateNewsletterStats();
-        } catch (e) {
-            console.error('Error loading subscribers:', e);
-            body.innerHTML = `<tr><td colspan="4" class="table-loading" style="color: #ff3b30;">❌ Error al conectar con Supabase: ${e.message}</td></tr>`;
+        } catch (err) {
+            nlLog('❌ Error: ' + err.message, '#ff3b30');
+            console.error('Agent Redactor error:', err);
         }
     }
-    
-    // Add manual subscriber
-    async function addSubscriberManual(e) {
-        e.preventDefault();
-        const nameInput = document.getElementById('new-sub-name-manual');
-        const emailInput = document.getElementById('new-sub-email-manual');
-        const name = nameInput.value.trim();
-        const email = emailInput.value.trim();
-        
-        if (!email) return false;
-        
+
+    function nlFillFromJSON(text) {
         try {
-            const { error } = await _supabase
-                .from('newsletter_subscribers')
-                .insert({
-                    name: name || null,
-                    email: email,
-                    created_at: new Date().toISOString()
+            // Clean JSON from markdown code blocks if present
+            let clean = text.trim();
+            if (clean.startsWith('```')) clean = clean.replace(/^```json?\n?/, '').replace(/\n?```$/, '');
+            const d = JSON.parse(clean);
+            
+            if (d.title) document.getElementById('nl-title').value = d.title;
+            if (d.subtitle) document.getElementById('nl-subtitle').value = d.subtitle;
+            if (d.slug) document.getElementById('nl-slug').value = d.slug;
+            if (d.category) document.getElementById('nl-category').value = d.category;
+            if (d.read_time) document.getElementById('nl-readtime').value = d.read_time;
+            if (d.meta_description) document.getElementById('nl-metadesc').value = d.meta_description;
+            if (d.content) document.getElementById('nl-content').value = d.content;
+            if (d.image_url) document.getElementById('nl-image').value = d.image_url;
+            
+            // Auto-fill photo prompt with title
+            if (d.title) document.getElementById('nl-photo-prompt').value = d.title;
+            if (d.title) document.getElementById('nl-video-prompt').value = d.title;
+        } catch (e) {
+            nlLog('⚠️ Error parseando JSON, intentando extracción manual...', '#ff9500');
+            // If JSON parsing fails, put raw text in content
+            document.getElementById('nl-content').value = text;
+        }
+    }
+
+    // ══════════════════════════════════════════
+    // AGENTE 2: FOTÓGRAFO IA (Gemini Images)
+    // ══════════════════════════════════════════
+    async function agentPhotographer() {
+        const prompt = document.getElementById('nl-photo-prompt').value.trim() || document.getElementById('nl-title').value.trim();
+        if (!prompt) return alert('⚠️ Escribe un prompt o genera primero el artículo.');
+        
+        const key = nlGetKey();
+        if (!key) return alert('⚠️ Introduce tu Gemini API Key.');
+        
+        const grid = document.getElementById('nl-photo-grid');
+        grid.innerHTML = '';
+        const loader = document.getElementById('nl-photo-loader');
+        if (loader) loader.style.display = 'inline';
+        
+        const styles = [
+            { name: 'Editorial Minimalista', suffix: ', clean minimalist editorial photo, premium aesthetic, soft studio lighting, dark background' },
+            { name: 'Holograma Cyberpunk', suffix: ', futuristic neon holographic, glowing cyan and magenta, cyberpunk dark background' },
+            { name: 'Ilustración SaaS', suffix: ', modern flat vector illustration, soft pastel colors, clean corporate aesthetic' },
+            { name: 'Render 3D Glass', suffix: ', 3D isometric render with frosted glass textures, soft ambient lighting' },
+            { name: 'Retro-Futurista', suffix: ', vintage retro-futuristic magazine cover, warm color grading, film grain' },
+            { name: 'Arte Abstracto', suffix: ', abstract digital art with neural network visualization, deep purple and blue glowing lights' }
+        ];
+        
+        // Create 6 placeholder cards
+        styles.forEach((s, i) => {
+            const card = document.createElement('div');
+            card.dataset.index = i;
+            card.style.cssText = 'position:relative; background:rgba(255,255,255,0.02); aspect-ratio:16/10; border:1px solid rgba(255,255,255,0.08); border-radius:10px; overflow:hidden; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.25s;';
+            card.innerHTML = `<div class="ph" style="font-size:0.65rem; color:var(--text-grey); text-align:center; padding:10px;">⏳ Generando...<br><small style="opacity:0.5">${s.name}</small></div>
+                <img style="width:100%; height:100%; object-fit:cover; opacity:0; position:absolute; top:0; left:0; transition:opacity 0.3s;">
+                <div style="position:absolute; bottom:6px; left:6px; background:rgba(0,0,0,0.75); padding:3px 7px; border-radius:6px; font-size:0.5rem; color:#fff; z-index:3; pointer-events:none;">${s.name}</div>`;
+            card.addEventListener('click', () => nlSelectPhoto(card));
+            grid.appendChild(card);
+        });
+        
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${key}`;
+        let successCount = 0;
+        
+        for (let i = 0; i < styles.length; i++) {
+            const card = grid.children[i];
+            const img = card.querySelector('img');
+            const ph = card.querySelector('.ph');
+            
+            try {
+                const imagePrompt = `Generate a high-quality, visually stunning image for a tech/AI news article about: ${prompt}. Style: ${styles[i].suffix}. Professional, modern hero banner. Landscape 16:10.`;
+                
+                const resp = await fetch(geminiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: imagePrompt }] }],
+                        generationConfig: { responseModalities: ["IMAGE", "TEXT"], responseMimeType: "text/plain" }
+                    })
                 });
                 
-            if (error) {
-                if (error.message && (error.message.includes('unique') || error.message.includes('duplicate'))) {
-                    alert('⚠️ Este email ya está registrado en la newsletter.');
+                if (!resp.ok) throw new Error((await resp.json().catch(()=>({}))).error?.message || resp.statusText);
+                
+                const data = await resp.json();
+                const imgPart = data.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+                
+                if (imgPart) {
+                    const blob = await fetch(`data:${imgPart.inlineData.mimeType};base64,${imgPart.inlineData.data}`).then(r => r.blob());
+                    img.src = URL.createObjectURL(blob);
+                    img.style.opacity = '1';
+                    ph.style.display = 'none';
+                    successCount++;
+                    if (successCount === 1) nlSelectPhoto(card);
                 } else {
-                    throw error;
+                    ph.innerHTML = '<span style="color:#ff9500">⚠️ Sin imagen</span>';
                 }
-            } else {
-                nameInput.value = '';
-                emailInput.value = '';
-                showToast('✓ Suscriptor añadido correctamente', 3000);
-                loadSubscribers();
-                await addLog('Suscriptor Añadido', `Se ha añadido manualmente el suscriptor: ${email}`);
+            } catch (err) {
+                console.error('Photo gen error:', err);
+                ph.innerHTML = `<span style="color:#ff3b30">❌ Error<br><small style="opacity:0.6">${(err.message || '').substring(0, 50)}</small></span>`;
             }
-        } catch (err) {
-            console.error(err);
-            alert('Error al añadir suscriptor: ' + err.message);
         }
         
-        return false;
+        if (loader) loader.style.display = 'none';
+        if (successCount > 0) showToast(`🖼️ ${successCount} fotos generadas con Gemini`, 4000);
     }
-    
-    // Delete subscriber
-    async function deleteSubscriber(id, email) {
-        if (!confirm(`¿Vas a eliminar a ${email} de la lista de suscriptores?`)) return;
+
+    async function nlSelectPhoto(card) {
+        // Highlight
+        document.querySelectorAll('#nl-photo-grid > div').forEach(c => {
+            c.style.borderColor = 'rgba(255,255,255,0.08)';
+            c.style.boxShadow = 'none';
+        });
+        card.style.borderColor = '#af52de';
+        card.style.boxShadow = '0 0 12px rgba(175,82,222,0.4)';
         
-        try {
-            const { error } = await _supabase
-                .from('newsletter_subscribers')
-                .delete()
-                .eq('id', id);
+        const img = card.querySelector('img');
+        if (!img || !img.src) return;
+        
+        let url = img.src;
+        
+        // Upload blob to Supabase Storage
+        if (url.startsWith('blob:')) {
+            showToast('📤 Subiendo imagen a la nube...', 2000);
+            try {
+                const blob = await fetch(url).then(r => r.blob());
+                const ext = blob.type.includes('png') ? 'png' : 'jpg';
+                const fileName = `gemini-${Date.now()}-${Math.floor(Math.random() * 9999)}.${ext}`;
                 
-            if (error) throw error;
-            
-            showToast('✓ Suscriptor eliminado', 3000);
-            loadSubscribers();
-            await addLog('Suscriptor Eliminado', `Se ha borrado el suscriptor: ${email}`);
-        } catch (e) {
-            alert('Error al eliminar suscriptor: ' + e.message);
-        }
-    }
-    
-    // Load articles list from Supabase
-    async function loadNewsletterArticles() {
-        const body = document.getElementById('articles-table-body');
-        if (!body) return;
-        
-        body.innerHTML = '<tr><td colspan="6" class="table-loading">Cargando historial de Supabase...</td></tr>';
-        
-        try {
-            const { data, error } = await _supabase
-                .from('articles')
-                .select('id, title, slug, category, status, created_at')
-                .order('created_at', { ascending: false });
+                const { error } = await _supabase.storage.from('newsletter-images').upload(fileName, blob, { cacheControl: '31536000', upsert: false, contentType: blob.type });
+                if (error) throw error;
                 
-            if (error) throw error;
-            
-            if (!data || data.length === 0) {
-                body.innerHTML = '<tr><td colspan="6" class="table-loading">No hay artículos registrados aún.</td></tr>';
+                const { data: urlData } = _supabase.storage.from('newsletter-images').getPublicUrl(fileName);
+                url = urlData.publicUrl;
+                showToast('✅ Imagen subida correctamente', 3000);
+            } catch (err) {
+                console.error('Upload error:', err);
+                showToast('❌ Error subiendo: ' + err.message, 4000);
                 return;
             }
+        }
+        
+        document.getElementById('nl-image').value = url;
+    }
+
+    // ══════════════════════════════════════════
+    // AGENTE 3: VÍDEO IA (Veo 3.1)
+    // ══════════════════════════════════════════
+    async function agentVideo() {
+        const prompt = document.getElementById('nl-video-prompt').value.trim() || document.getElementById('nl-title').value.trim();
+        if (!prompt) return alert('⚠️ Escribe un prompt o genera primero el artículo.');
+        
+        const key = nlGetKey();
+        if (!key) return alert('⚠️ Introduce tu Gemini API Key.');
+        
+        const grid = document.getElementById('nl-video-grid');
+        grid.innerHTML = '';
+        const loader = document.getElementById('nl-video-loader');
+        if (loader) loader.style.display = 'inline';
+        
+        const videoStyles = [
+            'Cinematic wide shot, smooth camera movement, professional lighting, 4K quality',
+            'Dynamic tech visualization, data flows, neural networks, futuristic HUD elements',
+            'Abstract artistic motion graphics, fluid colors, gradient transitions, premium aesthetic'
+        ];
+        
+        // Create 3 placeholder cards
+        videoStyles.forEach((style, i) => {
+            const card = document.createElement('div');
+            card.style.cssText = 'position:relative; background:rgba(255,255,255,0.02); aspect-ratio:16/9; border:1px solid rgba(255,255,255,0.08); border-radius:10px; overflow:hidden; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.25s;';
+            card.innerHTML = `<div class="vh" style="font-size:0.65rem; color:var(--text-grey); text-align:center; padding:10px;">🎬 Generando vídeo ${i+1}...<br><small style="opacity:0.5">Veo 3.1 • Puede tardar ~2 min</small></div>
+                <video style="width:100%; height:100%; object-fit:cover; opacity:0; position:absolute; top:0; left:0; transition:opacity 0.3s;" loop muted playsinline></video>
+                <div style="position:absolute; bottom:6px; left:6px; background:rgba(0,0,0,0.75); padding:3px 7px; border-radius:6px; font-size:0.5rem; color:#fff; z-index:3; pointer-events:none;">Vídeo ${i+1}</div>`;
+            card.addEventListener('click', () => nlSelectVideo(card));
+            grid.appendChild(card);
+        });
+        
+        let successCount = 0;
+        
+        for (let i = 0; i < videoStyles.length; i++) {
+            const card = grid.children[i];
+            const video = card.querySelector('video');
+            const vh = card.querySelector('.vh');
             
-            body.innerHTML = '';
-            data.forEach(art => {
-                const date = new Date(art.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
-                const row = document.createElement('tr');
-                const isPublished = art.status === 'publicado';
-                const statusBadge = isPublished 
-                    ? `<span style="font-size: 0.7rem; background: rgba(52,199,89,0.15); color: #34c759; padding: 4px 10px; border-radius: 12px; font-weight: 600;">🚀 PUBLICADO</span>`
-                    : `<span style="font-size: 0.7rem; background: rgba(255,149,0,0.15); color: #ff9500; padding: 4px 10px; border-radius: 12px; font-weight: 600;">📝 BORRADOR</span>`;
+            try {
+                const videoPrompt = `${prompt}. ${videoStyles[i]}. 8 second loop, smooth, professional.`;
                 
-                row.innerHTML = `
-                    <td style="color: var(--text-grey); font-size: 0.8rem;">${date}</td>
-                    <td style="font-weight: 600; color: var(--text-white); font-size: 0.85rem;">${art.title}</td>
-                    <td><span style="font-family: monospace; font-size: 0.78rem; color: var(--text-grey);">${art.slug}</span></td>
-                    <td><span style="font-size: 0.75rem; background: rgba(128,128,128,0.1); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-color); color: var(--text-white);">${art.category.toUpperCase()}</span></td>
-                    <td>${statusBadge}</td>
-                    <td style="text-align: center;">
-                        <div style="display: flex; gap: 6px; justify-content: center;">
-                            <button type="button" class="btn-lead-action" style="width: 28px; height: 28px; padding:0; display:inline-flex; align-items:center; justify-content:center; background: rgba(0,113,227,0.1); color: var(--accent-blue); border-color: rgba(0,113,227,0.2);" onclick="editNewsletterArticle('${art.id}')" title="Editar Artículo">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                            </button>
-                            <button type="button" class="btn-lead-action btn-delete" style="width: 28px; height: 28px; padding:0; display:inline-flex; align-items:center; justify-content:center;" onclick="deleteNewsletterArticle('${art.id}', '${art.title.replace(/'/g, "\\'")}')" title="Eliminar Artículo">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                            </button>
-                        </div>
-                    </td>
-                `;
-                body.appendChild(row);
-            });
-            
-            updateNewsletterStats();
-        } catch (e) {
-            console.error('Error loading articles:', e);
-            body.innerHTML = `<tr><td colspan="6" class="table-loading" style="color: #ff3b30;">❌ Error al conectar con Supabase: ${e.message}</td></tr>`;
+                // Step 1: Initiate video generation (long-running operation)
+                const initResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/veo-3.1-generate-preview:predictLongRunning?key=${key}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        instances: [{ prompt: videoPrompt }],
+                        parameters: { aspectRatio: "16:9", durationSeconds: 8 }
+                    })
+                });
+                
+                if (!initResp.ok) {
+                    const errData = await initResp.json().catch(() => ({}));
+                    throw new Error(errData?.error?.message || initResp.statusText);
+                }
+                
+                const operation = await initResp.json();
+                const opName = operation.name;
+                
+                if (!opName) throw new Error('No operation name returned');
+                
+                vh.innerHTML = `🎬 Procesando vídeo ${i+1}...<br><small style="opacity:0.5">Operación iniciada</small>`;
+                
+                // Step 2: Poll for completion (max 3 min)
+                let done = false;
+                let attempts = 0;
+                const maxAttempts = 36; // 36 * 5s = 3 minutes
+                
+                while (!done && attempts < maxAttempts) {
+                    await new Promise(r => setTimeout(r, 5000)); // Wait 5s between polls
+                    attempts++;
+                    
+                    vh.innerHTML = `🎬 Procesando vídeo ${i+1}...<br><small style="opacity:0.5">Comprobando estado... (${attempts * 5}s)</small>`;
+                    
+                    const pollResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/${opName}?key=${key}`);
+                    const pollData = await pollResp.json();
+                    
+                    if (pollData.done) {
+                        done = true;
+                        
+                        // Extract video from response
+                        const videoData = pollData.response?.predictions?.[0];
+                        if (videoData?.bytesBase64Encoded) {
+                            const mimeType = videoData.mimeType || 'video/mp4';
+                            const blob = await fetch(`data:${mimeType};base64,${videoData.bytesBase64Encoded}`).then(r => r.blob());
+                            
+                            // Upload to Supabase
+                            const fileName = `veo-${Date.now()}-${i}.mp4`;
+                            const { error: upErr } = await _supabase.storage.from('newsletter-images').upload(fileName, blob, { cacheControl: '31536000', contentType: mimeType });
+                            
+                            if (upErr) throw upErr;
+                            
+                            const { data: urlData } = _supabase.storage.from('newsletter-images').getPublicUrl(fileName);
+                            
+                            video.src = urlData.publicUrl;
+                            video.style.opacity = '1';
+                            video.play().catch(() => {});
+                            vh.style.display = 'none';
+                            successCount++;
+                            
+                            if (successCount === 1) nlSelectVideo(card);
+                        } else if (pollData.response?.predictions?.[0]?.uri) {
+                            // Some responses return a URI instead
+                            video.src = pollData.response.predictions[0].uri;
+                            video.style.opacity = '1';
+                            video.play().catch(() => {});
+                            vh.style.display = 'none';
+                            successCount++;
+                            if (successCount === 1) nlSelectVideo(card);
+                        } else {
+                            vh.innerHTML = '<span style="color:#ff9500">⚠️ Sin vídeo en respuesta</span>';
+                        }
+                    } else if (pollData.error) {
+                        throw new Error(pollData.error.message || 'Operation failed');
+                    }
+                }
+                
+                if (!done) {
+                    vh.innerHTML = '<span style="color:#ff9500">⏱️ Timeout (>3 min)</span>';
+                }
+                
+            } catch (err) {
+                console.error('Video gen error:', err);
+                vh.innerHTML = `<span style="color:#ff3b30">❌ Error<br><small style="opacity:0.6">${(err.message || '').substring(0, 60)}</small></span>`;
+            }
+        }
+        
+        if (loader) loader.style.display = 'none';
+        if (successCount > 0) showToast(`🎬 ${successCount} vídeos generados con Veo 3.1`, 4000);
+        else showToast('⚠️ No se pudieron generar vídeos. Verifica tu API Key y plan.', 5000);
+    }
+
+    function nlSelectVideo(card) {
+        document.querySelectorAll('#nl-video-grid > div').forEach(c => {
+            c.style.borderColor = 'rgba(255,255,255,0.08)';
+            c.style.boxShadow = 'none';
+        });
+        card.style.borderColor = '#34c759';
+        card.style.boxShadow = '0 0 12px rgba(52,199,89,0.4)';
+        
+        const video = card.querySelector('video');
+        if (video && video.src) {
+            document.getElementById('nl-image').value = video.src;
+            showToast('✓ Vídeo seleccionado', 2000);
         }
     }
-    
-    // Save or update article in Supabase
-    async function saveNewsletterArticle(status) {
-        const title = document.getElementById('nl-art-title').value.trim();
-        const subtitle = document.getElementById('nl-art-subtitle').value.trim();
-        const category = document.getElementById('nl-art-category').value;
-        const image = document.getElementById('nl-art-image').value.trim();
-        const readTime = document.getElementById('nl-art-readtime').value.trim() || '5 min';
-        const slug = document.getElementById('nl-art-slug').value.trim();
-        const metaDesc = document.getElementById('nl-art-metadesc').value.trim();
-        const content = document.getElementById('nl-art-content').value.trim();
+
+    // ══════════════════════════════════════════
+    // CRUD: Guardar / Editar / Borrar Artículos
+    // ══════════════════════════════════════════
+    async function nlSaveArticle(status) {
+        const title = document.getElementById('nl-title').value.trim();
+        const slug = document.getElementById('nl-slug').value.trim();
+        const content = document.getElementById('nl-content').value.trim();
         
         if (!title || !slug || !content) {
             const missing = [];
             if (!title) missing.push('Título');
             if (!slug) missing.push('Slug');
             if (!content) missing.push('Contenido');
-            return alert('⚠️ Falta rellenar: ' + missing.join(', ') + '. Revisa estos campos antes de publicar.');
+            return alert('⚠️ Falta rellenar: ' + missing.join(', '));
         }
         
-        const activeIdEl = document.getElementById('editor-active-id');
-        const editingId = activeIdEl && activeIdEl.style.display === 'block' ? activeIdEl.querySelector('span').innerText : null;
-        
-        const articleObj = {
+        const articleData = {
             title,
-            subtitle: subtitle || null,
-            category,
-            image_url: image || null,
-            read_time: readTime,
+            subtitle: document.getElementById('nl-subtitle').value.trim(),
+            category: document.getElementById('nl-category').value,
+            image_url: document.getElementById('nl-image').value.trim(),
+            read_time: document.getElementById('nl-readtime').value.trim() || '5 min',
             slug,
-            meta_title: `${title} | IA de Barrio`,
-            meta_description: metaDesc || subtitle || null,
+            meta_title: title,
+            meta_description: document.getElementById('nl-metadesc').value.trim(),
             content,
             status,
             updated_at: new Date().toISOString()
         };
         
-        if (status === 'publicado') {
-            articleObj.published_at = new Date().toISOString();
-        }
+        if (status === 'publicado') articleData.published_at = new Date().toISOString();
         
-        if (editingId) {
-            articleObj.id = editingId;
-        } else {
-            articleObj.created_at = new Date().toISOString();
-        }
+        const editIdEl = document.getElementById('nl-editing-id');
+        const editingId = editIdEl && editIdEl.style.display !== 'none' ? editIdEl.querySelector('span').textContent : null;
         
         try {
-            const { error } = await _supabase
-                .from('articles')
-                .upsert(articleObj);
-                
-            if (error) throw error;
-            
-            showToast(status === 'publicado' ? '🚀 ¡Artículo publicado en la web con éxito!' : '💾 Borrador guardado correctamente', 4000);
-            
-            // Log action
-            await addLog(
-                editingId ? 'Artículo Editado' : 'Artículo Creado', 
-                `Se ha ${editingId ? 'actualizado' : 'creado'} el artículo "${title}" en estado: ${status}`
-            );
-            
-            // Clean up and switch tabs
-            resetNewsletterEditor();
-            switchNewsletterTab('articles');
-        } catch (e) {
-            console.error('Error saving article:', e);
-            alert('Error al guardar el artículo: ' + e.message);
-        }
-    }
-    
-    // Edit article
-    async function editNewsletterArticle(id) {
-        try {
-            const { data, error } = await _supabase
-                .from('articles')
-                .select('*')
-                .eq('id', id)
-                .single();
-                
-            if (error) throw error;
-            
-            // Load in inputs
-            document.getElementById('nl-art-title').value = data.title || '';
-            document.getElementById('nl-art-subtitle').value = data.subtitle || '';
-            document.getElementById('nl-art-category').value = data.category || 'ia';
-            document.getElementById('nl-art-image').value = data.image_url || '';
-            document.getElementById('nl-art-readtime').value = data.read_time || '';
-            document.getElementById('nl-art-slug').value = data.slug || '';
-            document.getElementById('nl-art-metadesc').value = data.meta_description || '';
-            document.getElementById('nl-art-content').value = data.content || '';
-            
-            console.log('[EditArticle] Loaded content length:', (data.content || '').length, 'chars');
-            
-            // Set active ID
-            const activeIdEl = document.getElementById('editor-active-id');
-            if (activeIdEl) {
-                activeIdEl.style.display = 'block';
-                activeIdEl.querySelector('span').innerText = data.id;
-            }
-            
-            updateNewsletterPreview();
-            
-            // Switch to Redactor tab
-            document.getElementById('nl-pane-write').style.display = 'block';
-            document.getElementById('nl-pane-subscribers').style.display = 'none';
-            document.getElementById('nl-pane-articles').style.display = 'none';
-            
-            // Sychronize tab buttons
-            const btnWrite = document.getElementById('btn-nl-tab-write');
-            const btnSubs = document.getElementById('btn-nl-tab-subscribers');
-            const btnArts = document.getElementById('btn-nl-tab-articles');
-            [btnWrite, btnSubs, btnArts].forEach(btn => {
-                if (btn) {
-                    btn.style.background = 'transparent';
-                    btn.style.borderColor = 'transparent';
-                    btn.style.color = 'var(--text-grey)';
-                }
-            });
-            if (btnWrite) {
-                btnWrite.style.background = 'rgba(255,255,255,0.06)';
-                btnWrite.style.borderColor = 'var(--border-color)';
-                btnWrite.style.color = 'var(--text-white)';
-            }
-            
-            // Scroll content textarea into view
-            setTimeout(() => {
-                const contentEl = document.getElementById('nl-art-content');
-                if (contentEl) contentEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 300);
-            
-            if (!data.content) {
-                showToast('⚠️ Este artículo no tiene contenido guardado en la base de datos. Escríbelo antes de publicar.', 5000);
-            } else {
-                showToast('📝 Artículo cargado en el editor — contenido incluido', 2000);
-            }
-        } catch (e) {
-            alert('Error al cargar artículo para editar: ' + e.message);
-        }
-    }
-    
-    // Delete article from Supabase
-    async function deleteNewsletterArticle(id, title) {
-        if (!confirm(`¿Estás completamente seguro de eliminar permanentemente el artículo "${title}"?\nEsta acción no se puede deshacer.`)) return;
-        
-        try {
-            const { error } = await _supabase
-                .from('articles')
-                .delete()
-                .eq('id', id);
-                
-            if (error) throw error;
-            
-            showToast('✓ Artículo eliminado permanentemente', 3000);
-            loadNewsletterArticles();
-            await addLog('Artículo Eliminado', `Se ha borrado el artículo: ${title}`);
-        } catch (e) {
-            alert('Error al eliminar artículo: ' + e.message);
-        }
-    }
-    
-    // Core AI Co-pilot generative logic using Gemini!
-    async function generateNewsletterWithAI() {
-        const topic = document.getElementById('nl-generation-topic').value.trim();
-        const type = document.getElementById('nl-generation-type').value;
-        const tone = document.getElementById('nl-generation-tone').value;
-        const model = document.getElementById('gemini-model-select').value;
-        
-        let key = localStorage.getItem('gemini_api_key') || document.getElementById('gemini-api-key').value;
-        if (key) key = key.trim();
-        
-        if (!topic) {
-            return alert('⚠️ Por favor, introduce un tema o noticia de interés primero.');
-        }
-        
-        const consoleEl = document.getElementById('ai-agent-console');
-        const logsEl = document.getElementById('console-logs');
-        const statusEl = document.getElementById('console-status');
-        
-        // Show console
-        consoleEl.style.display = 'block';
-        logsEl.innerHTML = '';
-        statusEl.innerText = '● PROCESANDO';
-        statusEl.style.color = '#34c759';
-        
-        function log(msg, color = '#34c759') {
-            const entry = document.createElement('div');
-            entry.innerHTML = `<span style="color: var(--text-grey);">&gt;</span> <span style="color: ${color}">${msg}</span>`;
-            logsEl.appendChild(entry);
-            logsEl.scrollTop = logsEl.scrollHeight;
-        }
-        
-        log('Iniciando Agente Copiloto de IA...');
-        
-        // PRE-VALIDATION: Check if key is from another provider
-        if (key && !key.startsWith('AIzaSy')) {
-            statusEl.innerText = '● CLAVE NO VÁLIDA';
-            statusEl.style.color = '#ff3b30';
-            
-            log('❌ ERROR: API Key no válida para Google Gemini.', '#ff3b30');
-            log('💡 Nota: Tu clave empieza por "' + key.substring(0, 4) + '...". Las claves de Google Gemini siempre empiezan por "AIzaSy".', '#ff9500');
-            log('👉 Parece que has introducido una clave de otro proveedor (como OpenAI o Anthropic cuyas claves empiezan por "sk-").', '#ff9500');
-            log('👉 Consigue una clave gratuita de Google Gemini en: https://aistudio.google.com', '#0071e3');
-            
-            alert('⚠️ Clave de API no válida para Google Gemini.\n\nLas claves de Gemini empiezan por "AIzaSy". Tu clave actual parece pertenecer a otro proveedor (por ejemplo, OpenAI o Anthropic cuyas claves de API empiezan por "sk-").\n\nPor favor, obtén una clave de Gemini gratuita en Google AI Studio (https://aistudio.google.com) e introdúcela en el campo de configuración.');
-            return;
-        }
-        
-        // IF NO KEY, PROVIDE A PREMIUM PRE-MADE DRAFT AS PREVIEW
-        if (!key) {
-            log('⚠️ No se ha proporcionado una API Key de Gemini.', '#ff9500');
-            log('💡 Cargando borrador de demostración estructurado...', '#ff9500');
-            
-            setTimeout(() => {
-                log('Analizando tema: "' + topic + '"...', '#5ac8fa');
-            }, 800);
-            
-            setTimeout(() => {
-                log('Simulando redacción estilo Apple: "' + tone.toUpperCase() + '"...', '#af52de');
-            }, 1800);
-            
-            setTimeout(() => {
-                log('Optimizando palabras clave, slug y descripciones SEO...', '#ffcc00');
-            }, 2800);
-
-            
-            setTimeout(() => {
-                // Populate rich mock data based on type
-                let mockData = {};
-                if (type === 'promo-course') {
-                    mockData = {
-                        title: 'Lanzamiento: Nuevo Curso de ' + topic,
-                        subtitle: 'Aprende a dominar las últimas técnicas paso a paso y pon tu negocio digital en piloto automático sin programar.',
-                        slug: 'lanzamiento-curso-' + topic.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
-                        category: 'tutorial',
-                        read_time: '6 min',
-                        meta_title: 'Curso de ' + topic + ' | Preventa Exclusiva',
-                        meta_description: 'Apúntate al nuevo curso de IA de Barrio y domina los procesos avanzados sin código.',
-                        content: `<div class="toc"><h4>📑 Índice</h4><ol><li><a href="#s1">Lanzamiento Especial</a></li><li><a href="#s2">Lo que vas a aprender</a></li><li><a href="#s3">Detalles de Lanzamiento</a></li></ol></div>\n\n<h2 id="s1">Lanzamiento Especial: Nuevo Curso de ${topic}</h2>\n<p>En <strong>IA de Barrio</strong> creemos firmemente que la tecnología no debe ser un obstáculo para los profesionales y los negocios locales. Por eso, nos alegra presentar oficialmente nuestro nuevo programa formativo avanzado centrado en <strong>${topic}</strong>.</p>\n<p>Este curso ha sido diseñado desde cero pensando en la aplicación real e inmediata. Sin tecnicismos complejos, sin código enrevesado, 100% enfocado en resultados.</p>\n\n<h2 id="s2">Lo que vas a aprender en este programa:</h2>\n<ol>\n  <li><strong>Fundamentos e Integración:</strong> Conoce las bases teóricas indispensables y cómo conectar tus herramientas existentes en menos de 10 minutos.</li>\n  <li><strong>Automatizaciones Avanzadas:</strong> Configura flujos en piloto automático que realicen tareas repetitivas (facturación, atención, leads) por ti 24/7.</li>\n  <li><strong>Agentes Autónomos:</strong> Despliega bots inteligentes capaces de tomar decisiones estructuradas e interactuar con tus clientes.</li>\n</ol>\n\n<h2 id="s3">Detalles Exclusivos de Lanzamiento:</h2>\n<ul>\n  <li><strong>Formato:</strong> Clases cortas en vídeo, paso a paso, con guías descargables.</li>\n  <li><strong>Plantillas listas:</strong> Copia y pega más de 15 workflows de n8n prediseñados.</li>\n  <li><strong>Soporte continuo:</strong> Canal de Slack privado para resolver cualquier duda con el equipo de IA de Barrio.</li>\n  <li><strong>Oferta de lanzamiento:</strong> Consigue acceso inmediato a <strong>0€</strong> (valorado originalmente en 159€) apuntándote hoy mismo a nuestra lista de espera.</li>\n</ul>\n\n<blockquote>"La automatización con IA ya no es una opción de futuro para las PYMEs — es la única manera de competir en el presente."</blockquote>\n\n<div class="info-box tip">¿Estás listo para dar el salto tecnológico? Apúntate ya en la lista de espera de la newsletter de IA de Barrio y sé el primero en recibir acceso exclusivo cuando abramos las puertas.</div>`
-                    };
-                } else {
-                    mockData = {
-                        title: 'Análisis: El impacto de ' + topic,
-                        subtitle: 'Analizamos cómo los últimos movimientos en inteligencia artificial transformarán la productividad de las PYMEs y freelancers.',
-                        slug: 'analisis-impacto-' + topic.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
-                        category: 'ia',
-                        read_time: '5 min',
-                        meta_title: 'Impacto de ' + topic + ' en Negocios',
-                        meta_description: 'Descubre qué implicaciones reales tiene este lanzamiento tecnológico en tu productividad.',
-                        content: `<div class="toc"><h4>📑 Índice</h4><ol><li><a href="#s1">¿Qué cambia realmente?</a></li><li><a href="#s2">Implicaciones prácticas</a></li><li><a href="#s3">¿Cómo empezar hoy?</a></li></ol></div>\n\n<h2 id="s1">1. ¿Qué cambia realmente con ${topic}?</h2>\n<p>El sector de la Inteligencia Artificial se mueve a una velocidad de vértigo. El reciente lanzamiento de <strong>${topic}</strong> representa un nuevo hito que redefine las reglas del juego tanto para grandes corporaciones como para autónomos y PYMEs locales.</p>\n<p>La principal novedad de este hito reside en su capacidad de procesamiento y su eficiencia. Lo que antes requería complejos modelos dedicados o presupuestos inalcanzables, ahora es accesible a través de APIs de bajo coste y flujos de trabajo optimizados.</p>\n<ul>\n  <li><strong>Mayor Velocidad:</strong> Tiempos de respuesta reducidos a la mitad.</li>\n  <li><strong>Eficiencia de Costes:</strong> Reducción drástica del consumo computacional.</li>\n  <li><strong>Multimodalidad Avanzada:</strong> Procesamiento simultáneo de texto, archivos, voz y datos estructurados.</li>\n</ul>\n\n<h2 id="s2">2. Implicaciones prácticas para tu negocio</h2>\n<p>No dejes que el ruido mediático te confunda. Para un negocio real, esta tecnología tiene tres aplicaciones muy claras:</p>\n<ol>\n  <li><strong>Atención al Cliente Conversacional:</strong> Soporte 24/7 capaz de gestionar agendas y responder correos con un nivel de personalización nunca antes visto.</li>\n  <li><strong>Análisis de Datos en Segundos:</strong> Sube tus facturas, excels de ventas o informes financieros y obtén auditorías instantáneas con IA.</li>\n  <li><strong>Generación Automatizada de Contenido:</strong> Redacción de reportes, descripciones y copys optimizados siguiendo la identidad de tu marca.</li>\n</ol>\n\n<blockquote>"La IA no va a reemplazar a tu negocio, pero los negocios que usen IA reemplazarán a los que no la usen."</blockquote>\n\n<div class="info-box tip">El primer paso no es comprar la herramienta más cara, sino entender qué procesos de tu día a día te quitan tiempo útil. Comienza auditando tus flujos repetitivos y luego conecta la IA mediante herramientas de integración visual como n8n.</div>`
-                    };
-                }
-                
-                // Load mock data
-                document.getElementById('nl-art-title').value = mockData.title;
-                document.getElementById('nl-art-subtitle').value = mockData.subtitle;
-                document.getElementById('nl-art-slug').value = mockData.slug;
-                document.getElementById('nl-art-category').value = mockData.category;
-                document.getElementById('nl-art-readtime').value = mockData.read_time;
-                document.getElementById('nl-art-metadesc').value = mockData.meta_description;
-                document.getElementById('nl-art-content').value = mockData.content;
-                
-                updateNewsletterPreview();
-                
-                log('✅ ¡Borrador de demostración cargado con éxito!', '#34c759');
-                log('📝 Revisa el editor y haz clic en "Guardar Borrador" o "Publicar en la Web"');
-                statusEl.innerText = '● DEMO COMPLETADA';
-                statusEl.style.color = '#ff9500';
-                
-                showToast('🤖 Borrador de demostración generado con éxito. Consigue una API Key de Gemini para generar en tiempo real.', 7000);
-            }, 3800);
-            
-            return;
-        }
-        
-        // DYNAMIC REAL-TIME API GENERATION
-        try {
-            log('Conectando con la API de Google Gemini (' + model + ')...', '#5ac8fa');
-            
-            const promptDetails = type === 'promo-course' 
-                ? `detalles específicos de nuestro lanzamiento: "${document.getElementById('nl-generation-details').value}"` 
-                : 'noticias globales y tendencias generales de la industria';
-                
-            const promptText = `Por favor, genera un artículo de newsletter completo basado en la siguiente solicitud:
-Tema: "${topic}"
-Tipo de contenido: ${type === 'promo-course' ? 'Promoción/Lanzamiento propio de IA de Barrio' : 'Noticias y Tendencias globales del sector tecnológico'}
-Detalles: ${promptDetails}
-Tono de redacción: ${tone} (especialmente si es 'apple', redacta con estilo minimalista, de alto valor, frases potentes pero cortas, sofisticado y directo, típico de la comunicación de Apple. Sin rodeos, sin superlativos ridículos como 'revolucionario' o 'espectacular' en exceso, sino centrado en beneficios prácticos reales).
-
-Devuelve ÚNICAMENTE un objeto JSON que cumpla ESTRICTAMENTE con este esquema:
-{
-  "title": "Un título corto y de gran impacto visual",
-  "subtitle": "Un subtítulo resumido de 1 o 2 líneas explicando el beneficio principal",
-  "slug": "un-slug-de-url-limpio-en-minusculas-separado-por-guiones",
-  "category": "ia", // estricto entre: "ia", "negocio", "tutorial", "noticia"
-  "read_time": "5 min", // estimado según la longitud del contenido
-  "meta_title": "Título SEO óptimo | IA de Barrio",
-  "meta_description": "Resumen de SEO de menos de 150 caracteres",
-  "content": "HTML_PURO",
-  "image_url": "img/newsletter/tu-slug.png"
-}
-
-REGLAS DE ORO CRÍTICAS PARA EL CAMPO \"content\" (SI NO SE CUMPLEN, LA PÁGINA SE ROMPERÁ):
-1. El campo \"content\" DEBE contener ÚNICAMENTE código HTML puro y limpio, listo para inyectarse directamente en el cuerpo del artículo con innerHTML.
-2. PROHIBIDO: Está terminantemente prohibido el uso de cualquier código o sintaxis Markdown. NO uses '##', '###', '**', '*', '> ', '1. ', '- ' o enlaces con [texto](url). Todo debe ser reemplazado por sus equivalentes en etiquetas HTML tradicionales (h2, h3, strong, blockquote, ol, ul, li, a).
-3. ESTRUCTURA OBLIGATORIA DEL HTML:
-   - Debe comenzar obligatoriamente con un índice / Table of Contents (TOC) formateado exactamente así:
-     <div class=\"toc\"><h4>📑 Índice</h4><ol><li><a href=\"#s1\">¿Qué es...?</a></li><li><a href=\"#s2\">¿Cómo funciona...?</a></li>... </ol></div>
-   - Cada sección principal debe comenzar con un encabezado <h2> que tenga un ID único que coincida exactamente con el índice (ej: <h2 id=\"s1\">¿Qué es...?</h2>).
-   - Usa cabeceras <h3> para subsecciones específicas dentro de los <h2>.
-   - Envuelve todos los párrafos de texto en etiquetas <p>.
-   - Para destacar términos o frases clave cortas (máximo 4-5 palabras), usa <strong>. NUNCA envuelvas párrafos enteros en <strong>.
-   - Para las citas, testimonios o frases destacadas potentes, usa <blockquote>Texto de la cita</blockquote>.
-   - Para los cuadros informativos destacados premium, usa estrictamente las clases CSS existentes del tema:
-     <div class=\"info-box tip\"><strong>Consejo práctico:</strong> ...</div> o <div class=\"info-box warning\"><strong>Importante:</strong> ...</div>.
-4. El estilo del contenido debe ser sofisticado, limpio, minimalista, con párrafos cortos (de 3 a 4 frases máximo por párrafo) para una máxima legibilidad.
-5. NO uses etiquetas <h1> en el contenido del artículo, ya que el título de la página actúa como H1.`;
-
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
-            
-            log('Redactando artículo estructurado en formato JSON...', '#af52de');
-            
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{ text: promptText }]
-                    }],
-                    generationConfig: {
-                        responseMimeType: "application/json"
-                    }
-                })
-            });
-            
-            if (!response.ok) {
-                const errText = await response.text();
-                throw new Error(`Gemini API Error (${response.status}): ${errText}`);
-            }
-            
-            log('Procesando respuesta del Agente de IA...', '#ffcc00');
-            const data = await response.json();
-            
-            if (!data.candidates || data.candidates.length === 0) {
-                throw new Error('La API de Gemini no devolvió ningún candidato de generación.');
-            }
-            
-            const textResponse = data.candidates[0].content.parts[0].text;
-            const parsedData = JSON.parse(textResponse.trim());
-            
-            // Populate inputs
-            document.getElementById('nl-art-title').value = parsedData.title || '';
-            document.getElementById('nl-art-subtitle').value = parsedData.subtitle || '';
-            document.getElementById('nl-art-slug').value = parsedData.slug || '';
-            document.getElementById('nl-art-category').value = parsedData.category || 'ia';
-            document.getElementById('nl-art-readtime').value = parsedData.read_time || '5 min';
-            document.getElementById('nl-art-metadesc').value = parsedData.meta_description || '';
-            document.getElementById('nl-art-content').value = parsedData.content || '';
-            if (parsedData.image_url) {
-                document.getElementById('nl-art-image').value = parsedData.image_url;
-            }
-            
-            updateNewsletterPreview();
-            
-            log('✅ ¡Borrador generado en tiempo real con éxito!', '#34c759');
-            log('📝 Puedes revisar los campos, editar el Markdown y publicarlo.');
-            
-            statusEl.innerText = '● AGENTE LISTO';
-            statusEl.style.color = '#34c759';
-            
-            showToast('🤖 Artículo generado con éxito por tu Copiloto Gemini 2.0 Pro', 5000);
-        } catch (e) {
-            console.error('Error in Gemini generation:', e);
-            log('❌ ERROR: ' + e.message, '#ff3b30');
-            
-            if (e.message.includes('expired') || e.message.includes('expired the API key')) {
-                log('💡 API Key Expirada / Caducada:', '#ff9500');
-                log('👉 Al activar o modificar la facturación (Billing) de tu cuenta de Google Cloud, Google invalida temporalmente las claves creadas previamente.', '#ff9500');
-                log('👉 SOLUCIÓN: Entra en Google AI Studio (https://aistudio.google.com), haz clic en "Get API key", genera una NUEVA API Key en tu proyecto activo con facturación, e introdúcela en tu panel.', '#0071e3');
-                
-                statusEl.innerText = '● CLAVE EXPIRADA';
-                statusEl.style.color = '#ff9500';
-                alert('La API Key de Gemini ha expirado.\n\nTras habilitar la facturación (Billing), Google suele desactivar las claves anteriores. Por favor, ve a Google AI Studio (https://aistudio.google.com), genera una NUEVA API Key e introdúcela en el panel de control.');
-            } else if (e.message.includes('API key not valid') || e.message.includes('API_KEY_INVALID')) {
-                log('💡 Sugerencia: La API Key de Gemini que has guardado no es válida o ha caducado.', '#ff9500');
-                log('👉 Por favor, ve a https://aistudio.google.com para generar una clave gratuita válida.', '#0071e3');
-                
-                statusEl.innerText = '● CLAVE INVÁLIDA';
-                statusEl.style.color = '#ff3b30';
-                alert('Error en la generación con IA: Clave de API no válida.\n\nVerifica tu API Key de Gemini o genera una nueva en Google AI Studio.');
-            } else if (e.message.includes('429') || e.message.includes('quota') || e.message.includes('Quota exceeded') || e.message.includes('RESOURCE_EXHAUSTED')) {
-                log('💡 Restricción Europea / Quota Detectada:', '#ff9500');
-                log('👉 Por políticas de privacidad y servicio, Google bloquea la cuota del "Plan Gratuito" (límite 0) para usuarios en España y la Unión Europea (EEA).', '#ff9500');
-                log('👉 SOLUCIÓN: Accede a Google AI Studio (https://aistudio.google.com), ve a "Billing" y vincula una tarjeta para activar el plan "Pay-as-you-go" (Pago por uso).', '#0071e3');
-                log('👉 Nota: Gemini 2.0 Flash es extremadamente económico ($0.075 por millón de tokens). Generar un boletín completo te costará menos de €0.0001 (una milésima de céntimo).', '#34c759');
-                
-                statusEl.innerText = '● ERROR DE CUOTA';
-                statusEl.style.color = '#ff9500';
-                alert('Error de API Gemini (429): Quota Exceeded.\n\nEn España y la Unión Europea, Google no permite el uso de la API en el plan gratuito (límite 0). Para que funcione tu API Key, debes activar la facturación ("Pay-as-you-go") en Google AI Studio (https://aistudio.google.com). Es extremadamente barato (cuesta menos de una milésima de céntimo de euro por artículo).');
-            } else {
-                statusEl.innerText = '● ERROR';
-                statusEl.style.color = '#ff3b30';
-                alert('Error en la generación con IA: ' + e.message + '\n\nVerifica tu API Key de Gemini o revisa la consola de depuración del agente.');
-            }
-        }
-    }
-    
-    // ====== MULTIMEDIA IA ASSISTANT LOGIC ======
-    let activeMediaTab = 'images';
-
-    function toggleMediaAssistant() {
-        const panel = document.getElementById('media-assistant-panel');
-        if (!panel) return;
-        const isHidden = panel.style.display === 'none';
-        panel.style.display = isHidden ? 'block' : 'none';
-        
-        // If opening and prompt is empty, pre-fill with current article title
-        if (isHidden) {
-            const promptInput = document.getElementById('media-prompt-input');
-            const titleInput = document.getElementById('nl-art-title');
-            if (promptInput && titleInput && !promptInput.value.trim()) {
-                promptInput.value = titleInput.value.trim();
-            }
-        }
-    }
-
-    function switchMediaAssistantTab(tab) {
-        activeMediaTab = tab;
-        const tabImages = document.getElementById('media-tab-images');
-        const tabVideos = document.getElementById('media-tab-videos');
-        const containerImages = document.getElementById('media-images-container');
-        const containerVideos = document.getElementById('media-videos-container');
-        
-        if (tab === 'images') {
-            tabImages.style.background = 'rgba(0, 113, 227, 0.15)';
-            tabImages.style.borderColor = 'rgba(0, 113, 227, 0.3)';
-            tabImages.style.fontWeight = '600';
-            
-            tabVideos.style.background = 'transparent';
-            tabVideos.style.borderColor = 'transparent';
-            tabVideos.style.fontWeight = 'normal';
-            
-            containerImages.style.display = 'block';
-            containerVideos.style.display = 'none';
-        } else {
-            tabVideos.style.background = 'rgba(0, 113, 227, 0.15)';
-            tabVideos.style.borderColor = 'rgba(0, 113, 227, 0.3)';
-            tabVideos.style.fontWeight = '600';
-            
-            tabImages.style.background = 'transparent';
-            tabImages.style.borderColor = 'transparent';
-            tabImages.style.fontWeight = 'normal';
-            
-            containerImages.style.display = 'none';
-            containerVideos.style.display = 'block';
-        }
-    }
-
-    function generateMediaFromAssistant() {
-        const promptInput = document.getElementById('media-prompt-input');
-        const titleInput = document.getElementById('nl-art-title');
-        let prompt = promptInput.value.trim() || titleInput.value.trim() || 'tecnologia ia de barrio';
-        
-        const loader = document.getElementById('media-assistant-loader');
-        if (loader) loader.style.display = 'inline';
-        
-        if (activeMediaTab === 'images') {
-            const grid = document.getElementById('media-images-grid');
-            grid.innerHTML = '';
-            
-            // Get Gemini API key
-            const key = localStorage.getItem('gemini_api_key') || document.getElementById('gemini-api-key').value;
-            if (!key) {
-                if (loader) loader.style.display = 'none';
-                return alert('⚠️ Introduce tu Gemini API Key en el panel del Copiloto IA para generar imágenes.');
-            }
-            
-            // 6 styles for variation
-            const styles = [
-                { name: 'Editorial Minimalista', suffix: ', clean minimalist editorial photo style, premium aesthetic, soft studio lighting, dark background' },
-                { name: 'Holograma Cyberpunk', suffix: ', futuristic neon holographic style, glowing cyan and magenta, cyberpunk dark background' },
-                { name: 'Ilustración SaaS', suffix: ', modern flat vector illustration style, soft pastel colors, clean corporate aesthetic' },
-                { name: 'Render 3D Glass', suffix: ', 3D isometric render with frosted glass textures, soft ambient lighting, modern design' },
-                { name: 'Retro-Futurista', suffix: ', vintage retro-futuristic magazine cover style, warm color grading, film grain' },
-                { name: 'Arte Abstracto', suffix: ', abstract digital art with neural network visualization, deep purple and blue glowing lights' }
-            ];
-            
-            // Create 6 placeholder cards
-            styles.forEach((styleObj, index) => {
-                const card = document.createElement('div');
-                card.className = 'media-option-card';
-                card.dataset.index = index;
-                card.style = 'position: relative; background: rgba(255,255,255,0.02); aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.25s ease; display: flex; align-items: center; justify-content: center;';
-                
-                const placeholder = document.createElement('div');
-                placeholder.className = 'img-placeholder';
-                placeholder.style = 'position: absolute; font-size: 0.7rem; color: var(--text-grey); display: flex; flex-direction: column; align-items: center; text-align: center; padding: 10px; gap: 8px; z-index: 1;';
-                placeholder.innerHTML = `<span>⏳ Generando con Gemini...<br><small style="opacity:0.5">${styleObj.name}</small></span>`;
-                card.appendChild(placeholder);
-                
-                const img = document.createElement('img');
-                img.style = 'width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s; z-index: 2;';
-                img.className = 'generated-img';
-                card.appendChild(img);
-                
-                const badge = document.createElement('div');
-                badge.style = 'position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.75); padding: 4px 8px; border-radius: 6px; font-size: 0.55rem; color: #fff; z-index: 3; font-weight: 500; pointer-events: none; border: 1px solid rgba(255,255,255,0.05); max-width: 90%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;';
-                badge.innerText = styleObj.name;
-                card.appendChild(badge);
-                
-                card.addEventListener('click', () => {
-                    if (img.src && img.style.opacity === '1') selectMediaImage(img.src, card);
-                });
-                
-                grid.appendChild(card);
-            });
-            
-            // Generate images sequentially via Gemini API
-            const geminiModel = 'gemini-2.0-flash-preview-image-generation';
-            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${key}`;
-            let successCount = 0;
-            
-            for (let i = 0; i < styles.length; i++) {
-                const styleObj = styles[i];
-                const card = grid.children[i];
-                const img = card.querySelector('.generated-img');
-                const placeholder = card.querySelector('.img-placeholder');
-                
-                try {
-                    const imagePrompt = `Generate a high-quality, visually stunning image for an article about: ${prompt}. Style: ${styleObj.suffix}. The image should be professional, modern, and suitable as a hero banner for a tech/AI news website. Aspect ratio 16:10, landscape orientation.`;
-                    
-                    const resp = await fetch(geminiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ parts: [{ text: imagePrompt }] }],
-                            generationConfig: {
-                                responseModalities: ["IMAGE", "TEXT"],
-                                responseMimeType: "text/plain"
-                            }
-                        })
-                    });
-                    
-                    if (!resp.ok) {
-                        const errData = await resp.json().catch(() => ({}));
-                        throw new Error(errData?.error?.message || resp.statusText);
-                    }
-                    
-                    const data = await resp.json();
-                    
-                    // Find the image part in the response
-                    let imageFound = false;
-                    if (data.candidates && data.candidates[0]?.content?.parts) {
-                        for (const part of data.candidates[0].content.parts) {
-                            if (part.inlineData) {
-                                const blob = await fetch(`data:${part.inlineData.mimeType};base64,${part.inlineData.data}`).then(r => r.blob());
-                                const blobUrl = URL.createObjectURL(blob);
-                                img.src = blobUrl;
-                                img.style.opacity = '1';
-                                placeholder.style.display = 'none';
-                                imageFound = true;
-                                successCount++;
-                                
-                                // Auto-select the first successful image
-                                if (successCount === 1) {
-                                    selectMediaImage(blobUrl, card);
-                                }
-                                break;
-                            }
-                        }
-                    }
-                    
-                    if (!imageFound) {
-                        placeholder.innerHTML = '<span style="color:#ff9500">⚠️ Sin imagen</span>';
-                    }
-                    
-                } catch (err) {
-                    console.error(`Gemini image gen failed for style ${styleObj.name}:`, err);
-                    placeholder.innerHTML = `<span style="color:#ff3b30">❌ Error<br><small style="opacity:0.6">${err.message?.substring(0, 60) || 'Error'}</small></span>`;
-                }
-            }
-            
-            if (loader) loader.style.display = 'none';
-            if (successCount > 0) {
-                showToast(`🤖 ¡${successCount} fotos generadas con Gemini!`, 4000);
-            } else {
-                showToast('❌ No se pudieron generar imágenes. Revisa tu API Key.', 5000);
-            }
-        } else {
-            // Videos option — pick 3 random videos from curated pool
-            const videoPool = [
-                { url: 'https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_30fps.mp4', label: '🧠 Datos IA' },
-                { url: 'https://videos.pexels.com/video-files/6963744/6963744-uhd_2732_1440_25fps.mp4', label: '⚡ Tech Abstracto' },
-                { url: 'https://videos.pexels.com/video-files/5532772/5532772-uhd_2560_1440_25fps.mp4', label: '🌐 Red Global' },
-                { url: 'https://videos.pexels.com/video-files/3141208/3141208-uhd_2560_1440_25fps.mp4', label: '💎 Partículas' },
-                { url: 'https://videos.pexels.com/video-files/3130284/3130284-uhd_2560_1440_30fps.mp4', label: '🔮 Ondas Digitales' },
-                { url: 'https://videos.pexels.com/video-files/5377700/5377700-uhd_2560_1440_25fps.mp4', label: '🤖 Robot IA' },
-                { url: 'https://videos.pexels.com/video-files/5472421/5472421-uhd_2560_1440_25fps.mp4', label: '📊 Holograma Data' },
-                { url: 'https://videos.pexels.com/video-files/6981411/6981411-uhd_2732_1440_25fps.mp4', label: '🌌 Cosmos Tech' },
-                { url: 'https://videos.pexels.com/video-files/4625518/4625518-uhd_2560_1440_30fps.mp4', label: '🔬 Microscopio' }
-            ];
-            
-            // Fisher-Yates shuffle for truly random order
-            for (let i = videoPool.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [videoPool[i], videoPool[j]] = [videoPool[j], videoPool[i]];
-            }
-            const picked = videoPool.slice(0, 3);
-            
-            const videoGrid = document.getElementById('media-videos-grid');
-            videoGrid.innerHTML = '';
-            
-            picked.forEach(v => {
-                const container = document.createElement('div');
-                container.style = 'position: relative; background: #000; aspect-ratio: 16/10; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s;';
-                container.addEventListener('click', () => selectMediaVideo(v.url, container));
-                
-                const video = document.createElement('video');
-                video.src = v.url;
-                video.autoplay = true;
-                video.loop = true;
-                video.muted = true;
-                video.playsInline = true;
-                video.style = 'width: 100%; height: 100%; object-fit: cover;';
-                container.appendChild(video);
-                
-                const badge = document.createElement('div');
-                badge.style = 'position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.55rem; color: #fff; pointer-events: none;';
-                badge.textContent = v.label;
-                container.appendChild(badge);
-                
-                videoGrid.appendChild(container);
-            });
-            
-            if (loader) loader.style.display = 'none';
-            showToast('🎥 3 vídeos aleatorios generados — haz clic para seleccionar', 3000);
-        }
-    }
-
-    async function selectMediaImage(url, element) {
-        // Remove active class from all card options
-        const cards = document.querySelectorAll('#media-images-grid .media-option-card');
-        cards.forEach(c => {
-            c.style.borderColor = 'rgba(255,255,255,0.08)';
-            c.style.boxShadow = 'none';
-        });
-        
-        // Highlight selected
-        element.style.borderColor = 'var(--accent-blue)';
-        element.style.boxShadow = '0 0 12px rgba(0, 113, 227, 0.4)';
-        
-        // If it's a blob URL (from Gemini), upload to Supabase Storage for a permanent URL
-        if (url.startsWith('blob:')) {
-            showToast('📤 Subiendo imagen a la nube...', 2000);
-            try {
-                const response = await fetch(url);
-                const blob = await response.blob();
-                const ext = blob.type.includes('png') ? 'png' : 'jpg';
-                const fileName = `gemini-${Date.now()}-${Math.floor(Math.random() * 9999)}.${ext}`;
-                
-                const { data, error } = await _supabase.storage
-                    .from('newsletter-images')
-                    .upload(fileName, blob, {
-                        cacheControl: '31536000',
-                        upsert: false,
-                        contentType: blob.type
-                    });
-                
+            if (editingId) {
+                // Update existing
+                const { error } = await _supabase.from('articles').update(articleData).eq('id', editingId);
                 if (error) throw error;
-                
-                const { data: urlData } = _supabase.storage
-                    .from('newsletter-images')
-                    .getPublicUrl(fileName);
-                
-                url = urlData.publicUrl;
-                showToast('✅ Imagen subida y aplicada correctamente', 3000);
-            } catch (err) {
-                console.error('Upload error:', err);
-                showToast('❌ Error al subir imagen: ' + err.message, 4000);
+                showToast('✅ Artículo actualizado: ' + title, 4000);
+            } else {
+                // Insert new
+                articleData.created_at = new Date().toISOString();
+                const { error } = await _supabase.from('articles').insert([articleData]);
+                if (error) throw error;
+                showToast('🚀 Artículo ' + (status === 'publicado' ? 'publicado' : 'guardado como borrador'), 4000);
+            }
+            
+            nlUpdateStats();
+        } catch (e) {
+            alert('Error al guardar: ' + e.message);
+        }
+    }
+
+    // ── Load Articles Table ──
+    async function nlLoadArticles() {
+        const tbody = document.getElementById('nl-articles-body');
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-grey);">Cargando...</td></tr>';
+        
+        try {
+            const { data, error } = await _supabase.from('articles').select('*').order('created_at', { ascending: false });
+            if (error) throw error;
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-grey);">No hay artículos aún.</td></tr>';
                 return;
             }
-        } else {
-            showToast('✓ Imagen seleccionada y aplicada a la previsualización', 3000);
+            
+            tbody.innerHTML = data.map(art => {
+                const date = art.created_at ? new Date(art.created_at).toLocaleDateString('es-ES') : '—';
+                const statusBadge = art.status === 'publicado' 
+                    ? '<span style="background:rgba(52,199,89,0.12); color:#34c759; padding:3px 8px; border-radius:6px; font-size:0.65rem; font-weight:600;">Publicado</span>'
+                    : '<span style="background:rgba(255,149,0,0.12); color:#ff9500; padding:3px 8px; border-radius:6px; font-size:0.65rem; font-weight:600;">Borrador</span>';
+                const catMap = { ia: '🤖 IA', negocio: '💼 Negocio', tutorial: '📚 Tutorial', noticia: '📰 Noticia' };
+                
+                return `<tr>
+                    <td style="font-size:0.75rem; color:var(--text-grey);">${date}</td>
+                    <td style="font-size:0.8rem; font-weight:500; max-width:250px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${art.title || '—'}</td>
+                    <td style="font-size:0.75rem;">${catMap[art.category] || art.category || '—'}</td>
+                    <td>${statusBadge}</td>
+                    <td style="white-space:nowrap;">
+                        <button onclick="nlEditArticle('${art.id}')" style="padding:4px 10px; font-size:0.65rem; background:rgba(0,113,227,0.1); color:var(--accent-blue); border:1px solid rgba(0,113,227,0.2); border-radius:6px; cursor:pointer; font-family:'Inter',sans-serif; margin-right:4px;">✏️ Editar</button>
+                        <button onclick="nlDeleteArticle('${art.id}', '${(art.title || '').replace(/'/g, "\\'")}')" style="padding:4px 10px; font-size:0.65rem; background:rgba(255,59,48,0.1); color:#ff3b30; border:1px solid rgba(255,59,48,0.2); border-radius:6px; cursor:pointer; font-family:'Inter',sans-serif; margin-right:4px;">🗑️</button>
+                        ${art.slug ? `<a href="articulo.html?slug=${art.slug}" target="_blank" style="padding:4px 10px; font-size:0.65rem; background:rgba(52,199,89,0.1); color:#34c759; border:1px solid rgba(52,199,89,0.2); border-radius:6px; cursor:pointer; text-decoration:none; font-family:'Inter',sans-serif;">👁️ Ver</a>` : ''}
+                    </td>
+                </tr>`;
+            }).join('');
+            
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#ff3b30;">Error: ${e.message}</td></tr>`;
         }
-        
-        // Set inputs
-        document.getElementById('nl-art-image').value = url;
-        updateNewsletterPreview();
     }
 
-    function selectMediaVideo(url, element) {
-        // Remove active class from all video options
-        const containers = document.querySelectorAll('#media-videos-grid > div');
-        containers.forEach(c => {
-            c.style.borderColor = 'rgba(255,255,255,0.1)';
-            c.style.boxShadow = 'none';
+    // ── Edit Article ──
+    async function nlEditArticle(id) {
+        try {
+            const { data, error } = await _supabase.from('articles').select('*').eq('id', id).single();
+            if (error) throw error;
+            
+            document.getElementById('nl-title').value = data.title || '';
+            document.getElementById('nl-subtitle').value = data.subtitle || '';
+            document.getElementById('nl-category').value = data.category || 'ia';
+            document.getElementById('nl-image').value = data.image_url || '';
+            document.getElementById('nl-readtime').value = data.read_time || '';
+            document.getElementById('nl-slug').value = data.slug || '';
+            document.getElementById('nl-metadesc').value = data.meta_description || '';
+            document.getElementById('nl-content').value = data.content || '';
+            
+            const editId = document.getElementById('nl-editing-id');
+            if (editId) {
+                editId.style.display = 'inline-flex';
+                editId.querySelector('span').textContent = id;
+            }
+            
+            // Switch to create tab
+            nlSwitchTab('create');
+            
+            // Scroll to editor
+            setTimeout(() => document.getElementById('nl-title').scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
+            
+            showToast('📝 Artículo cargado para editar', 2000);
+        } catch (e) {
+            alert('Error al cargar artículo: ' + e.message);
+        }
+    }
+
+    // ── Delete Article ──
+    async function nlDeleteArticle(id, title) {
+        if (!confirm(`¿Eliminar "${title}"?\nEsta acción no se puede deshacer.`)) return;
+        
+        try {
+            const { error } = await _supabase.from('articles').delete().eq('id', id);
+            if (error) throw error;
+            showToast('🗑️ Artículo eliminado', 3000);
+            nlLoadArticles();
+            nlUpdateStats();
+        } catch (e) {
+            alert('Error al eliminar: ' + e.message);
+        }
+    }
+
+    // ══════════════════════════════════════════
+    // LEADS: Suscriptores
+    // ══════════════════════════════════════════
+    async function nlLoadLeads() {
+        const tbody = document.getElementById('nl-leads-body');
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--text-grey);">Cargando...</td></tr>';
+        
+        try {
+            const { data, error } = await _supabase.from('newsletter_subscribers').select('*').order('created_at', { ascending: false });
+            if (error) throw error;
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--text-grey);">No hay suscriptores aún.</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = data.map(sub => {
+                const date = sub.created_at ? new Date(sub.created_at).toLocaleDateString('es-ES') : '—';
+                return `<tr>
+                    <td style="font-size:0.75rem; color:var(--text-grey);">${date}</td>
+                    <td style="font-size:0.8rem;">${sub.name || '—'}</td>
+                    <td style="font-size:0.8rem; font-family:monospace;">${sub.email || '—'}</td>
+                    <td><button onclick="nlDeleteLead('${sub.id}', '${sub.email}')" style="padding:3px 8px; font-size:0.6rem; background:rgba(255,59,48,0.1); color:#ff3b30; border:1px solid rgba(255,59,48,0.2); border-radius:6px; cursor:pointer; font-family:'Inter',sans-serif;">🗑️</button></td>
+                </tr>`;
+            }).join('');
+            
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#ff3b30;">Error: ${e.message}</td></tr>`;
+        }
+    }
+
+    async function nlDeleteLead(id, email) {
+        if (!confirm(`¿Eliminar suscriptor ${email}?`)) return;
+        try {
+            const { error } = await _supabase.from('newsletter_subscribers').delete().eq('id', id);
+            if (error) throw error;
+            showToast('Suscriptor eliminado', 2000);
+            nlLoadLeads();
+            nlUpdateStats();
+        } catch (e) { alert('Error: ' + e.message); }
+    }
+
+    function nlExportLeads() {
+        const rows = document.querySelectorAll('#nl-leads-body tr');
+        if (!rows.length) return alert('No hay datos para exportar.');
+        
+        let csv = 'Fecha,Nombre,Email\n';
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length >= 3) {
+                csv += `"${cells[0].textContent}","${cells[1].textContent}","${cells[2].textContent}"\n`;
+            }
         });
         
-        // Highlight selected
-        element.style.borderColor = 'var(--accent-blue)';
-        element.style.boxShadow = '0 0 12px rgba(0, 113, 227, 0.4)';
-        
-        // Set inputs
-        document.getElementById('nl-art-image').value = url;
-        updateNewsletterPreview();
-        showToast('✓ Vídeo loop seleccionado y aplicado a la previsualización', 3000);
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `leads-${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        showToast('📥 CSV exportado', 2000);
     }
 
-    // ====== FIN PESTAÑA NEWSLETTER LOGIC ======
+    // ====== FIN NEWSLETTER IA — 3 AGENTES ======
     </script>
+
 
     <!-- Delete Confirmation Modal -->
     <div id="delete-confirm-modal" style="display:none;opacity:0;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);z-index:99999;align-items:center;justify-content:center;transition:opacity 0.2s ease;">
